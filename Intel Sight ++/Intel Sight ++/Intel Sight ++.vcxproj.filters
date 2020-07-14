@@ -18,5 +18,25 @@
     <ClCompile Include="Intel Sight ++.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ml_interface.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ml_impl_depth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ml_impl_rgb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="output_interface_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="service_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ml_controller.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

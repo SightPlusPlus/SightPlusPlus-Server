@@ -140,6 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Intel Sight ++.cpp" />
+    <ClCompile Include="ml_impl_depth.cpp" />
+    <ClCompile Include="ml_impl_rgb.cpp" />
+    <ClCompile Include="ml_interface.hpp" />
+    <ClCompile Include="output_interface_controller.cpp" />
+    <ClCompile Include="service_controller.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ml_controller.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
