@@ -1,8 +1,0 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(467,5): warning MSB8028: The intermediate directory (C:\Users\svens\Desktop\IXN\Intel_IXN_SightPP\Sight_++_Solution\\bin\intermediates\x64\Debug\) contains files shared from another project (Intel_Sight_++.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Intel Sight ++.cpp
-  ml_impl_depth.cpp
-  ml_impl_rgb.cpp
-  output_interface_controller.cpp
-  service_controller.cpp
-  Generating Code...
-  Intel_Sight_++.vcxproj -> C:\Users\svens\Desktop\IXN\Intel_IXN_SightPP\Sight_++_Solution\\bin\x64\Debug\Intel_Sight_PP.exe
