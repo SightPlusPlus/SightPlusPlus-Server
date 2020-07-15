@@ -1,5 +1,2 @@
-Sight_++_Solution\Intel_Sight_++\MobileNetSSD_deploy.prototxt
-Sight_++_Solution\Intel_Sight_++\MobileNetSSD_deploy.caffemodel
-Sight_++_Solution\Intel_Sight_++\DNN Old\Source.cpp
-Sight_++_Solution\.vs
-Sight_++_Solution\bin
+Sight_++_Solution/.vs
+Sight_++_Solution/bin
