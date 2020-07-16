@@ -9,7 +9,7 @@
 #include "service_controller.cpp"
 #include "output_interface_controller.cpp"
 #include <iostream>
-#include "caffe_model_impl.cpp"
+#include "caffe_impl.cpp"
 
 int main()
 {
@@ -29,6 +29,8 @@ int main()
     // TODO Read command line parameters for which models to use?
     MLImplDepth ml_depth;
     MLImplRGB ml_rgb;
+	// TODO Add correct paths for testing
+	// TODO Add command line parameter for files to use?
     CaffeModelImpl caffe("link to prototxt file", "link to caffemodel file", "link to class name text file");
 
     // Add more ML implementations here as needed
