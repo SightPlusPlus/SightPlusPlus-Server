@@ -146,14 +146,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\caffe_impl.cpp" />
     <ClCompile Include="src\Intel Sight ++.cpp" />
     <ClCompile Include="src\ml_impl_depth.cpp" />
     <ClCompile Include="src\ml_impl_rgb.cpp" />
     <ClCompile Include="src\output_interface_controller.cpp" />
+    <ClCompile Include="src\prioritiser.hpp" />
     <ClCompile Include="src\service_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cv-helpers.hpp" />
+    <ClInclude Include="src\classification_result.hpp" />
     <ClInclude Include="src\ml_controller.hpp" />
     <ClInclude Include="src\ml_interface.hpp" />
   </ItemGroup>

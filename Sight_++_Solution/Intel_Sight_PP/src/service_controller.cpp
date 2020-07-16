@@ -2,26 +2,35 @@
 #include "librealsense2/rs.hpp"
 #include "ml_controller.hpp"
 #include "ml_interface.hpp"
+#include "prioritiser.hpp"
 
 class ServiceController {
 
-	rs2::pipeline camera;
-	MLController ml_controller;
+	rs2::pipeline pipe_;
+	MLController ml_controller_;
+	Prioritiser prioritiser_;
 
 public:
 
-	ServiceController(rs2::pipeline& pipe, MLController ml_controller) : camera(pipe), ml_controller(ml_controller) {}
+	ServiceController(rs2::pipeline& pipe, MLController& ml_controller, Prioritiser& prioritiser) : pipe_(pipe), ml_controller_(ml_controller), prioritiser_(prioritiser) {}
 
 	int main() try {
-		rs2::align align_to(rs2_stream::RS2_STREAM_COLOR);
+		rs2::align align_to(RS2_STREAM_COLOR);
 
 		while (true) {
-			auto data = camera.wait_for_frames();
+			std::cout << "Waiting for frames\n";
+			auto data = pipe_.wait_for_frames();
 			data = align_to.process(data);
 			std::cout << "Got new frames\n";
 
-			ml_controller.new_frames(data);
+			std::cout << "Doing ML on frames\n";
+			ml_controller_.new_frames(data);
+			std::cout << "Did ML on frames\n";
 
+			std::cout << "Prioritising results\n";
+			auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());
+			std::cout << "Prioritised results\n";
+			
 			// TODO Receive stuff from prioritiser class
 			// TODO Send stream/frames to output interface class
 			// TODO Send info from prioritiser to output interface class

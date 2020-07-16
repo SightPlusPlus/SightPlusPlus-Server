@@ -36,6 +36,12 @@
     <ClCompile Include="src\output_interface_controller.cpp">
       <Filter>Service Classes\Interface Controllers</Filter>
     </ClCompile>
+    <ClCompile Include="src\prioritiser.hpp">
+      <Filter>Service Classes\Priortiser service</Filter>
+    </ClCompile>
+    <ClCompile Include="src\caffe_impl.cpp">
+      <Filter>ML Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cv-helpers.hpp" />
@@ -43,6 +49,9 @@
       <Filter>ML Modules</Filter>
     </ClInclude>
     <ClInclude Include="src\ml_interface.hpp">
+      <Filter>ML Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\classification_result.hpp">
       <Filter>ML Modules</Filter>
     </ClInclude>
   </ItemGroup>
