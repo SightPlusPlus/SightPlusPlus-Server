@@ -160,6 +160,10 @@
     <ClInclude Include="src\ml_controller.hpp" />
     <ClInclude Include="src\ml_interface.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="no_bn.caffemodel" />
+    <None Include="no_bn.prototxt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
