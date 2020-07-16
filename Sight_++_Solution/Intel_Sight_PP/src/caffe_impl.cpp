@@ -12,7 +12,8 @@ struct CaffeModelImpl : public ModelInterface<rs2::video_frame> {
 	{
 		// TODO Implement constructor and loading
 		std::cout << "Constructing a caffe model impl\n";
-		// net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
+		
+		//net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
 		// Read class names from file
 	}
 
