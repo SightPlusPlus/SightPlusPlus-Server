@@ -44,9 +44,14 @@ void priority_module::build_data(std::vector<ClassificationResult>& data) {
 	}
 }
 
-void priority_module::sort_vector(std::string name, std::vector<PrioritisedClassificationResult>& result)
+PrioritisedClassificationResult* priority_module::run(std::vector<ClassificationResult>* result)
 {
-	PrioritisedClassificationResult* dept = new PrioritisedClassificationResult()
+	PrioritisedClassificationResult* dept = new PrioritisedClassificationResult();
+	priority_module::build_data(*result);
+	dept->model_name = name;
+	quicksort(all_data, 0, all_data.size() - 1);
+	dept->objects = all_data;
+	return dept;
 }
 
 
