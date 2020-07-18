@@ -7,9 +7,6 @@
     <Filter Include="Service Classes\headers">
       <UniqueIdentifier>{2f5df0ae-52c5-469c-b272-d0dd88084a7b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Service Classes\Camera Service">
-      <UniqueIdentifier>{047227fa-4704-4148-9503-0f96fe913ebf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Service Classes\Priortiser service">
       <UniqueIdentifier>{a3995dbc-22ab-47ea-a7a1-37e1784d7649}</UniqueIdentifier>
     </Filter>
@@ -19,14 +16,11 @@
     <Filter Include="ML Modules">
       <UniqueIdentifier>{19550373-ce29-4cc8-9173-e01ec91ffa53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Service Classes\Service Control">
+      <UniqueIdentifier>{047227fa-4704-4148-9503-0f96fe913ebf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\service_controller.cpp">
-      <Filter>Service Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Intel Sight ++.cpp">
-      <Filter>Service Classes</Filter>
-    </ClCompile>
     <ClCompile Include="src\ml_impl_depth.cpp">
       <Filter>ML Modules</Filter>
     </ClCompile>
@@ -36,11 +30,26 @@
     <ClCompile Include="src\output_interface_controller.cpp">
       <Filter>Service Classes\Interface Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="src\prioritiser.hpp">
-      <Filter>Service Classes\Priortiser service</Filter>
-    </ClCompile>
     <ClCompile Include="src\caffe_impl.cpp">
       <Filter>ML Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Intel Sight ++.cpp">
+      <Filter>Service Classes\Service Control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\service_controller.cpp">
+      <Filter>Service Classes\Service Control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\prioritiser.hpp">
+      <Filter>Service Classes\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\prioritiser.cpp">
+      <Filter>Service Classes\Priortiser service</Filter>
+    </ClCompile>
+    <ClCompile Include="src\depth_priority.cpp">
+      <Filter>Service Classes\Priortiser service</Filter>
+    </ClCompile>
+    <ClCompile Include="src\size_priority.cpp">
+      <Filter>Service Classes\Priortiser service</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="src\classification_result.hpp">
       <Filter>ML Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\priority_module.hpp">
+      <Filter>Service Classes\headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

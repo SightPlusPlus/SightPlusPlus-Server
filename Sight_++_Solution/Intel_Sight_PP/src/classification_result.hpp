@@ -1,4 +1,4 @@
-﻿//#pragma once
+﻿#pragma once
 #include <iostream>
 #include <string>
 
@@ -28,4 +28,7 @@ struct ClassificationResult {
 struct PrioritisedClassificationResult
 {
 	// TODO What results to store in a prioritised results?
+
+	std::string model_name;
+	std::vector<ClassificationItem> objects;
 };

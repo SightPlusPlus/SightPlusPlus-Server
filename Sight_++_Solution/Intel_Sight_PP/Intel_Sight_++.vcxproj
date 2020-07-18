@@ -146,6 +146,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\depth_priority.cpp" />
+    <ClCompile Include="src\prioritiser.cpp" />
+    <ClCompile Include="src\size_priority.cpp" />
     <ClCompile Include="src\caffe_impl.cpp" />
     <ClCompile Include="src\Intel Sight ++.cpp" />
     <ClCompile Include="src\ml_impl_depth.cpp" />
@@ -156,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cv-helpers.hpp" />
+    <ClInclude Include="src\priority_module.hpp" />
     <ClInclude Include="src\classification_result.hpp" />
     <ClInclude Include="src\ml_controller.hpp" />
     <ClInclude Include="src\ml_interface.hpp" />

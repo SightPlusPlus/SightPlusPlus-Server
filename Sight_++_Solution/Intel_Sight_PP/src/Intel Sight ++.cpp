@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 	// TODO Add correct paths for testing
 	// TODO Add command line parameter for files to use?
 	CaffeModelImpl caffe("link to prototxt file", "link to caffemodel file", "link to class name text file");
-
+	
 	// Add more ML implementations here as needed
 	ml_controller.add_depth_model(ml_depth);
 	ml_controller.add_rgb_model(ml_rgb);

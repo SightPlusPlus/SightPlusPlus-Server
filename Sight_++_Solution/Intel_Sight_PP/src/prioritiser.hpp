@@ -1,18 +1,15 @@
-﻿#include <vector>
+﻿#pragma once
+#include <vector>
 #include <iostream>
 #include "classification_result.hpp"
+#include "priority_module.hpp"
+#include<map>
 
 class Prioritiser
 {
-
+private:
+	std::map<std::string, priority_module&> modules;
 public:
-
-	std::vector<PrioritisedClassificationResult> prioritise(std::vector<ClassificationResult> results)
-	{
-		std::cout << "Prioritising " << results.size() << " results\n";
-		// TODO Prioritise results
-		// TODO Transform from Classification Results to Prioritised Results
-		return {};
-	}
-
+	std::map<std::string, priority_module&> get_module();
+	std::vector<PrioritisedClassificationResult> prioritise(std::vector<ClassificationResult> results);
 };
