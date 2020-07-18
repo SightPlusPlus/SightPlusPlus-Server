@@ -51,6 +51,9 @@
     <ClCompile Include="src\size_priority.cpp">
       <Filter>Service Classes\Priortiser service</Filter>
     </ClCompile>
+    <ClCompile Include="src\priority_module.cpp">
+      <Filter>Service Classes\Priortiser service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cv-helpers.hpp" />

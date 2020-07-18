@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\priority_module.cpp" />
     <ClCompile Include="src\depth_priority.cpp" />
     <ClCompile Include="src\prioritiser.cpp" />
     <ClCompile Include="src\size_priority.cpp" />
