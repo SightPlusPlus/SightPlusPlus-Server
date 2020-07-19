@@ -7,16 +7,5 @@ public:
 	{
 		return -1;
 	}
-	void sort_vector(std::vector<ClassificationResult>& data, std::vector<PrioritisedClassificationResult>& result)
-	{
-		//Todo: fill in method
-		std::vector<PrioritisedClassificationResult> test;
-	}
-	std::vector<PrioritisedClassificationResult> run(std::vector<ClassificationResult>& results)
-	{
-		//Todo: fill in method
-		std::vector<PrioritisedClassificationResult> test;
-		return test;
-	}
 };
 

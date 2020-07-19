@@ -28,7 +28,7 @@ public:
 			std::cout << "Did ML on frames\n";
 
 			std::cout << "Prioritising results\n";
-			auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());
+			//auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());
 			std::cout << "Prioritised results\n";
 			
 			// TODO Receive stuff from prioritiser class

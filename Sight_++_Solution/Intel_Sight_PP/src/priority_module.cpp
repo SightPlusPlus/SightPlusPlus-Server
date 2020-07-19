@@ -4,6 +4,13 @@
 #include "priority_module.hpp"
 int pivot = 0;
 
+void priority_module::build_data(std::vector<ClassificationResult>& data) {
+
+	for (size_t i = 0; i < data.size(); i++)
+	{
+		all_data.insert(all_data.end(), data[i].objects.begin(), data[i].objects.end());
+	}
+};
 
 int priority_module::partition(std::vector<ClassificationItem>& values, int left, int right) {
 	int pivotIndex = left + (right - left) / 2;
@@ -36,21 +43,13 @@ void priority_module::quicksort(std::vector<ClassificationItem>& data, int left,
 	}
 }
 
-
-void priority_module::build_data(std::vector<ClassificationResult>& data) {
-	for (size_t i = 0; i < data.size(); i++)
-	{
-		all_data.insert(all_data.end(), data[i].objects.begin(), data[i].objects.end());
-	}
-}
-
 PrioritisedClassificationResult* priority_module::run(std::vector<ClassificationResult>* result)
 {
 	PrioritisedClassificationResult* dept = new PrioritisedClassificationResult();
 	priority_module::build_data(*result);
 	dept->model_name = name;
 	quicksort(all_data, 0, all_data.size() - 1);
-	dept->objects = all_data;
+	//dept->objects = all_data;
 	return dept;
 }
 
