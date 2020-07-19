@@ -15,8 +15,6 @@ public:
 		name = "default";
 	}
 	virtual std::string get_name() { return name; }
-
-
 	void build_data(std::vector<ClassificationResult>& data);
 	virtual int compare(ClassificationItem& item_1, ClassificationItem& item_2) = 0;
 	int partition(std::vector<ClassificationItem>& values, int left, int right);

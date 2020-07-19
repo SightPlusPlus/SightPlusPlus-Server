@@ -45,11 +45,12 @@ void priority_module::quicksort(std::vector<ClassificationItem>& data, int left,
 
 PrioritisedClassificationResult* priority_module::run(std::vector<ClassificationResult>* result)
 {
+	all_data.clear();
 	PrioritisedClassificationResult* dept = new PrioritisedClassificationResult();
 	priority_module::build_data(*result);
 	dept->model_name = name;
 	quicksort(all_data, 0, all_data.size() - 1);
-	//dept->objects = all_data;
+	dept->objects = all_data;
 	return dept;
 }
 
