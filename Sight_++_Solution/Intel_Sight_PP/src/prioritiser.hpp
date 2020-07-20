@@ -16,7 +16,7 @@ private:
 public:
 	int load_module();
 	void add_module(priority_module* p);
-	void set_name(std::string* name_module);
+	void set_module(std::string* name_module);
 	std::vector<PrioritisedClassificationResult> prioritise(std::vector<ClassificationResult> results);
 	
 };

@@ -19,7 +19,7 @@ public:
 	virtual int compare(ClassificationItem& item_1, ClassificationItem& item_2) = 0;
 	int partition(std::vector<ClassificationItem>& values, int left, int right);
 	void quicksort(std::vector<ClassificationItem>& data, int left, int right);
-	virtual PrioritisedClassificationResult* run(std::vector<ClassificationResult>* result) =0;
+	virtual PrioritisedClassificationResult* run(std::vector<ClassificationResult>* result);
 
 };
 

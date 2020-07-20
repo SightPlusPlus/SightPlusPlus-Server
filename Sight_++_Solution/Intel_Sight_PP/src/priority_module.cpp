@@ -36,9 +36,10 @@ int priority_module::partition(std::vector<ClassificationItem>& values, int left
 }
 
 void priority_module::quicksort(std::vector<ClassificationItem>& data, int left, int right) {
-	if (compare(data[left], data[right]) <= 0) {
+	//std::cout << "Running quicksort left: " << left << " right: " << right << std::endl; 
+	if (compare(data[left], data[right]) < 0) {
 		int piv = partition(data, left, right);
-		quicksort(data, left, piv);
+		quicksort(data, left, piv-1);
 		quicksort(data, piv, right);
 	}
 }

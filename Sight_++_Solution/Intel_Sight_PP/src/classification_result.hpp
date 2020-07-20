@@ -4,17 +4,24 @@
 
 
 struct point {
-	int x;
-	int y;
+	double x;
+	double y;
 };
 
 struct ClassificationItem
 {
-	char name[100];
-	int distance;
+	std::string name;
+	double distance;
 	point topLeft;
 	point topRight;
 	point bottomRight;
+
+	std::string to_string() {
+		std::string s= "";
+		s.append( "Printing ClassificationItem: " + name + "\n");
+		s.append("ClassificationItem distance: " + std::to_string(distance) + "\n");
+		return s;
+	}
 };
 
 struct ClassificationResult {
@@ -22,6 +29,18 @@ struct ClassificationResult {
 	
 	std::string model_name;
 	std::vector<ClassificationItem> objects;
+
+
+	std::string to_string() {
+		std::string s = "";
+		s.append("Printing ClassificationResult: " + model_name + "\n");
+
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			s.append("Object " + std::to_string(i) + ": " + objects[i].to_string());
+		}
+		return s;
+	}
 	
 };
 
@@ -31,4 +50,15 @@ struct PrioritisedClassificationResult
 
 	std::string model_name;
 	std::vector<ClassificationItem> objects;
+
+	std::string to_string() {
+		std::string s = "";
+		s.append("Printing PrioritisedClassificationResult: " + model_name + "\n");
+
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			s.append("Object " + std::to_string(i) +": " + objects[i].to_string());
+		}
+		return s;
+	}
 };

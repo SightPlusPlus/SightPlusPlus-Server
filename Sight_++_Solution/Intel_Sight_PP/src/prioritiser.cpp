@@ -13,11 +13,11 @@ int Prioritiser::load_module()
 	}
 }
 
-void Prioritiser::set_name(std::string* name_module) {
+void Prioritiser::set_module(std::string* name_module) {
 	module_choice = *name_module;
 }
 void Prioritiser::add_module(priority_module* p) {
-	modules[p->get_name()] = *p;
+	modules.insert({ p->get_name() ,*p });
 }
 
 
@@ -26,14 +26,9 @@ std::vector<PrioritisedClassificationResult> Prioritiser::prioritise(std::vector
 
 	std::vector<PrioritisedClassificationResult> vector_sorted;
 	std::cout << "Prioritising " << results.size() << " results\n";
-	vector_sorted.push_back(*selected_module->run(&results));
-	//PrioritisedClassificationResult* sorted_data = selected_module->run(&results);
-
+	auto output = selected_module->run(&results);
+	vector_sorted.push_back(*(output));
 	//TODO Create Vector of multiple items?
-		
-	
-
-
-	return std::vector<PrioritisedClassificationResult>();
+	return vector_sorted;
 }
 		

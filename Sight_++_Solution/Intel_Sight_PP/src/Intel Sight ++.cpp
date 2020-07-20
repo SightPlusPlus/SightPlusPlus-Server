@@ -10,6 +10,8 @@
 #include "output_interface_controller.cpp"
 #include <iostream>
 #include "caffe_impl.cpp"
+#include "depth_priority.cpp"
+#include "size_priority.cpp"
 
 
 
@@ -117,6 +119,8 @@ int main(int argc, char** argv)
 	// TODO Read command line parameters for which models to use?
 	MLImplDepth ml_depth;
 	MLImplRGB ml_rgb;
+
+	
 	// TODO Add correct paths for testing
 	// TODO Add command line parameter for files to use?
 	CaffeModelImpl caffe("link to prototxt file", "link to caffemodel file", "link to class name text file");
@@ -128,7 +132,22 @@ int main(int argc, char** argv)
 
 	std::cout << "Created MLController and added ML models\n";
 
+	std::string name_prio_depth = "depth";
+	depth_priority* prio_depth = new depth_priority(&name_prio_depth);
+
+	std::cout << prio_depth->get_name() << std::endl;
+
+	//std::string name_prio_size = "size";
+	//priority_module* prio_depth = new size_priority(&name_prio_size);
+
+
 	Prioritiser prioritiser;
+	//add modules
+	prioritiser.add_module(prio_depth);
+	// Todo: load prio model from flag
+	prioritiser.set_module(&name_prio_depth);
+	prioritiser.load_module();
+
 
 	ServiceController service(pipe, ml_controller, prioritiser);
 	service.main();

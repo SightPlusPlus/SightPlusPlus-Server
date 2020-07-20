@@ -1,6 +1,6 @@
 #include "priority_module.hpp"
 
-class depth_priority 
+class size_priority 
 {
 public:
 
