@@ -13,11 +13,11 @@ int Prioritiser::load_module()
 	}
 }
 
-void Prioritiser::set_module(std::string* name_module) {
-	module_choice = *name_module;
+void Prioritiser::set_module(std::string name_module) {
+	module_choice = name_module;
 }
-void Prioritiser::add_module(priority_module* p) {
-	modules.insert({ p->get_name() ,*p });
+void Prioritiser::add_module(priority_module& p) {
+	modules.insert({ p.get_name() ,p });
 }
 
 

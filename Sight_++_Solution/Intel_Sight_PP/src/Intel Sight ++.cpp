@@ -143,9 +143,9 @@ int main(int argc, char** argv)
 
 	Prioritiser prioritiser;
 	//add modules
-	prioritiser.add_module(prio_depth);
+	prioritiser.add_module(*prio_depth);
 	// Todo: load prio model from flag
-	prioritiser.set_module(&name_prio_depth);
+	prioritiser.set_module(name_prio_depth);
 	prioritiser.load_module();
 
 
