@@ -3,6 +3,7 @@
 #include "ml_controller.hpp"
 #include "ml_interface.hpp"
 #include "prioritiser.hpp"
+#include "classification_result.hpp"
 
 class ServiceController {
 
@@ -55,13 +56,16 @@ public:
 			//std::cout << "Did ML on frames\n";
 
 			std::cout << "Prioritising results\n";
-			//auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());
+			//auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());	
+
+			std::cout << test_vector[0].to_string() << std::endl;
 			auto prioritised_results = prioritiser_.prioritise(test_vector);
 
-			//std::cout << prioritised_results[0]->toString();
-
-
 			std::cout << "Prioritised results\n";
+			if (prioritised_results.size() > 0)
+			{
+				std::cout << prioritised_results[0].to_string() << std::endl;
+			}
 			
 			// TODO Receive stuff from prioritiser class
 			// TODO Send stream/frames to output interface class

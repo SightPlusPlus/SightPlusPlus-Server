@@ -32,10 +32,9 @@ std::vector<PrioritisedClassificationResult> Prioritiser::prioritise(std::vector
 {
 
 	std::vector<PrioritisedClassificationResult> vector_sorted;
-	std::cout << results[0].to_string();;
-	//std::cout << "Prioritising " << results.size() << " results\n";
+	std::cout << "Prioritising " << results.size() << " results\n";
 	auto output = selected_module->run(&results);
-	//vector_sorted.push_back(*(output));
+	vector_sorted.push_back(*(output));
 	//TODO Create Vector of multiple items?
 	return vector_sorted;
 }

@@ -12,6 +12,7 @@
 #include "caffe_impl.cpp"
 #include "depth_priority.cpp"
 #include "size_priority.cpp"
+#include "classification_result.hpp"
 
 
 
@@ -141,7 +142,7 @@ int main(int argc, char** argv)
 	//priority_module* prio_depth = new size_priority(&name_prio_size);
 
 
-	Prioritiser* prioritiser = new Prioritiser();
+	Prioritiser* prioritiser = new Prioritiser;
 	//add modules
 	prioritiser->add_module(*prio_depth);
 	// Todo: load prio model from flag
