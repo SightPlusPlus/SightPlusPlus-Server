@@ -16,27 +16,48 @@ struct ClassificationItem
 	point topRight;
 	point bottomRight;
 
-	//std::string toStirng() {
-	//	std::string s = "";
-	//	try
-	//	{
-	//		s.append("Printing ClassificationItem: " + name + "\n");
-	//		s.append("ClassificationItem distance: " + std::to_string(distance) + "\n");
-	//	}
-	//	catch (const std::exception&)
-	//	{
-	//		s.append("");
-	//	}
 
-	//	return s;
-	//}
+	std::string to_string() {
+		std::string s = "";
+		try
+		{
+			s.append("Printing ClassificationItem: " + name + "\n");
+			s.append("ClassificationItem distance: " + std::to_string(distance) + "\n");
+		}
+		catch (const std::exception&)
+		{
+			s.append("");
+		}
+
+		return s;
+	}
 };
 
 struct ClassificationResult {
 	// TODO What results to store?
-	
+public:
 	std::string model_name;
 	std::vector<ClassificationItem> objects;
+
+	std::string to_string() {
+		std::string s = "";
+		try
+		{
+			s.append("Printing ClassificationResult: " + model_name + "\n");
+
+
+			for (size_t i = 0; i < objects.size(); i++)
+			{
+				s.append("Object " + std::to_string(i) + ": " + objects[i].to_string());
+			}
+		}
+		catch (const std::exception&)
+		{
+			s.append("");
+		}
+
+		return s;
+	}
 	
 };
 
@@ -47,16 +68,16 @@ struct PrioritisedClassificationResult
 	std::string model_name;
 	std::vector<ClassificationItem> objects;
 
-	/*std::string toStirng() {
+	std::string to_string() {
 		std::string s = "";
 		try
 		{
 			s.append("Printing PrioritisedClassificationResult: " + model_name + "\n");
 
-			
+
 			for (size_t i = 0; i < objects.size(); i++)
 			{
-				s.append("Object " + std::to_string(i) + ": " + objects[i].toStirng());
+				s.append("Object " + std::to_string(i) + ": " + objects[i].to_string());
 			}
 		}
 		catch (const std::exception&)
@@ -65,5 +86,6 @@ struct PrioritisedClassificationResult
 		}
 
 		return s;
-	}*/
+	}
+
 };

@@ -58,7 +58,7 @@ public:
 			//auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());
 			auto prioritised_results = prioritiser_.prioritise(test_vector);
 
-			//std::cout << prioritised_results[0].to_string();
+			//std::cout << prioritised_results[0]->toString();
 
 
 			std::cout << "Prioritised results\n";

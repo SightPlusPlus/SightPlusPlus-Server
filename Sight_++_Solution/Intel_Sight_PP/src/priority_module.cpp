@@ -12,47 +12,41 @@ void priority_module::build_data(std::vector<ClassificationResult>& data) {
 	}
 };
 
-int priority_module::partition(std::vector<ClassificationItem>& values, int left, int right) {
-	int pivotIndex = left + (right - left) / 2;
-	ClassificationItem pivotItem = values[pivotIndex];
-	int i = left, j = right;
-	ClassificationItem temp;
-	while (i <= j) {
-		while (compare(values[i], pivotItem) == -1) {
-			i++;
-		}
-		while (compare(values[j], pivotItem) == 1) {
-			j--;
-		}
-		if (i <= j) {
-			temp = values[i];
-			values[i] = values[j];
-			values[j] = temp;
-			i++;
-			j--;
-		}
-	}
-	return i;
-}
+//int priority_module::partition(std::vector<ClassificationItem>& values, int left, int right) {
+//	int pivotIndex = left + (right - left) / 2;
+//	ClassificationItem pivotItem = values[pivotIndex];
+//	int i = left, j = right;
+//	ClassificationItem temp;
+//	while (i <= j) {
+//		while (compare(values[i], pivotItem) == -1) {
+//			i++;
+//		}
+//		while (compare(values[j], pivotItem) == 1) {
+//			j--;
+//		}
+//		if (i <= j) {
+//			temp = values[i];
+//			values[i] = values[j];
+//			values[j] = temp;
+//			i++;
+//			j--;
+//		}
+//	}
+//	return i;
+//}
+//
+//void priority_module::quicksort(std::vector<ClassificationItem>& data, int left, int right) {
+//	//std::cout << "Running quicksort left: " << left << " right: " << right << std::endl; 
+//	if (compare(data[left], data[right]) < 0) {
+//		int piv = partition(data, left, right);
+//		quicksort(data, left, piv-1);
+//		quicksort(data, piv, right);
+//	}
+//}
 
-void priority_module::quicksort(std::vector<ClassificationItem>& data, int left, int right) {
-	//std::cout << "Running quicksort left: " << left << " right: " << right << std::endl; 
-	if (compare(data[left], data[right]) < 0) {
-		int piv = partition(data, left, right);
-		quicksort(data, left, piv-1);
-		quicksort(data, piv, right);
-	}
-}
 
-PrioritisedClassificationResult* priority_module::run(std::vector<ClassificationResult>* result)
-{
-	all_data.clear();
-	PrioritisedClassificationResult* dept = new PrioritisedClassificationResult();
-	priority_module::build_data(*result);
-	dept->model_name = name;
-	quicksort(all_data, 0, all_data.size() - 1);
-	dept->objects = all_data;
-	return dept;
-}
+
+
+
 
 

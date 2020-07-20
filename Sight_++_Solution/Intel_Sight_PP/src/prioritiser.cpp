@@ -1,5 +1,14 @@
 #include "prioritiser.hpp"
 
+
+void Prioritiser::set_module(std::string name_module) {
+	module_choice = name_module;
+}
+
+void Prioritiser::add_module(priority_module& p) {
+	modules.insert({ p.get_name() ,p });
+}
+
 int Prioritiser::load_module()
 {
 	try
@@ -13,21 +22,20 @@ int Prioritiser::load_module()
 	}
 }
 
-void Prioritiser::set_module(std::string name_module) {
-	module_choice = name_module;
+bool compare_items(ClassificationItem& item_1, ClassificationItem& item_2)
+{
+	bool result = (item_1.distance < item_2.distance);
+	return result;
 }
-void Prioritiser::add_module(priority_module& p) {
-	modules.insert({ p.get_name() ,p });
-}
-
 
 std::vector<PrioritisedClassificationResult> Prioritiser::prioritise(std::vector<ClassificationResult> results)
 {
 
 	std::vector<PrioritisedClassificationResult> vector_sorted;
-	std::cout << "Prioritising " << results.size() << " results\n";
+	std::cout << results[0].to_string();;
+	//std::cout << "Prioritising " << results.size() << " results\n";
 	auto output = selected_module->run(&results);
-	vector_sorted.push_back(*(output));
+	//vector_sorted.push_back(*(output));
 	//TODO Create Vector of multiple items?
 	return vector_sorted;
 }
