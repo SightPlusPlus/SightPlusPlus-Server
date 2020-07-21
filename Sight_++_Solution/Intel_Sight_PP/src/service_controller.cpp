@@ -41,15 +41,8 @@ public:
 			std::cout << "Prioritised results\n";
 
 			std::cout << "Streaming stream to output" << std::endl;
-			if (output_stream_controller_.should_stream_depth())
-			{
-				// TODO Should apply_filter be here?
-				output_stream_controller_.depth_window(data.get_depth_frame().apply_filter(color_map));
-			}
-			if (output_stream_controller_.should_stream_color())
-			{
-				output_stream_controller_.color_window(data.get_color_frame());
-			}
+			// TODO Should apply_filter be here?
+			output_stream_controller_.stream_to_windows(data.get_depth_frame().apply_filter(color_map), data.get_color_frame());
 			std::cout << "Streamed stream to output" << std::endl;
 		}
 

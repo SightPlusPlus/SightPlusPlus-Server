@@ -36,6 +36,19 @@ public:
 		std::cout << "Constructed output interface controller" << std::endl;
 	}
 
+	void stream_to_windows(const rs2::frame& depth_frame, const rs2::video_frame& color_frame) const
+	{
+		if (show_depth_output_)
+		{
+			depth_window(depth_frame);
+		}
+
+		if (show_color_output_)
+		{
+			color_window(color_frame);
+		}
+	}
+	
 	void depth_window(const rs2::frame& frame) const
 	{
         const auto width = frame.as<rs2::video_frame>().get_width();
@@ -57,17 +70,7 @@ public:
 		
         imshow(color_output_window_, bgr);
     }
-
-	bool should_stream_depth() const
-	{
-		return show_depth_output_;
-	}
-
-	bool should_stream_color() const
-	{
-		return show_color_output_;
-	}
-
+	
 	/// <summary>
 	/// Tells the system if the opencv stream output windows are ready, if enabled.
 	/// In the case where no output stream windows are enabled, returns true.
