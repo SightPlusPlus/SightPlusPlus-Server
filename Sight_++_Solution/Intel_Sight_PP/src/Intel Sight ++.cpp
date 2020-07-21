@@ -24,6 +24,8 @@ int main(int argc, char** argv)
 	rs2::pipeline pipe;
 	rs2::config cfg;
 
+	auto stream_depth = false;
+	auto stream_color = false;
 
 
 
@@ -33,6 +35,8 @@ int main(int argc, char** argv)
 	/// 1) realsense		: This is used run the system from the camera.
 	/// 2) -rec hello.bag	: This is used to record the current input into a file with the name following the flag.
 	/// 3) -play hello.bag  : This is used to play the file from the file following the flag.
+	/// 4) -depth			: This is used to show the depth stream in a window
+	/// 5) -color			: This is used to show the color stream in a window
 	/// </summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
@@ -51,9 +55,12 @@ int main(int argc, char** argv)
 			if (next_arg.compare("realsense") == 0)
 			{
 				std::cout << "Streaming from camera" << std::endl;
-				cfg.enable_all_streams();
-				continue;
+				// TODO enable_all_stream() enables the streams with 640x480
+				cfg.enable_all_streams();				
+				//cfg.enable_stream(RS2_STREAM_COLOR, 1280, 720, RS2_FORMAT_RGB8);
+				//cfg.enable_stream(RS2_STREAM_DEPTH, 1280, 720, RS2_FORMAT_Z16, 30);
 				
+				continue;
 			}
 
 
@@ -98,6 +105,18 @@ int main(int argc, char** argv)
 			{
 				std::cout << "Missing flags for playing" << std::endl;
 			}
+
+			else if (next_arg.compare("-depth") == 0)
+			{
+				std::cout << "Streaming Depth Output" << std::endl;
+				stream_depth = true;
+			}
+
+			else if (next_arg.compare("-color") == 0)
+			{
+				std::cout << "Streaming Color Output" << std::endl;
+				stream_color = true;
+			}
 		}
 
 	}
@@ -111,6 +130,12 @@ int main(int argc, char** argv)
 
 	pipe.start(cfg);
 
+	for (auto && stream_profile : pipe.get_active_profile().get_streams())
+	{
+		auto profile = stream_profile.as<rs2::video_stream_profile>();
+		std::cout << profile.stream_name() << ": " << profile.width() << "x" << profile.height() << std::endl;
+	}
+	
 	std::cout << "Got pipeline\n";
 
 	MLController ml_controller;
@@ -130,6 +155,7 @@ int main(int argc, char** argv)
 
 	Prioritiser prioritiser;
 
-	ServiceController service(pipe, ml_controller, prioritiser);
+	OutputInterfaceController output_controller(stream_depth, stream_color);
+	ServiceController service(pipe, ml_controller, prioritiser, output_controller);
 	service.main();
 }
