@@ -7,7 +7,7 @@
 #include "ml_impl_depth.cpp"
 #include "ml_impl_rgb.cpp"
 #include "service_controller.cpp"
-#include "output_interface_controller.cpp"
+#include "output_stream_controller.cpp"
 #include <iostream>
 #include "caffe_impl.cpp"
 
@@ -68,7 +68,6 @@ int main(int argc, char** argv)
 			{
 				try
 				{
-
 					std::string file_ = argv[++i];
 					std::string path_ = ".\\recordings\\" + file_;
 					std::cout << "Recording To file: " << path_ << std::endl;
@@ -155,7 +154,7 @@ int main(int argc, char** argv)
 
 	Prioritiser prioritiser;
 
-	OutputInterfaceController output_controller(stream_depth, stream_color);
-	ServiceController service(pipe, ml_controller, prioritiser, output_controller);
+	OutputStreamController output_stream_controller(stream_depth, stream_color);
+	ServiceController service(pipe, ml_controller, prioritiser, output_stream_controller);
 	service.main();
 }

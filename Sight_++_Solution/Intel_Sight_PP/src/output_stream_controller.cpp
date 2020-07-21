@@ -4,7 +4,7 @@
 #include "opencv2/opencv.hpp"
 
 // TODO Should output stream window stuff be here or in a seperate class/file?
-class OutputInterfaceController {
+class OutputStreamController {
 	
     //std::vector<PrioritisedClassificationResult> prioritised_results_;
     std::string depth_output_window_;
@@ -20,7 +20,7 @@ class OutputInterfaceController {
 
 public:
 
-	OutputInterfaceController(const bool show_depth_window, const bool show_color_window) : show_depth_output_(show_depth_window), show_color_output_(show_color_window)
+	OutputStreamController(const bool show_depth_window, const bool show_color_window) : show_depth_output_(show_depth_window), show_color_output_(show_color_window)
 	{
 		std::cout << "Constructing output interface controller" << std::endl;
 		if (show_depth_window)
@@ -68,7 +68,16 @@ public:
 		return show_color_output_;
 	}
 
-	bool is_window_ready() const
+	/// <summary>
+	/// Tells the system if the opencv stream output windows are ready, if enabled.
+	/// In the case where no output stream windows are enabled, returns true.
+	/// Based on the rs-dnn and rs-imshow examples.
+	/// </summary>
+	/// <returns>
+	///   Returns TRUE if the windows can receive frames, or if no output stream windows are enabled.
+	///   Returns FALSE if the windows can not receive frames.
+	/// </returns>
+	bool should_receieve_new_frames() const
 	{
 		return wait_key() && is_depth_window_ready() && is_color_window_ready();
 	}
