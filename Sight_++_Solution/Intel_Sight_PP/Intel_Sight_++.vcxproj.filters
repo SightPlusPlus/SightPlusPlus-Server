@@ -69,6 +69,7 @@
     <ClInclude Include="src\priority_module.hpp">
       <Filter>Service Classes\headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\model_helper.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="no_bn.caffemodel" />

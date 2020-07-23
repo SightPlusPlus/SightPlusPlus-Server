@@ -6,16 +6,18 @@
 struct point {
 	double x;
 	double y;
+
+	point(const int x, const int y) : x(x), y(y) {}
 };
 
 struct ClassificationItem
 {
 	std::string name;
 	double distance;
-	point topLeft;
-	point topRight;
-	point bottomRight;
+	point bottom_left;
+	point top_right;
 
+	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right) {}
 
 	std::string to_string() {
 		std::string s = "";
@@ -39,6 +41,8 @@ public:
 	std::string model_name;
 	std::vector<ClassificationItem> objects;
 
+	ClassificationResult(const std::string name) : model_name(name) {}
+	
 	std::string to_string() {
 		std::string s = "";
 		try
