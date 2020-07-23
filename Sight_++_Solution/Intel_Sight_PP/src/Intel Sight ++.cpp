@@ -10,6 +10,9 @@
 #include "output_stream_controller.cpp"
 #include <iostream>
 #include "caffe_impl.cpp"
+#include "depth_priority.cpp"
+#include "size_priority.cpp"
+#include "classification_result.hpp"
 
 
 
@@ -127,7 +130,7 @@ int main(int argc, char** argv)
 
 
 
-	pipe.start(cfg);
+	auto config = pipe.start(cfg);
 
 	for (auto && stream_profile : pipe.get_active_profile().get_streams())
 	{
@@ -139,22 +142,42 @@ int main(int argc, char** argv)
 
 	MLController ml_controller;
 	// TODO Read command line parameters for which models to use?
+	
 	MLImplDepth ml_depth;
 	MLImplRGB ml_rgb;
+
+	
 	// TODO Add correct paths for testing
 	// TODO Add command line parameter for files to use?
-	CaffeModelImpl caffe("link to prototxt file", "link to caffemodel file", "link to class name text file");
-
+	
+	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
+	CaffeModelImpl caffe("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt", profile);
+	
 	// Add more ML implementations here as needed
-	ml_controller.add_depth_model(ml_depth);
-	ml_controller.add_rgb_model(ml_rgb);
-	ml_controller.add_rgb_model(caffe);
+	ml_controller.add_model(ml_depth);
+	ml_controller.add_model(ml_rgb);
+	ml_controller.add_model(caffe);
 
 	std::cout << "Created MLController and added ML models\n";
 
-	Prioritiser prioritiser;
+	std::string name_prio_depth = "depth_prio";
+	depth_priority* prio_depth = new depth_priority(&name_prio_depth);
+
+	std::cout << prio_depth->get_name() << std::endl;
+
+	//std::string name_prio_size = "size";
+	//priority_module* prio_depth = new size_priority(&name_prio_size);
+
+
+	Prioritiser* prioritiser = new Prioritiser;
+	//add modules
+	prioritiser->add_module(*prio_depth);
+	// Todo: load prio model from flag
+	prioritiser->set_module(name_prio_depth);
+	prioritiser->load_module();
 
 	OutputStreamController output_stream_controller(stream_depth, stream_color);
-	ServiceController service(pipe, ml_controller, prioritiser, output_stream_controller);
+  
+	ServiceController service(pipe, ml_controller, *prioritiser, output_stream_controller);
 	service.main();
 }
