@@ -154,7 +154,7 @@
     <ClCompile Include="src\Intel Sight ++.cpp" />
     <ClCompile Include="src\ml_impl_depth.cpp" />
     <ClCompile Include="src\ml_impl_rgb.cpp" />
-    <ClCompile Include="src\output_interface_controller.cpp" />
+    <ClCompile Include="src\output_stream_controller.cpp" />
     <ClCompile Include="src\prioritiser.hpp" />
     <ClCompile Include="src\service_controller.cpp" />
   </ItemGroup>

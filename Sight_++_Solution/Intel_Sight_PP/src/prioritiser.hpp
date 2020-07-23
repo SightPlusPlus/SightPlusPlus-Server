@@ -21,5 +21,4 @@ public:
 	virtual void set_module(std::string name_module);
 	virtual int load_module();
 	std::vector<PrioritisedClassificationResult> prioritise(std::vector<ClassificationResult> results);
-	
 };
