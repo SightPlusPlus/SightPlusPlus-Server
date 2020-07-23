@@ -19,49 +19,48 @@ public:
 		rs2::align align_to(RS2_STREAM_COLOR);
 
 
-		//TEST DATA: FOR PRIORITISER
-		std::vector<ClassificationResult> test_vector;
-		std::vector<ClassificationItem> test_items;
-
-		ClassificationItem* item_1 = new ClassificationItem();
-		item_1->name = "cup";
-		item_1->distance = 1.5;
-		test_items.push_back(*item_1);
-
-		ClassificationItem* item_2 = new ClassificationItem();
-		item_2->name = "plate";
-		item_2->distance = 0.9;
-		test_items.push_back(*item_2);
-
-		ClassificationItem* item_3 = new ClassificationItem();
-		item_3->name = "couch";
-		item_3->distance = 2.5;
-		test_items.push_back(*item_3);
-
-		ClassificationResult* clas_res = new ClassificationResult();
-		clas_res->model_name = "test_model";
-		clas_res->objects = test_items;
-		test_vector.push_back(*clas_res);
-
-		////___________________________________________________
+		////TEST DATA: FOR PRIORITISER
+		//std::vector<ClassificationResult> test_vector;
+		//std::vector<ClassificationItem> test_items;
+		//
+		//ClassificationItem* item_1 = new ClassificationItem();
+		//item_1->name = "cup";
+		//item_1->distance = 1.5;
+		//test_items.push_back(*item_1);
+		//
+		//ClassificationItem* item_2 = new ClassificationItem();
+		//item_2->name = "plate";
+		//item_2->distance = 0.9;
+		//test_items.push_back(*item_2);
+		//
+		//ClassificationItem* item_3 = new ClassificationItem();
+		//item_3->name = "couch";
+		//item_3->distance = 2.5;
+		//test_items.push_back(*item_3);
+		//
+		//ClassificationResult* clas_res = new ClassificationResult();
+		//clas_res->model_name = "test_model";
+		//clas_res->objects = test_items;
+		//test_vector.push_back(*clas_res);
+		//
+		//////___________________________________________________
 
 		while (true) {
-			std::cout << "Waiting for frames\n";
+			std::cout << "Waiting for frames" << std::endl;
 			auto data = pipe_.wait_for_frames();
 			data = align_to.process(data);
-			std::cout << "Got new frames\n";
+			std::cout << "Got new frames" << std::endl;
 
-			//std::cout << "Doing ML on frames\n";
-			///*ml_controller_.new_frames(data);*/
-			//std::cout << "Did ML on frames\n";
+			std::cout << "Doing ML on frames" << std::endl;
+			ml_controller_.new_frames(data);
 
-			std::cout << "Prioritising results\n";
-			//auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());	
+			std::cout << "Prioritising results" << std::endl;
+			auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());	
 
-			std::cout << test_vector[0].to_string() << std::endl;
-			auto prioritised_results = prioritiser_.prioritise(test_vector);
+			//std::cout << test_vector[0].to_string() << std::endl;
+			//auto prioritised_results = prioritiser_.prioritise(test_vector);
 
-			std::cout << "Prioritised results\n";
+			std::cout << "Prioritised " << prioritised_results.size() << " results" << std::endl;
 			if (prioritised_results.size() > 0)
 			{
 				std::cout << prioritised_results[0].to_string() << std::endl;
@@ -70,6 +69,8 @@ public:
 			// TODO Receive stuff from prioritiser class
 			// TODO Send stream/frames to output interface class
 			// TODO Send info from prioritiser to output interface class
+
+			std::cout << "----------------------------" << std::endl;
 		}
 
 	}
