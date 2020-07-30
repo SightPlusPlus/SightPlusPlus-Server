@@ -13,6 +13,8 @@
 #include "depth_priority.cpp"
 #include "size_priority.cpp"
 #include "classification_result.hpp"
+#include "api_controller.hpp"
+#include "api_impl_websocket.cpp"
 
 
 
@@ -175,9 +177,17 @@ int main(int argc, char** argv)
 	// Todo: load prio model from flag
 	prioritiser->set_module(name_prio_depth);
 	prioritiser->load_module();
+		
+	std::cout << "API setup" << std::endl;
+	ApiController api;
+	std::cout << "API User setup" << std::endl;
+	ApiWebSocketImpl websocket_api_user;
+	std::cout << "Adding user to API" << std::endl;
+	api.add_user(websocket_api_user);
 
+	std::cout << "Output stream setup" << std::endl;	
 	OutputStreamController output_stream_controller(stream_depth, stream_color);
   
-	ServiceController service(pipe, ml_controller, *prioritiser, output_stream_controller);
+	ServiceController service(pipe, ml_controller, *prioritiser, api, output_stream_controller);
 	service.main();
 }

@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\api_controller.cpp" />
+    <ClCompile Include="src\api_impl_websocket.cpp" />
     <ClCompile Include="src\priority_module.cpp" />
     <ClCompile Include="src\depth_priority.cpp" />
     <ClCompile Include="src\prioritiser.cpp" />
@@ -160,6 +162,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cv-helpers.hpp" />
+    <ClInclude Include="src\api_controller.hpp" />
+    <ClInclude Include="src\api_user_interface.hpp" />
     <ClInclude Include="src\model_helper.hpp" />
     <ClInclude Include="src\priority_module.hpp" />
     <ClInclude Include="src\classification_result.hpp" />
