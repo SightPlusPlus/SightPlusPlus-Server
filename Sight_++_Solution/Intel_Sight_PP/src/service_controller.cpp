@@ -1,5 +1,7 @@
 #include <iostream>
 #include <utility>
+
+#include "api_controller.hpp"
 #include "librealsense2/rs.hpp"
 #include "ml_controller.hpp"
 #include "prioritiser.hpp"
@@ -11,6 +13,7 @@ class ServiceController {
 	rs2::pipeline pipe_;
 	MLController ml_controller_;
 	Prioritiser prioritiser_;
+	ApiController api_controller_;
 	OutputStreamController output_stream_controller_;
 	rs2::video_stream_profile profile_;
 
@@ -27,8 +30,8 @@ public:
 
 	ServiceController(
 		rs2::pipeline& pipe, MLController& ml_controller,
-		Prioritiser& prioritiser, OutputStreamController output_controller, const rs2::video_stream_profile& profile)
-		: pipe_(pipe), ml_controller_(ml_controller), prioritiser_(prioritiser), output_stream_controller_(std::move(output_controller)), profile_(profile)
+		Prioritiser& prioritiser, ApiController& api_controller, OutputStreamController output_controller, const rs2::video_stream_profile& profile)
+		: pipe_(pipe), ml_controller_(ml_controller), prioritiser_(prioritiser), api_controller_(api_controller), output_stream_controller_(std::move(output_controller)), profile_(profile)
 	{}
 
 	int main() try {
@@ -91,6 +94,9 @@ public:
 			{
 				std::cout << prioritised_results[0].to_string() << std::endl;
 			}
+
+			std::cout << "Sending items to API" << std::endl;
+			api_controller_.new_items(prioritised_results);
       
 			std::cout << "Streaming stream to output" << std::endl;
 			// TODO Should apply_filter be here?
