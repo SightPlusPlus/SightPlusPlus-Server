@@ -36,12 +36,10 @@ public:
 		return to_send;
     }
 	
-	void new_frames(rs2::frameset& frameset) {
+	void new_frames(cv::Mat color_matrix, cv::Mat depth_matrix) {
 
 		// TODO Precalculate openCV Matrix?
 
-		auto color_matrix = frame_to_mat(frameset.get_color_frame());
-		auto depth_matrix = depth_frame_to_meters(frameset.get_depth_frame());
     	
 		// TODO Concurrency? Fire-and-forget?
 		/* TODO How to use results of do_work? So it can be called by prioritiser

@@ -86,5 +86,11 @@
   <ItemGroup>
     <None Include="no_bn.caffemodel" />
     <None Include="no_bn.prototxt" />
+    <None Include="models\MobileNetSSD_deploy.caffemodel" />
+    <None Include="models\MobileNetSSD_deploy.prototxt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="models\no_bn-classnames.txt" />
+    <Text Include="models\MobileNetSSD_deploy-classnames.txt" />
   </ItemGroup>
 </Project>

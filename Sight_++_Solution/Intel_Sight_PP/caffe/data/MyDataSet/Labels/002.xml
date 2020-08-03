@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<annotation>
+	<folder>3-1</folder>
+	<filename>002.jpg</filename>
+	<path>002.jpg</path>
+	<source>
+		<database></database>
+		<annotation></annotation>
+	</source>
+	<size>
+		<width>275</width>
+		<height>183</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>cup</name>
+		<pose></pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>84</xmin>
+			<ymin>22</ymin>
+			<xmax>206</xmax>
+			<ymax>154</ymax>
+		</bndbox>
+	</object>
+</annotation>

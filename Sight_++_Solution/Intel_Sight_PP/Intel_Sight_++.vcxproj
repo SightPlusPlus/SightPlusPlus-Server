@@ -171,8 +171,14 @@
     <ClInclude Include="src\ml_interface.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="models\MobileNetSSD_deploy.caffemodel" />
+    <None Include="models\MobileNetSSD_deploy.prototxt" />
     <None Include="no_bn.caffemodel" />
     <None Include="no_bn.prototxt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="models\MobileNetSSD_deploy-classnames.txt" />
+    <Text Include="models\no_bn-classnames.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

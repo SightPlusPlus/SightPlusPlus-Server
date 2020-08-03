@@ -153,12 +153,14 @@ int main(int argc, char** argv)
 	// TODO Add command line parameter for files to use?
 	
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
-	CaffeModelImpl caffe("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt", profile);
+	CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
+	CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
 	
 	// Add more ML implementations here as needed
-	ml_controller.add_model(ml_depth);
-	ml_controller.add_model(ml_rgb);
-	ml_controller.add_model(caffe);
+	//ml_controller.add_model(ml_depth);
+	//ml_controller.add_model(ml_rgb);
+	ml_controller.add_model(caffe_own);
+	ml_controller.add_model(caffe_pre);
 
 	std::cout << "Created MLController and added ML models\n";
 
@@ -188,6 +190,6 @@ int main(int argc, char** argv)
 	std::cout << "Output stream setup" << std::endl;	
 	OutputStreamController output_stream_controller(stream_depth, stream_color);
   
-	ServiceController service(pipe, ml_controller, *prioritiser, api, output_stream_controller);
+	ServiceController service(pipe, ml_controller, *prioritiser, api, output_stream_controller, profile);
 	service.main();
 }
