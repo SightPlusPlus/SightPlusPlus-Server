@@ -12,19 +12,31 @@ class ServiceController {
 	MLController ml_controller_;
 	Prioritiser prioritiser_;
 	OutputStreamController output_stream_controller_;
+	rs2::video_stream_profile profile_;
+
+	// For cropping
+	cv::Rect crop;
+
+	const size_t inWidth = 640;
+	const size_t inHeight = 480;
+	const float WHRatio = inWidth / (float)inHeight;
+	const float inScaleFactor = 0.007843f;
+	const float meanVal = 127.5;
 
 public:
 
 	ServiceController(
-		rs2::pipeline& pipe, MLController& ml_controller, 
-		Prioritiser& prioritiser, OutputStreamController output_controller)
-	: pipe_(pipe), ml_controller_(ml_controller), prioritiser_(prioritiser), output_stream_controller_(std::move(output_controller))
+		rs2::pipeline& pipe, MLController& ml_controller,
+		Prioritiser& prioritiser, OutputStreamController output_controller, const rs2::video_stream_profile& profile)
+		: pipe_(pipe), ml_controller_(ml_controller), prioritiser_(prioritiser), output_stream_controller_(std::move(output_controller)), profile_(profile)
 	{}
 
 	int main() try {
 		rs2::align align_to(RS2_STREAM_COLOR);
 		rs2::colorizer color_map;
 
+		crop = create_rect(profile_);
+		
 		////TEST DATA: FOR PRIORITISER
 		//std::vector<ClassificationResult> test_vector;
 		//std::vector<ClassificationItem> test_items;
@@ -57,9 +69,16 @@ public:
 			auto data = pipe_.wait_for_frames();
 			data = align_to.process(data);
 			std::cout << "Got new frames\n";
-			
+
+			std::cout << "Get frames and crop" << std::endl;
+
+			auto color_matrix = frame_to_mat(data.get_color_frame());
+			auto depth_matrix = depth_frame_to_meters(data.get_depth_frame());
+			color_matrix = color_matrix(crop);
+			depth_matrix = depth_matrix(crop);
+
 			std::cout << "Doing ML on frames\n";
-			ml_controller_.new_frames(data);
+			ml_controller_.new_frames(color_matrix, depth_matrix);
 
 			std::cout << "Prioritising results" << std::endl;
 			auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());	
@@ -75,7 +94,10 @@ public:
       
 			std::cout << "Streaming stream to output" << std::endl;
 			// TODO Should apply_filter be here?
-			output_stream_controller_.stream_to_windows(data.get_depth_frame().apply_filter(color_map), data.get_color_frame());
+			output_stream_controller_.stream_to_windows(
+				data.get_depth_frame().apply_filter(color_map), depth_matrix, 
+				data.get_color_frame(), color_matrix, 
+				prioritised_results);
       
 			std::cout << "----------------------------" << std::endl;
 		}
@@ -92,4 +114,22 @@ public:
 		std::cerr << e.what() << std::endl;
 		return EXIT_FAILURE;
 	}
+
+	cv::Rect create_rect(const rs2::video_stream_profile& profile) const
+	{
+		cv::Size crop_size;
+		if (profile.width() / static_cast<float>(profile.height()) > WHRatio)
+		{
+			crop_size = cv::Size(static_cast<int>(profile.height() * WHRatio), profile.height());
+		}
+		else
+		{
+			crop_size = cv::Size(profile.width(), static_cast<int>(profile.width() / WHRatio));
+		}
+
+		return cv::Rect(cv::Point((profile.width() - crop_size.width) / 2, (profile.height() - crop_size.height) / 2), crop_size);
+	}
+
 };
+
+
