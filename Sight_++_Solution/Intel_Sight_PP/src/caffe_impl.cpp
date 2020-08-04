@@ -2,7 +2,8 @@
 #include <opencv2/dnn/dnn.hpp>
 #include <opencv2/dnn.hpp>
 #include <iomanip>
-
+#include "tbb/concurrent_vector.h"
+#include "tbb/parallel_for_each.h"
 #include "ml_interface.hpp"
 #include "model_helper.hpp"
 #include <opencv2\imgproc.hpp>
