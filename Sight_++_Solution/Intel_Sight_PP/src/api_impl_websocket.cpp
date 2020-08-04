@@ -72,7 +72,7 @@ struct ApiWebSocketImpl : ApiUserInterface
 		if(item.priority >= minimum_priority)
 		{
 			std::cout << "Item is greater or equal to minimum" << std::endl;
-			server.send(item.to_string());			
+			server.send(item.to_json());			
 		}
 	}
 };

@@ -4,11 +4,31 @@
 
 #include "priority.hpp"
 
+inline std::string append(std::string& s, const std::string key, const std::string value, const bool is_string_value, const bool is_last)
+{
+	s.append(" \"").append(key).append("\": ");
+	if (is_string_value) s.append("\"").append(value).append("\"");
+	else s.append(value);
+	
+	if (is_last) return s;
+	return s.append(", ");
+}
+
+
 struct point {
 	double x;
 	double y;
 
 	point(const int x, const int y) : x(x), y(y) {}
+
+	std::string to_json()
+	{
+		std::string s = "{";
+		append(s, "x", std::to_string(x), false, false);
+		append(s, "y", std::to_string(y), false, true);
+		s.append("}");
+		return s;
+	}
 };
 
 struct ClassificationItem
@@ -39,6 +59,19 @@ struct ClassificationItem
 
 		return s;
 	}
+
+	std::string to_json()
+	{
+		std::string s = "{";
+		append(s, "name", name, true, false);
+		append(s, "distance", std::to_string(distance), false, false);
+		append(s, "priority", std::to_string(static_cast<int>(priority)), false, true);
+		append(s, "bottom_left", bottom_left.to_json(), false, false);
+		append(s, "top_right", top_right.to_json(), false, false);
+		s.append("}");
+		return s;
+	}
+
 };
 
 struct ClassificationResult {
