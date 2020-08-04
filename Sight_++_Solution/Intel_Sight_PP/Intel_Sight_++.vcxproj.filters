@@ -82,6 +82,9 @@
     <ClInclude Include="src\api_user_interface.hpp">
       <Filter>Service Classes\Interface Controllers</Filter>
     </ClInclude>
+    <ClInclude Include="src\priority.hpp">
+      <Filter>Service Classes\headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="no_bn.caffemodel" />

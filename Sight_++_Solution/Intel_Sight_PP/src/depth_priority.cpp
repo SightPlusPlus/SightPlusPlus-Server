@@ -16,6 +16,29 @@ public:
 			});
 	}
 
+	void assign_priority() override
+	{
+		for (auto && item : all_data)
+		{
+			std::cout << "ItemDistance: " << item.distance << std::endl;
+			if (item.distance < 1)
+			{
+				std::cout << "Setting priority to HIGH" << std::endl;
+				item.priority = Priority::HIGH;
+			}
+			else if(item.distance < 2)
+			{
+				std::cout << "Setting priority to MEDIUM" << std::endl;
+				item.priority = Priority::MEDIUM;
+			}
+			else
+			{
+				std::cout << "Setting priority to LOW" << std::endl;
+				item.priority = Priority::LOW;
+			}
+		}
+	}
+
 
 };
 

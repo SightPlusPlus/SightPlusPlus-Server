@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 
+#include "priority.hpp"
 
 struct point {
 	double x;
@@ -17,14 +18,19 @@ struct ClassificationItem
 	point bottom_left;
 	point top_right;
 
-	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right) {}
+	Priority priority;
 
+	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), priority(Priority::UNDEFINED) {}
+
+
+	
 	std::string to_string() {
 		std::string s = "";
 		try
 		{
 			s.append("Printing ClassificationItem: " + name + "\n");
 			s.append("ClassificationItem distance: " + std::to_string(distance) + "\n");
+			s.append("Priority: " + std::to_string(static_cast<int>(priority)) + "\n");
 		}
 		catch (const std::exception&)
 		{

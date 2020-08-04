@@ -183,7 +183,7 @@ int main(int argc, char** argv)
 	std::cout << "API setup" << std::endl;
 	ApiController api;
 	std::cout << "API User setup" << std::endl;
-	ApiWebSocketImpl websocket_api_user;
+	ApiWebSocketImpl websocket_api_user(Priority::HIGH);
 	std::cout << "Adding user to API" << std::endl;
 	api.add_user(websocket_api_user);
 

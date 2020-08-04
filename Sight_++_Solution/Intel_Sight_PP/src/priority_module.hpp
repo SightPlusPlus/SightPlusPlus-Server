@@ -18,6 +18,7 @@ public:
 	virtual std::string get_name() { return name; }
 	void build_data(std::vector<ClassificationResult>& data);
 	virtual void sort() = 0;
+	virtual void assign_priority() = 0;
 
 	PrioritisedClassificationResult* run(std::vector<ClassificationResult>* result)
 	{
@@ -26,6 +27,7 @@ public:
 		priority_module::build_data(*result);
 		dept->model_name = name;
 		sort();
+		assign_priority();
 		dept->objects = all_data;
 		return dept;
 	}

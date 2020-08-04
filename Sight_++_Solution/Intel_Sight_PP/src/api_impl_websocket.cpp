@@ -58,15 +58,21 @@ public:
 
 struct ApiWebSocketImpl : ApiUserInterface
 {
+	Priority minimum_priority;
 	BroadcastServer server;
 
-	ApiWebSocketImpl()
+	ApiWebSocketImpl(Priority minimum_priority) : minimum_priority(minimum_priority)
 	{
 		websocketpp::lib::thread([s = &server] { s->run(); }).detach();		
 	}
 	
 	void new_item(ClassificationItem item) override
 	{
-		server.send(item.to_string());		
+		std::cout << "MinPriority: " << static_cast<int>(minimum_priority) << " vs. ItemPriority: " << static_cast<int>(item.priority) << std::endl;
+		if(item.priority >= minimum_priority)
+		{
+			std::cout << "Item is greater or equal to minimum" << std::endl;
+			server.send(item.to_string());			
+		}
 	}
 };
