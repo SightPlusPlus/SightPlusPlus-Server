@@ -1,5 +1,6 @@
 #include "prioritiser.hpp"
 
+#include "spdlog/spdlog.h"
 
 void Prioritiser::set_module(std::string name_module) {
 	module_choice = name_module;
@@ -32,7 +33,7 @@ std::vector<PrioritisedClassificationResult> Prioritiser::prioritise(std::vector
 {
 
 	std::vector<PrioritisedClassificationResult> vector_sorted;
-	std::cout << "Prioritising results from " << results.size() << " models\n";
+	SPDLOG_INFO("Prioritising results from {} models", results.size());
 	auto output = selected_module->run(&results);
 	vector_sorted.push_back(*(output));
 	//TODO Create Vector of multiple items?

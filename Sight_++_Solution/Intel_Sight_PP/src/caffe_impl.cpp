@@ -3,6 +3,8 @@
 #include <opencv2/dnn.hpp>
 #include <iomanip>
 
+#include "spdlog/spdlog.h"
+
 #include "ml_interface.hpp"
 #include "model_helper.hpp"
 #include <opencv2\imgproc.hpp>
@@ -26,17 +28,16 @@ struct CaffeModelImpl : public ModelInterface {
 	
 	CaffeModelImpl(std::string prototxt_path, std::string caffemodel_path, const std::string class_names_path)
 	{
-		std::cout << "Constructing a caffe model impl\n";
+		SPDLOG_INFO("Constructing a caffe model impl, using {}, {}, {}", prototxt_path, caffemodel_path, class_names_path);
 		
 		net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
 		class_names = read_class_name_file(class_names_path);
-
 	}
 
 	// This is the same as the rs-dnn example
 	ClassificationResult do_work(cv::Mat color_matrix, cv::Mat depth_matrix) override {
 
-		std::cout << "Doing caffe impl work" << std::endl;
+		SPDLOG_INFO("Using Caffe model to find objects");
 		
 		// TODO Should this input blob be "standardised" and calculated in ml-controller
 		auto input_blob = cv::dnn::blobFromImage(color_matrix, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false);
@@ -49,7 +50,6 @@ struct CaffeModelImpl : public ModelInterface {
 
 		ClassificationResult classification_result("caffe");
 
-		std::cout << "Classified, foreaching" << std::endl;
 		
 		for(auto i = 0; i < detection_matrix.rows; i++)
 		{
