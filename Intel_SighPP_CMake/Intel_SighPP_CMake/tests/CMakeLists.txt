@@ -9,8 +9,7 @@ include(GoogleTest)
 #include(GoogleTest)
 add_executable(test_demo "test.cpp")
 
-target_link_libraries(test_demo gtest
-)
+ target_link_libraries(test_demo GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 #include_directories(${GTEST_INCLUDE_DIRS})
 #target_link_libraries(tester PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 add_test(NAME test_demo COMMAND test_demo)

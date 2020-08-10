@@ -14,6 +14,10 @@ set(SRC_FILES
 
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/classification_result.hpp
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/output_stream_controller.cpp
+	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.cpp
+	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.hpp
+	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_impl_websocket.cpp
+	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_user_interface.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/caffe_impl.cpp
    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ ML_Lib/ml_impl_depth.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/model_helper.hpp
@@ -53,6 +57,5 @@ target_link_libraries(intel_sightPP ${TBB_LIBRARIES})
 target_link_libraries(intel_sightPP ${TBB_IMPORTED_TARGETS})
 target_link_libraries(intel_sightPP websocketpp::websocketpp)
 target_link_libraries(intel_sightPP realsense2::fw realsense2::realsense2 realsense2::realsense-file)
-
 
 # TODO: Add tests and install targets if needed.

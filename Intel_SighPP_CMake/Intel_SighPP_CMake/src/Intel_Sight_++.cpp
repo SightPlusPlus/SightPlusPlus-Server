@@ -14,6 +14,8 @@
 #include "priority_lib/size_priority.cpp"
 #include "classification_result.hpp"
 
+#include "interface_controller/api_controller.hpp"
+#include "interface_controller/api_impl_websocket.cpp"
 
 
 
@@ -73,7 +75,7 @@ int main(int argc, char** argv)
 				try
 				{
 					std::string file_ = argv[++i];
-					std::string path_ = ".\\recordings\\" + file_ + ".bag";
+					std::string path_ = ".\\recordings\\" + file_;
 					std::cout << "Recording To file: " << path_ << std::endl;
 					cfg.enable_record_to_file(path_);
 					continue;
@@ -94,7 +96,7 @@ int main(int argc, char** argv)
 				{
 
 					std::string file_ = argv[++i];
-					std::string path_ = ".\\recordings\\" + file_ + ".bag";;
+					std::string path_ = ".\\recordings\\" + file_;
 					std::cout << "playing from file: " << path_ << std::endl;
 					cfg.enable_device_from_file(path_);
 					continue;
@@ -158,7 +160,7 @@ int main(int argc, char** argv)
 	// Add more ML implementations here as needed
 	//ml_controller.add_model(ml_depth);
 	//ml_controller.add_model(ml_rgb);
-	//ml_controller.add_model(caffe_own);
+	ml_controller.add_model(caffe_own);
 	ml_controller.add_model(caffe_pre);
 
 	std::cout << "Created MLController and added ML models\n";
@@ -179,8 +181,16 @@ int main(int argc, char** argv)
 	prioritiser->set_module(name_prio_depth);
 	prioritiser->load_module();
 
+	std::cout << "API setup" << std::endl;
+	ApiController api;
+	std::cout << "API User setup" << std::endl;
+	ApiWebSocketImpl websocket_api_user;
+	std::cout << "Adding user to API" << std::endl;
+	api.add_user(websocket_api_user);
+
+	std::cout << "Output stream setup" << std::endl;
 	OutputStreamController output_stream_controller(stream_depth, stream_color);
 
-	ServiceController service(pipe, ml_controller, *prioritiser, output_stream_controller, profile);
+	ServiceController service(pipe, ml_controller, *prioritiser, api, output_stream_controller, profile);
 	service.main();
 }
