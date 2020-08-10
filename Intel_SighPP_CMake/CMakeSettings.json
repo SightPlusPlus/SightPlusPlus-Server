@@ -7,7 +7,7 @@
       "inheritEnvironments": [ "msvc_x64" ],
       "buildRoot": "${projectDir}\\build\\${name}",
       "installRoot": "${projectDir}\\install\\${name}",
-      "cmakeCommandArgs": "\"-DCMAKE_TOOLCHAIN_FILE=C:/Users/svens/vcpkg/scripts/buildsystems/vcpkg.cmake\"",
+      "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "variables": [
@@ -32,11 +32,6 @@
           "type": "PATH"
         },
         {
-          "name": "_VCPKG_INSTALLED_DIR",
-          "value": "C:/dev/vcpkg/installed",
-          "type": "PATH"
-        },
-        {
           "name": "VCPKG_APPLOCAL_DEPS",
           "value": "true",
           "type": "BOOL"
@@ -46,7 +41,8 @@
           "value": "false",
           "type": "BOOL"
         }
-      ]
+      ],
+      "cmakeToolchain": "C:/Users/svens/vcpkg/scripts/buildsystems/vcpkg.cmake"
     }
   ]
 }

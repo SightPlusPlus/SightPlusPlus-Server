@@ -51,7 +51,8 @@ target_include_directories(intel_sightPP PRIVATE ${TBB_INCLUDE_DIRS})
 target_compile_definitions(intel_sightPP PRIVATE ${TBB_DEFINITIONS})
 target_link_libraries(intel_sightPP ${TBB_LIBRARIES})
 target_link_libraries(intel_sightPP ${TBB_IMPORTED_TARGETS})
-
+target_link_libraries(intel_sightPP websocketpp::websocketpp)
+target_link_libraries(intel_sightPP realsense2::fw realsense2::realsense2 realsense2::realsense-file)
 
 
 # TODO: Add tests and install targets if needed.
