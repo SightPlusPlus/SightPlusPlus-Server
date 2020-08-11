@@ -1,13 +1,15 @@
 #include <iostream>
 #include <opencv2/dnn/dnn.hpp>
 #include <opencv2/dnn.hpp>
+#include <opencv2\imgproc.hpp>
 #include <iomanip>
+
+#include "spdlog/spdlog.h"
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
+
 #include "ml_interface.hpp"
 #include "model_helper.hpp"
-#include <opencv2\imgproc.hpp>
-
 #include "classification_result.hpp"
 
 // Based on the rs-dnn example
@@ -27,17 +29,16 @@ struct CaffeModelImpl : public ModelInterface {
 	
 	CaffeModelImpl(std::string prototxt_path, std::string caffemodel_path, const std::string class_names_path)
 	{
-		std::cout << "Constructing a caffe model impl\n";
+		SPDLOG_INFO("Constructing a caffe model impl, using {}, {}, {}", prototxt_path, caffemodel_path, class_names_path);
 		
 		net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
 		class_names = read_class_name_file(class_names_path);
-
 	}
 
 	// This is the same as the rs-dnn example
 	ClassificationResult do_work(cv::Mat color_matrix, cv::Mat depth_matrix) override {
 
-		std::cout << "Doing caffe impl work" << std::endl;
+		SPDLOG_INFO("Using Caffe model to find objects");
 		
 		// TODO Should this input blob be "standardised" and calculated in ml-controller
 		auto input_blob = cv::dnn::blobFromImage(color_matrix, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false);
@@ -53,8 +54,6 @@ struct CaffeModelImpl : public ModelInterface {
 		cv::Mat detection_matrix(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
 
 		ClassificationResult classification_result("caffe");
-
-		std::cout << "Classified, foreaching" << std::endl;
 
 		std::vector<int> object_id;
 		for (int i = 0; i < detection_matrix.rows; i++)

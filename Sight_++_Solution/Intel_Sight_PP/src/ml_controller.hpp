@@ -31,7 +31,7 @@ public:
 		results_.clear();
 		results_.shrink_to_fit();
 
-		std::cout << "Got and cleared " << to_send.size() << " classification results" << std::endl;
+		SPDLOG_INFO("Got and cleared {} classification results", to_send.size());
 		
 		return to_send;
     }
@@ -52,12 +52,12 @@ public:
 
 		// TODO Time testing, make the do_work perform some work(thread.wait?) and check how long tbb::parallel_for_each takes vs a regular for
 
+		SPDLOG_INFO("Doing ML work with new frames");
 		tbb::parallel_for_each(
 			models_.begin(),
 			models_.end(),
 			[&] (ModelInterface* model)
 			{
-				std::cout << "Doing parallel thing with matrices" << std::endl;
 				results_.push_back(model->do_work(color_matrix, depth_matrix));
 			}
 		);
@@ -96,4 +96,9 @@ public:
 	//	depth_models.push_back(&model);
 	//}
 
+	int model_count() const
+	{
+		return models_.size();
+    }
+	
 };

@@ -1,8 +1,10 @@
 #include <iostream>
 #include <utility>
 
-#include "api_controller.hpp"
 #include "librealsense2/rs.hpp"
+#include "spdlog/spdlog.h"
+
+#include "api_controller.hpp"
 #include "ml_controller.hpp"
 #include "prioritiser.hpp"
 #include "classification_result.hpp"
@@ -68,56 +70,48 @@ public:
 
 		
 		while (output_stream_controller_.should_receieve_new_frames()) {
-			std::cout << "Waiting for frames\n";
+			SPDLOG_INFO("----------------------------");
+			SPDLOG_INFO("Waiting for frames");
 			auto data = pipe_.wait_for_frames();
 			data = align_to.process(data);
-			std::cout << "Got new frames\n";
 
-			std::cout << "Get frames and crop" << std::endl;
-
+			SPDLOG_INFO("Frame to opencv matrix and cropping");
 			auto color_matrix = frame_to_mat(data.get_color_frame());
 			auto depth_matrix = depth_frame_to_meters(data.get_depth_frame());
 			color_matrix = color_matrix(crop);
 			depth_matrix = depth_matrix(crop);
 
-			std::cout << "Doing ML on frames\n";
+			SPDLOG_INFO("Doing ML on matrices");
 			ml_controller_.new_frames(color_matrix, depth_matrix);
 
-			std::cout << "Prioritising results" << std::endl;
+			SPDLOG_INFO("Prioritising results");
 			auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());	
+			SPDLOG_INFO("Prioritised {} results", prioritised_results.size());
 
 			//std::cout << test_vector[0].to_string() << std::endl;
 			//auto prioritised_results = prioritiser_.prioritise(test_vector);
 
-			std::cout << "Prioritised " << prioritised_results.size() << " results" << std::endl;
-			if (prioritised_results.size() > 0)
-			{
-				std::cout << prioritised_results[0].to_string() << std::endl;
-			}
-
-			std::cout << "Sending items to API" << std::endl;
+			SPDLOG_INFO("Sending items to API");
 			api_controller_.new_items(prioritised_results);
-      
-			std::cout << "Streaming stream to output" << std::endl;
+
+			SPDLOG_INFO("Sending frames to output stream");
 			// TODO Should apply_filter be here?
 			output_stream_controller_.stream_to_windows(
 				data.get_depth_frame().apply_filter(color_map), depth_matrix, 
 				data.get_color_frame(), color_matrix, 
 				prioritised_results);
-      
-			std::cout << "----------------------------" << std::endl;
 		}
 
 		return EXIT_SUCCESS;
 	}
 	catch (const rs2::error& e)
 	{
-		std::cerr << "RealSense error calling " << e.get_failed_function() << "(" << e.get_failed_args() << "):\n    " << e.what() << std::endl;
+		SPDLOG_ERROR("Realsense error, calling {} ({}): {}", e.get_failed_function(), e.get_failed_args(), e.what());
 		return EXIT_FAILURE;
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << e.what() << std::endl;
+		SPDLOG_ERROR(e.what());
 		return EXIT_FAILURE;
 	}
 
