@@ -8,3 +8,4 @@ This project uses [Vcpkg](https://github.com/Microsoft/vcpkg) for library depend
 * opencv3
 * tbb
 * websocketpp
+* spdlog

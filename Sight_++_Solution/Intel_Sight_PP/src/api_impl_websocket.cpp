@@ -2,6 +2,7 @@
 
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+#include "spdlog/spdlog.h"
 
 #include "api_user_interface.hpp"
 
@@ -14,22 +15,21 @@ public:
 	
 	BroadcastServer()
 	{
-		std::cout << "Creating BroadcastServer" << std::endl;
+		SPDLOG_INFO("Creating BroadcastServer");
 		server_.init_asio();
 
 		server_.set_open_handler(websocketpp::lib::bind(&BroadcastServer::on_open, this, websocketpp::lib::placeholders::_1));
 		server_.set_close_handler(websocketpp::lib::bind(&BroadcastServer::on_close, this, websocketpp::lib::placeholders::_1));
 		server_.set_message_handler(websocketpp::lib::bind(&BroadcastServer::on_message, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
-		std::cout << "Created BroadcastServer" << std::endl;
 	}
 	
-	void run()
+	void run(int port)
 	{
-		std::cout << "Running BroadcastServer" << std::endl;
-		server_.listen(7979);
+		SPDLOG_INFO("Running BroadcastServer");
+		server_.listen(port);
 		server_.start_accept();
 		server_.run();
-		std::cout << "Running BroadcastServer" << std::endl;
+		SPDLOG_INFO("Running BroadcastServer");
 	}
 
 	void on_open(const websocketpp::connection_hdl handle) {
@@ -58,15 +58,21 @@ public:
 
 struct ApiWebSocketImpl : ApiUserInterface
 {
+	Priority minimum_priority;
 	BroadcastServer server;
 
-	ApiWebSocketImpl()
+	ApiWebSocketImpl(int port, Priority minimum_priority) : minimum_priority(minimum_priority)
 	{
-		websocketpp::lib::thread([s = &server] { s->run(); }).detach();		
+		websocketpp::lib::thread([s = &server, port] { s->run(port); }).detach();		
 	}
 	
 	void new_item(ClassificationItem item) override
 	{
-		server.send(item.to_string());		
+		SPDLOG_INFO("MinPriority: {} vs. ItemPriority: {}", static_cast<int>(minimum_priority), static_cast<int>(item.priority));
+		if(item.priority >= minimum_priority)
+		{
+			SPDLOG_INFO("Sending item: {}", item.to_json());
+			server.send(item.to_json());			
+		}
 	}
 };
