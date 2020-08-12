@@ -23,10 +23,10 @@ public:
 		std::cout << "Created BroadcastServer" << std::endl;
 	}
 	
-	void run()
+	void run(int port)
 	{
 		std::cout << "Running BroadcastServer" << std::endl;
-		server_.listen(7979);
+		server_.listen(port);
 		server_.start_accept();
 		server_.run();
 		std::cout << "Running BroadcastServer" << std::endl;
@@ -61,9 +61,9 @@ struct ApiWebSocketImpl : ApiUserInterface
 	Priority minimum_priority;
 	BroadcastServer server;
 
-	ApiWebSocketImpl(Priority minimum_priority) : minimum_priority(minimum_priority)
+	ApiWebSocketImpl(int port, Priority minimum_priority) : minimum_priority(minimum_priority)
 	{
-		websocketpp::lib::thread([s = &server] { s->run(); }).detach();		
+		websocketpp::lib::thread([s = &server, port] { s->run(port); }).detach();		
 	}
 	
 	void new_item(ClassificationItem item) override

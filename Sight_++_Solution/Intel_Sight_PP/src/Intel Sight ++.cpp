@@ -31,6 +31,7 @@ int main(int argc, char** argv)
 
 	auto stream_depth = false;
 	auto stream_color = false;
+	auto port = 7979;
 
 
 
@@ -42,6 +43,7 @@ int main(int argc, char** argv)
 	/// 3) -play hello.bag  : This is used to play the file from the file following the flag.
 	/// 4) -depth			: This is used to show the depth stream in a window
 	/// 5) -color			: This is used to show the color stream in a window
+	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
 	/// </summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
@@ -121,6 +123,16 @@ int main(int argc, char** argv)
 				std::cout << "Streaming Color Output" << std::endl;
 				stream_color = true;
 			}
+			
+			else if (next_arg.compare("-port") == 0 && (i + 1) < argc)
+			{
+				port = std::atoi(argv[++i]);
+				std::cout << "Using port " << std::to_string(port) << " for websocket" << std::endl;
+			}
+			else if (next_arg.compare("-port") == 0 && !((i + 1) < argc))
+			{
+				std::cout << "Missing flags for port" << std::endl;
+			}
 		}
 
 	}
@@ -183,7 +195,7 @@ int main(int argc, char** argv)
 	std::cout << "API setup" << std::endl;
 	ApiController api;
 	std::cout << "API User setup" << std::endl;
-	ApiWebSocketImpl websocket_api_user(Priority::HIGH);
+	ApiWebSocketImpl websocket_api_user(port, Priority::HIGH);
 	std::cout << "Adding user to API" << std::endl;
 	api.add_user(websocket_api_user);
 
