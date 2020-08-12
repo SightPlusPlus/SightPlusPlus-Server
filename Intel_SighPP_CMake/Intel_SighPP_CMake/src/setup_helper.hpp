@@ -4,8 +4,6 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/async.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/spdlog.h"
 inline std::string get_date_time_string()
 {
 	const auto t = spdlog::details::os::localtime();
