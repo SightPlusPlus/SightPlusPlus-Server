@@ -68,10 +68,10 @@ struct ApiWebSocketImpl : ApiUserInterface
 	
 	void new_item(ClassificationItem item) override
 	{
-		std::cout << "MinPriority: " << static_cast<int>(minimum_priority) << " vs. ItemPriority: " << static_cast<int>(item.priority) << std::endl;
+		SPDLOG_INFO("MinPriority: {} vs. ItemPriority: {}", static_cast<int>(minimum_priority), static_cast<int>(item.priority));
 		if(item.priority >= minimum_priority)
 		{
-			std::cout << "Item is greater or equal to minimum" << std::endl;
+			SPDLOG_INFO("Sending item: {}", item.to_json());
 			server.send(item.to_json());			
 		}
 	}
