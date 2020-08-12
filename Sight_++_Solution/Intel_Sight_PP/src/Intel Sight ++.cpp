@@ -130,11 +130,11 @@ int main(int argc, char** argv)
 			else if (next_arg.compare("-port") == 0 && (i + 1) < argc)
 			{
 				port = std::atoi(argv[++i]);
-				std::cout << "Using port " << std::to_string(port) << " for websocket" << std::endl;
+				SPDLOG_INFO("Using port {} for websocket", std::to_string(port));
 			}
 			else if (next_arg.compare("-port") == 0 && !((i + 1) < argc))
 			{
-				std::cout << "Missing flags for port" << std::endl;
+				SPDLOG_ERROR("Missing value for flag -port");
 			}
 		}
 

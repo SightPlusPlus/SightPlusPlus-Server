@@ -1,4 +1,5 @@
 #include "priority_module.hpp"
+#include <spdlog/spdlog.h>
 
 class depth_priority: public priority_module
 {
@@ -20,20 +21,20 @@ public:
 	{
 		for (auto && item : all_data)
 		{
-			std::cout << "ItemDistance: " << item.distance << std::endl;
+			SPDLOG_INFO("ItemDistance: {}", item.distance);
 			if (item.distance < 1)
 			{
-				std::cout << "Setting priority to HIGH" << std::endl;
+				SPDLOG_INFO("Setting priority to HIGH");
 				item.priority = Priority::HIGH;
 			}
 			else if(item.distance < 2)
 			{
-				std::cout << "Setting priority to MEDIUM" << std::endl;
+				SPDLOG_INFO("Setting priority to MEDIUM");
 				item.priority = Priority::MEDIUM;
 			}
 			else
 			{
-				std::cout << "Setting priority to LOW" << std::endl;
+				SPDLOG_INFO("Setting priority to LOW");
 				item.priority = Priority::LOW;
 			}
 		}
