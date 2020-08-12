@@ -19,8 +19,7 @@ public:
 		name = "default";
 	}
 	virtual ~priority_module() {}
-	virtual void issue_priority() = 0;
-
+	virtual void assign_priority() = 0;
 	
 
 	std::string get_name() { return name; }
@@ -34,7 +33,7 @@ public:
 		PrioritisedClassificationResult* dept = new PrioritisedClassificationResult;
 		priority_module::build_data(*result);
 		dept->model_name = name;
-		issue_priority();
+		assign_priority();
 		dept->objects = all_data;
 		std::cout << dept->to_string();
 		return dept;

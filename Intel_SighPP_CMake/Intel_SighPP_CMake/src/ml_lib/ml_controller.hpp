@@ -8,6 +8,9 @@
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
 
+#include "spdlog/spdlog.h"
+#include "../setup_helper.hpp"
+
 class MLController {
 
 	//std::vector<ModelInterface<rs2::video_frame>*> rgb_models;
@@ -23,24 +26,24 @@ class MLController {
 public:
 
 	// Get's the results and clears them, so that they are not used again
-    std::vector<ClassificationResult> get_and_clear_results()
-    {    	
-    	std::vector<ClassificationResult> to_send = {results_.begin(), results_.end()};
+	std::vector<ClassificationResult> get_and_clear_results()
+	{
+		std::vector<ClassificationResult> to_send = { results_.begin(), results_.end() };
 
-    	// TODO May not be a good idea, clear is not concurrency-safe
+		// TODO May not be a good idea, clear is not concurrency-safe
 		results_.clear();
 		results_.shrink_to_fit();
 
-		std::cout << "Got and cleared " << to_send.size() << " classification results" << std::endl;
-		
+		SPDLOG_INFO("Got and cleared {} classification results", to_send.size());
+
 		return to_send;
-    }
-	
+	}
+
 	void new_frames(cv::Mat color_matrix, cv::Mat depth_matrix) {
 
 		// TODO Precalculate openCV Matrix?
 
-    	
+
 		// TODO Concurrency? Fire-and-forget?
 		/* TODO How to use results of do_work? So it can be called by prioritiser
 			 List of result-object classes that all the do_work function calls add to?
@@ -52,16 +55,16 @@ public:
 
 		// TODO Time testing, make the do_work perform some work(thread.wait?) and check how long tbb::parallel_for_each takes vs a regular for
 
+		SPDLOG_INFO("Doing ML work with new frames");
 		tbb::parallel_for_each(
 			models_.begin(),
 			models_.end(),
-			[&] (ModelInterface* model)
+			[&](ModelInterface* model)
 			{
-				std::cout << "Doing parallel thing with matrices" << std::endl;
 				results_.push_back(model->do_work(color_matrix, depth_matrix));
 			}
 		);
-    	
+
 		//tbb::parallel_for_each(
 		//	rgb_models.begin(),
 		//	rgb_models.end(),
@@ -84,10 +87,10 @@ public:
 	}
 
 	void add_model(ModelInterface& model)
-    {
+	{
 		models_.push_back(&model);
-    }
-	
+	}
+
 	//void add_rgb_model(ModelInterface<rs2::video_frame>& model) {
 	//	rgb_models.push_back(&model);
 	//}
@@ -95,5 +98,10 @@ public:
 	//void add_depth_model(ModelInterface<rs2::depth_frame>& model) {
 	//	depth_models.push_back(&model);
 	//}
+
+	int model_count() const
+	{
+		return models_.size();
+	}
 
 };

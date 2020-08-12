@@ -18,7 +18,7 @@ find_package(realsense2 CONFIG REQUIRED)
 find_package(TBB CONFIG REQUIRED)
 find_package(websocketpp CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
-
+find_package(spdlog 1.6 CONFIG REQUIRED)
 
 add_subdirectory ("Intel_SighPP_CMake")
 

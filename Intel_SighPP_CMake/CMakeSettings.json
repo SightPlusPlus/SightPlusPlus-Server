@@ -40,6 +40,11 @@
           "name": "VCPKG_VERBOSE",
           "value": "false",
           "type": "BOOL"
+        },
+        {
+          "name": "spdlog_DIR",
+          "value": "C:/Users/svens/vcpkg/installed/x64-windows/share/spdlog",
+          "type": "PATH"
         }
       ],
       "cmakeToolchain": "C:/Users/svens/vcpkg/scripts/buildsystems/vcpkg.cmake"

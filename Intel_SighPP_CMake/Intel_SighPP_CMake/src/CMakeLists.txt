@@ -13,6 +13,7 @@ cmake_minimum_required (VERSION 3.8)
 set(SRC_FILES 
 
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/classification_result.hpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/setup_helper.hpp
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/output_stream_controller.cpp
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.cpp
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.hpp
@@ -30,6 +31,7 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/size_priority.cpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_manager/CameraInput.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_manager/CameraInput.h
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/Intel_Sight_++.cpp
@@ -49,6 +51,7 @@ add_executable(intel_sightPP ${SRC_FILES}) #"Intel Sight ++.cpp" "service_contro
 target_link_libraries(intel_sightPP ${OpenCV_LIBS})
 target_include_directories(intel_sightPP PRIVATE ${OpenCV_DIR})
 include_directories(include ${realsense_INCLUDE_DIR})
+include_directories(include ${SPDLOG_INCLUDEDIR})
 target_include_directories(intel_sightPP PRIVATE ${realsense_INCLUDE_DIR})
 target_link_libraries(intel_sightPP ${realsense2_LIBRARY})
 target_include_directories(intel_sightPP PRIVATE ${TBB_INCLUDE_DIRS})
@@ -57,5 +60,5 @@ target_link_libraries(intel_sightPP ${TBB_LIBRARIES})
 target_link_libraries(intel_sightPP ${TBB_IMPORTED_TARGETS})
 target_link_libraries(intel_sightPP websocketpp::websocketpp)
 target_link_libraries(intel_sightPP realsense2::fw realsense2::realsense2 realsense2::realsense-file)
-
+target_link_libraries(intel_sightPP spdlog::spdlog spdlog::spdlog_header_only)
 # TODO: Add tests and install targets if needed.

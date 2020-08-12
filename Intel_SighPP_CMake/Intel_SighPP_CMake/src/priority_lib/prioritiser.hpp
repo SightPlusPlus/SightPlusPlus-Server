@@ -5,7 +5,6 @@
 #include "priority_module.hpp"
 
 #include<map>
-
 class Prioritiser
 {
 private:
@@ -17,7 +16,6 @@ public:
 		std::map<std::string, priority_module&> modules = {};
 		std::string module_choice = "";
 	}
-
 	virtual void add_module(priority_module& p);
 	virtual void set_module(std::string name_module);
 	virtual int load_module();
