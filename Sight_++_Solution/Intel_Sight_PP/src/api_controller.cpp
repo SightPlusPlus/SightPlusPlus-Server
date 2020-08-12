@@ -2,6 +2,7 @@
 
 #include "api_controller.hpp"
 
+#include <spdlog/spdlog.h>
 #include <tbb/parallel_for_each.h>
 
 void ApiController::add_user(ApiUserInterface& user)
@@ -11,7 +12,7 @@ void ApiController::add_user(ApiUserInterface& user)
 
 void ApiController::new_items(const std::vector<PrioritisedClassificationResult>& results)
 {
-	std::cout << "api_controller.new_items" << std::endl;
+	SPDLOG_INFO("Sending items to API users");
 	for (auto&& result : results)
 	{
 		for (auto&& item : result.objects)
@@ -21,12 +22,9 @@ void ApiController::new_items(const std::vector<PrioritisedClassificationResult>
 				api_users_.end(),
 				[&](ApiUserInterface* api_user)
 				{
-					std::cout << "Sending results to output api users" << std::endl;
 					api_user->new_item(item);
 				}
 			);
 		}
 	}
-
-	std::cout << "api_controller done" << std::endl;	
 }

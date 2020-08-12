@@ -2,6 +2,8 @@
 #include <librealsense2/rs.hpp>
 #include <opencv2/opencv.hpp>
 
+#include "spdlog/spdlog.h"
+
 #include "ml_controller.hpp"
 #include "ml_interface.hpp"
 #include "ml_impl_depth.cpp"
@@ -15,12 +17,11 @@
 #include "classification_result.hpp"
 #include "api_controller.hpp"
 #include "api_impl_websocket.cpp"
-
+#include "setup_helper.hpp"
 
 
 int main(int argc, char** argv)
 {
-	std::cout << "Starting!\n";
 	#define _SOLUTIONDIR = R"($(SolutionDir))"
 
 	// TODO Allow for Reading a file or using stream from camera
@@ -28,12 +29,14 @@ int main(int argc, char** argv)
 	// TODO Add protection against files not being found
 	rs2::pipeline pipe;
 	rs2::config cfg;
-
+	
 	auto stream_depth = false;
 	auto stream_color = false;
 	auto port = 7979;
 
-
+	setup_logging();
+	
+	SPDLOG_INFO("Starting");
 
 	/// <summary>
 	/// This section is to capture the flags from the user. 
@@ -50,18 +53,18 @@ int main(int argc, char** argv)
 	/// <returns></returns>
 	if (argc > 1)
 	{
-		std::cout << "Flags found" << std::endl;
+		
+		SPDLOG_INFO("Flags found");
 		for (size_t i = 1; i < argc; i++)
 		{
 			// Capture next arg
 			std::string next_arg = argv[i];
 
 
-
-			std::cout << next_arg << " next flag" << std::endl;
+			SPDLOG_INFO("Next flag is {}", next_arg);
 			if (next_arg.compare("realsense") == 0)
 			{
-				std::cout << "Streaming from camera" << std::endl;
+				SPDLOG_INFO("Streaming from camera");
 				// TODO enable_all_stream() enables the streams with 640x480
 				cfg.enable_all_streams();				
 				//cfg.enable_stream(RS2_STREAM_COLOR, 1280, 720, RS2_FORMAT_RGB8);
@@ -77,18 +80,18 @@ int main(int argc, char** argv)
 				{
 					std::string file_ = argv[++i];
 					std::string path_ = ".\\recordings\\" + file_;
-					std::cout << "Recording To file: " << path_ << std::endl;
+					SPDLOG_INFO("Saving stream to file: {}", path_);
 					cfg.enable_record_to_file(path_);
 					continue;
 				}
-				catch (const std::exception&)
+				catch (const std::exception& exception)
 				{
-					std::cout << "Error with recording" << std::endl;
+					SPDLOG_CRITICAL("Error with recording: {}", exception.what());
 				}
 			}
 			else if (next_arg.compare("-rec") == 0 && !((i + 1) < argc))
 			{
-				std::cout << "Missing flags for recording" << std::endl;
+				SPDLOG_ERROR("Missing required flag for recording, record to what file?");
 			}
 
 			else if (next_arg.compare("-play") == 0 && (i + 1) < argc)
@@ -98,29 +101,29 @@ int main(int argc, char** argv)
 
 					std::string file_ = argv[++i];
 					std::string path_ = ".\\recordings\\" + file_;
-					std::cout << "playing from file: " << path_ << std::endl;
+					SPDLOG_INFO("Playing from file:  {}", path_);
 					cfg.enable_device_from_file(path_);
 					continue;
 				}
-				catch (const std::exception&)
+				catch (const std::exception& exception)
 				{
-					std::cout << "Error with playing from file" << std::endl;
+					SPDLOG_CRITICAL("Error with playing from file: {}", exception.what());
 				}
 			}
 			else if (next_arg.compare("-play") == 0 && !((i + 1) < argc))
 			{
-				std::cout << "Missing flags for playing" << std::endl;
+				SPDLOG_ERROR("Missing required flag for recording, play from what file?");
 			}
 
 			else if (next_arg.compare("-depth") == 0)
 			{
-				std::cout << "Streaming Depth Output" << std::endl;
+				SPDLOG_INFO("Streaming depth output to window");
 				stream_depth = true;
 			}
 
 			else if (next_arg.compare("-color") == 0)
 			{
-				std::cout << "Streaming Color Output" << std::endl;
+				SPDLOG_INFO("Streaming color output to window");
 				stream_color = true;
 			}
 			
@@ -138,7 +141,7 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-		std::cout << "Streaming from test file" << std::endl;
+		SPDLOG_INFO("Using default recording");
 		cfg.enable_device_from_file(".\\recordings\\outdoors.bag");
 	}
 
@@ -146,19 +149,18 @@ int main(int argc, char** argv)
 
 	auto config = pipe.start(cfg);
 
+	SPDLOG_INFO("Streaming profiles:");
 	for (auto && stream_profile : pipe.get_active_profile().get_streams())
 	{
 		auto profile = stream_profile.as<rs2::video_stream_profile>();
-		std::cout << profile.stream_name() << ": " << profile.width() << "x" << profile.height() << std::endl;
+		SPDLOG_INFO("{}: {}x{}", profile.stream_name(), profile.width(), profile.height());
 	}
-	
-	std::cout << "Got pipeline\n";
 
 	MLController ml_controller;
 	// TODO Read command line parameters for which models to use?
 	
-	MLImplDepth ml_depth;
-	MLImplRGB ml_rgb;
+	//MLImplDepth ml_depth;
+	//MLImplRGB ml_rgb;
 
 	
 	// TODO Add correct paths for testing
@@ -174,32 +176,30 @@ int main(int argc, char** argv)
 	ml_controller.add_model(caffe_own);
 	ml_controller.add_model(caffe_pre);
 
-	std::cout << "Created MLController and added ML models\n";
+	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
 	std::string name_prio_depth = "depth_prio";
 	depth_priority* prio_depth = new depth_priority(&name_prio_depth);
-
-	std::cout << prio_depth->get_name() << std::endl;
+	SPDLOG_INFO("Using prioritiser module: {}", prio_depth->get_name());
 
 	//std::string name_prio_size = "size";
 	//priority_module* prio_depth = new size_priority(&name_prio_size);
 
 
+	SPDLOG_INFO("Setting up Prioritiser");
 	Prioritiser* prioritiser = new Prioritiser;
 	//add modules
 	prioritiser->add_module(*prio_depth);
 	// Todo: load prio model from flag
 	prioritiser->set_module(name_prio_depth);
 	prioritiser->load_module();
-		
-	std::cout << "API setup" << std::endl;
+
+	SPDLOG_INFO("Setting up output API and API users");
 	ApiController api;
-	std::cout << "API User setup" << std::endl;
 	ApiWebSocketImpl websocket_api_user(port, Priority::HIGH);
-	std::cout << "Adding user to API" << std::endl;
 	api.add_user(websocket_api_user);
 
-	std::cout << "Output stream setup" << std::endl;	
+	SPDLOG_INFO("Setting up Output Stream Windows");
 	OutputStreamController output_stream_controller(stream_depth, stream_color);
   
 	ServiceController service(pipe, ml_controller, *prioritiser, api, output_stream_controller, profile);

@@ -84,6 +84,8 @@
     </ClInclude>
     <ClInclude Include="src\priority.hpp">
       <Filter>Service Classes\headers</Filter>
+    <ClInclude Include="src\setup_helper.hpp">
+      <Filter>Service Classes\Service Control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

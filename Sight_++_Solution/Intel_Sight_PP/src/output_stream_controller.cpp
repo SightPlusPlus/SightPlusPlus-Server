@@ -2,6 +2,8 @@
 
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
+#include "spdlog/spdlog.h"
+
 #include "classification_result.hpp"
 
 // TODO Should output stream window stuff be here or in a seperate class/file?
@@ -23,7 +25,7 @@ public:
 
 	OutputStreamController(const bool show_depth_window, const bool show_color_window) : show_depth_output_(show_depth_window), show_color_output_(show_color_window)
 	{
-		std::cout << "Constructing output interface controller" << std::endl;
+		SPDLOG_INFO("Setting up output stream windows");
 		if (show_depth_window)
 		{
 			depth_output_window_ = "Depth Image";
@@ -34,7 +36,6 @@ public:
 			color_output_window_ = "Color Image";
 			namedWindow(color_output_window_, cv::WINDOW_AUTOSIZE);
 		}
-		std::cout << "Constructed output interface controller" << std::endl;
 	}
 
 	void stream_to_windows(const rs2::frame& depth_frame, cv::Mat depth_matrix, const rs2::video_frame& color_frame, cv::Mat color_matrix, const std::vector<PrioritisedClassificationResult>& vector) const

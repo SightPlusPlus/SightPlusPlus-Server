@@ -2,6 +2,7 @@
 
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+#include "spdlog/spdlog.h"
 
 #include "api_user_interface.hpp"
 
@@ -14,22 +15,21 @@ public:
 	
 	BroadcastServer()
 	{
-		std::cout << "Creating BroadcastServer" << std::endl;
+		SPDLOG_INFO("Creating BroadcastServer");
 		server_.init_asio();
 
 		server_.set_open_handler(websocketpp::lib::bind(&BroadcastServer::on_open, this, websocketpp::lib::placeholders::_1));
 		server_.set_close_handler(websocketpp::lib::bind(&BroadcastServer::on_close, this, websocketpp::lib::placeholders::_1));
 		server_.set_message_handler(websocketpp::lib::bind(&BroadcastServer::on_message, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
-		std::cout << "Created BroadcastServer" << std::endl;
 	}
 	
 	void run(int port)
 	{
-		std::cout << "Running BroadcastServer" << std::endl;
+		SPDLOG_INFO("Running BroadcastServer");
 		server_.listen(port);
 		server_.start_accept();
 		server_.run();
-		std::cout << "Running BroadcastServer" << std::endl;
+		SPDLOG_INFO("Running BroadcastServer");
 	}
 
 	void on_open(const websocketpp::connection_hdl handle) {
