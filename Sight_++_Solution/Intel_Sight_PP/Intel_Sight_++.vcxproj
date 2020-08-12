@@ -166,6 +166,7 @@
     <ClInclude Include="src\api_controller.hpp" />
     <ClInclude Include="src\api_user_interface.hpp" />
     <ClInclude Include="src\model_helper.hpp" />
+    <ClInclude Include="src\priority.hpp" />
     <ClInclude Include="src\priority_module.hpp" />
     <ClInclude Include="src\classification_result.hpp" />
     <ClInclude Include="src\ml_controller.hpp" />

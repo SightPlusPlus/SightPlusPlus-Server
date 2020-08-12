@@ -32,6 +32,7 @@ int main(int argc, char** argv)
 	
 	auto stream_depth = false;
 	auto stream_color = false;
+	auto port = 7979;
 
 	setup_logging();
 	
@@ -45,6 +46,7 @@ int main(int argc, char** argv)
 	/// 3) -play hello.bag  : This is used to play the file from the file following the flag.
 	/// 4) -depth			: This is used to show the depth stream in a window
 	/// 5) -color			: This is used to show the color stream in a window
+	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
 	/// </summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
@@ -124,6 +126,16 @@ int main(int argc, char** argv)
 				SPDLOG_INFO("Streaming color output to window");
 				stream_color = true;
 			}
+			
+			else if (next_arg.compare("-port") == 0 && (i + 1) < argc)
+			{
+				port = std::atoi(argv[++i]);
+				SPDLOG_INFO("Using port {} for websocket", std::to_string(port));
+			}
+			else if (next_arg.compare("-port") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing value for flag -port");
+			}
 		}
 
 	}
@@ -184,7 +196,7 @@ int main(int argc, char** argv)
 
 	SPDLOG_INFO("Setting up output API and API users");
 	ApiController api;
-	ApiWebSocketImpl websocket_api_user;
+	ApiWebSocketImpl websocket_api_user(port, Priority::HIGH);
 	api.add_user(websocket_api_user);
 
 	SPDLOG_INFO("Setting up Output Stream Windows");

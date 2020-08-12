@@ -23,10 +23,10 @@ public:
 		server_.set_message_handler(websocketpp::lib::bind(&BroadcastServer::on_message, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
 	}
 	
-	void run()
+	void run(int port)
 	{
 		SPDLOG_INFO("Running BroadcastServer");
-		server_.listen(7979);
+		server_.listen(port);
 		server_.start_accept();
 		server_.run();
 		SPDLOG_INFO("Running BroadcastServer");
@@ -58,15 +58,21 @@ public:
 
 struct ApiWebSocketImpl : ApiUserInterface
 {
+	Priority minimum_priority;
 	BroadcastServer server;
 
-	ApiWebSocketImpl()
+	ApiWebSocketImpl(int port, Priority minimum_priority) : minimum_priority(minimum_priority)
 	{
-		websocketpp::lib::thread([s = &server] { s->run(); }).detach();		
+		websocketpp::lib::thread([s = &server, port] { s->run(port); }).detach();		
 	}
 	
 	void new_item(ClassificationItem item) override
 	{
-		server.send(item.to_string());		
+		SPDLOG_INFO("MinPriority: {} vs. ItemPriority: {}", static_cast<int>(minimum_priority), static_cast<int>(item.priority));
+		if(item.priority >= minimum_priority)
+		{
+			SPDLOG_INFO("Sending item: {}", item.to_json());
+			server.send(item.to_json());			
+		}
 	}
 };
