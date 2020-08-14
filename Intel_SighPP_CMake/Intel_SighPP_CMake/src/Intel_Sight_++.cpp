@@ -19,9 +19,9 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <opencv2/opencv.hpp>
-
 #include "spdlog/spdlog.h"
 #include "setup_helper.hpp"
+#include "priority_lib/smart_priority.hpp"
 
 
 int main(int argc, char** argv)
@@ -183,19 +183,22 @@ int main(int argc, char** argv)
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
 	std::string name_prio_depth = "depth_prio";
-	depth_priority* prio_depth = new depth_priority(&name_prio_depth);
-	SPDLOG_INFO("Using prioritiser module: {}", prio_depth->get_name());
+	std::string name_prio_smart = "smart_prio";
+	depth_priority prio_depth{&name_prio_depth};
+	smart_priority prio_smart(&name_prio_smart);
+	SPDLOG_INFO("Using prioritiser module: {}", prio_depth.get_name());
 
 	//std::string name_prio_size = "size";
 	//priority_module* prio_depth = new size_priority(&name_prio_size);
 
 
+
 	SPDLOG_INFO("Setting up Prioritiser");
 	Prioritiser* prioritiser = new Prioritiser;
 	//add modules
-	prioritiser->add_module(*prio_depth);
+	prioritiser->add_module(prio_smart);
 	// Todo: load prio model from flag
-	prioritiser->set_module(name_prio_depth);
+	prioritiser->set_module(name_prio_smart);
 	prioritiser->load_module();
 
 	SPDLOG_INFO("Setting up output API and API users");

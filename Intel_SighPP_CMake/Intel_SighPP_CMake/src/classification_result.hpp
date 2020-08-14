@@ -34,11 +34,12 @@ struct point {
 struct ClassificationItem
 {
 	std::string name;
-	double distance;
+	std::string data;
+	double distance = 0;
+	double speed = 0;
 	point bottom_left;
 	point top_right;
-
-	Priority priority;
+	Priority priority = Priority::UNDEFINED;
 	
 	ClassificationItem(const std::string name) : name(name), bottom_left(point(0, 0)), top_right(point(0, 0)) {}
 	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), priority(Priority::UNDEFINED) {}
@@ -66,6 +67,7 @@ struct ClassificationItem
 		std::string s = "{";
 		append(s, "name", name, true, false);
 		append(s, "distance", std::to_string(distance), false, false);
+		append(s, "msg", data, true, false);
 		append(s, "priority", std::to_string(static_cast<int>(priority)), false, true);
 		append(s, "bottom_left", bottom_left.to_json(), false, false);
 		append(s, "top_right", top_right.to_json(), false, false);
