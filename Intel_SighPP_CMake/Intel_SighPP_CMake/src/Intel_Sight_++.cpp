@@ -185,7 +185,7 @@ int main(int argc, char** argv)
 	std::string name_prio_depth = "depth_prio";
 	std::string name_prio_smart = "smart_prio";
 	depth_priority prio_depth{&name_prio_depth};
-	smart_priority prio_smart(&name_prio_smart);
+	smart_priority prio_smart(name_prio_smart);
 	SPDLOG_INFO("Using prioritiser module: {}", prio_depth.get_name());
 
 	//std::string name_prio_size = "size";

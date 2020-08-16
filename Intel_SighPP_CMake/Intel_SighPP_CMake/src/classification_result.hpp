@@ -35,14 +35,17 @@ struct ClassificationItem
 {
 	std::string name;
 	std::string data;
+	std::string position;
 	double distance = 0;
 	double speed = 0;
 	point bottom_left;
 	point top_right;
+	point top_left;
+	point bottom_right;
 	Priority priority = Priority::UNDEFINED;
 	
-	ClassificationItem(const std::string name) : name(name), bottom_left(point(0, 0)), top_right(point(0, 0)) {}
-	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), priority(Priority::UNDEFINED) {}
+	ClassificationItem(const std::string name) : name(name), bottom_left(point(0, 0)), top_right(point(0, 0)),  top_left(point(0, 0)), bottom_right(point(0, 0)) {}
+	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), top_left(point(0, 0)), bottom_right(point(0, 0)), priority(Priority::UNDEFINED) {}
 
 
 
