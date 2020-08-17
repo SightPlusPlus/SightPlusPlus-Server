@@ -9,3 +9,4 @@ This project uses [Vcpkg](https://github.com/Microsoft/vcpkg) for library depend
 * tbb
 * websocketpp
 * spdlog
+* opencv3[contrib]
