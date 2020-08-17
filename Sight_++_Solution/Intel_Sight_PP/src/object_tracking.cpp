@@ -44,7 +44,7 @@ struct ObjectTracking {
 		for (int i = 0; i < items.size(); i++) {
 			if (!items[i].lock) {
 				items[i].track_point--;
-				if (items[i].track_point <= 0 || items[i].last_seen >= 5) {
+				if (items[i].track_point <= 0) {
 					items.erase(items.begin() + i);
 				}
 			}
@@ -53,11 +53,11 @@ struct ObjectTracking {
 			}
 		}
 		frame_time.push_back(stamp);
-		if (frame_time.size() > track_frame) {
+		if (frame_time.size() > track_frame+1) {
 			frame_time.erase(frame_time.begin());
 		}
 		for (int i = 0; i < items.size(); i++) {
-			if (items[i].track_point ==5 && items[i].distance.size() >= 2 && items[i].last_seen < 5) {
+			if (items[i].track_point ==5 && items[i].distance.size() >= 2) {
 				int distance_size = items[i].distance.size();
 				int time_size = frame_time.size();
 				items[i].speed = (items[i].distance[distance_size - 2]- items[i].distance[distance_size - 1]) / (frame_time[time_size - 1]- frame_time[time_size -1- items[i].last_seen]);
