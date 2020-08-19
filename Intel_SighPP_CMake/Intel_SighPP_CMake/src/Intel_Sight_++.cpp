@@ -10,6 +10,7 @@
 #include "interface_controller/output_stream_controller.cpp"
 #include <iostream>
 #include "ml_lib/caffe_impl.cpp"
+#include "ml_lib/yolo_impl.cpp"
 #include "priority_lib/depth_priority.hpp"
 #include "priority_lib/size_priority.cpp"
 #include "classification_result.hpp"
