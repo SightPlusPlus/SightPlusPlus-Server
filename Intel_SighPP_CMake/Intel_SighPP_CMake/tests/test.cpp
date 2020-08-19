@@ -36,10 +36,19 @@ namespace {
 		}
 
 		virtual void SetUp() {
-			d = new smart_priority();
+			d = new smart_priority("test");
 			item1.distance = 0.6;
+			item1.bottom_right = *(new point(350, 290));
+			item1.top_left = *(new point(190, 150));
+
 			item2.distance = 0.7;
-			item3.distance = 0.5;
+			item2.bottom_right = *(new point(512, 70));
+			item2.top_left = *(new point(480, 10));
+
+			item2.distance = 1.5;
+			item2.bottom_right = *(new point(420, 300));
+			item2.top_left = *(new point(210, 10));
+
 			test_items.push_back(item1);
 			test_items.push_back(item2);
 			test_items.push_back(item3);
@@ -57,12 +66,45 @@ namespace {
 	};
 
 }
-TEST_F(FooTest, TestFoo) {
-	
+TEST_F(FooTest, TestSmartCreation) {
+
+	std::string name = "cup";
+	auto output = d->run(&test_vector);
+	auto data = output->objects;
+
+	std::cout << data[0].to_string();
+
+	ASSERT_EQ(name, data[0].name);
+
 }
 
+}
+TEST_F(FooTest, TestCorrectPosition) {
+
+	std::string name = "cup";
+	auto output = d->run(&test_vector);
+	auto data = output->objects;
+
+	std::cout << data[0].to_string();
+
+	ASSERT_EQ(name, data[0].name);
+
+}
+
+}
+TEST_F(FooTest, TestSmartCreation) {
+
+	std::string name = "cup";
+	auto output = d->run(&test_vector);
+	auto data = output->objects;
+
+	std::cout << data[0].to_string();
+
+	ASSERT_EQ(name, data[0].name);
+
+}
 TEST(SmartCreationTest, TestCreation) {
-	std::string name = "sven";
+	std::string name = "default";
 	smart_priority* d = new smart_priority();
 	ASSERT_EQ(name, d->get_name());
 
