@@ -24,7 +24,7 @@ struct CaffeModelImpl : public ModelInterface {
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
 
-	const float confidence_threshold = 0.8f;
+	const float confidence_threshold = 0.9f;
 
 	CaffeModelImpl(std::string prototxt_path, std::string caffemodel_path, const std::string class_names_path)
 	{

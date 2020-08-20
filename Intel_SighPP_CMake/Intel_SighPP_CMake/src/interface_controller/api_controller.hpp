@@ -8,7 +8,7 @@
 class ApiController
 {
 	std::vector<ApiUserInterface*> api_users_;
-
+	int duration = 0;
 public:
 	ApiController() = default;;
 	void add_user(ApiUserInterface& user);
