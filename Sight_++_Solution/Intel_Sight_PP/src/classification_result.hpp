@@ -70,9 +70,9 @@ struct ClassificationItem
 		std::string s = "{";
 		append(s, "name", name, true, false);
 		append(s, "distance", std::to_string(distance), false, false);
-		append(s, "priority", std::to_string(static_cast<int>(priority)), false, true);
+		append(s, "priority", std::to_string(static_cast<int>(priority)), false, false);
 		append(s, "bottom_left", bottom_left.to_json(), false, false);
-		append(s, "top_right", top_right.to_json(), false, false);
+		append(s, "top_right", top_right.to_json(), false, true);
 		s.append("}");
 		return s;
 	}
