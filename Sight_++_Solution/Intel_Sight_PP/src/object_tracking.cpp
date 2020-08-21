@@ -10,14 +10,16 @@ struct TrackingItem
 	std::vector<double> distance;
 	std::vector<cv::Rect2d> rec;
 	cv::Ptr<cv::Tracker> tracker;
+	int id;
+	double confidence;
 	int counter;
 	int track_point;
 	bool lock;
 	double speed;
 	int last_seen;
 
-	TrackingItem(const std::string name, const std::vector<double> distance, const std::vector<cv::Rect2d> rec, const int counter, const int track_point, const bool lock, const double speed,const int last_seen, const cv::Mat color_matrix, const cv::Rect2d init_rec) :
-		name(name), distance(distance), rec(rec),  counter(counter), track_point(track_point), lock(lock), speed(speed), last_seen(last_seen)
+	TrackingItem(const std::string name, const std::vector<double> distance, const std::vector<cv::Rect2d> rec, const int id, const double confidence, const int counter, const int track_point, const bool lock, const double speed,const int last_seen, const cv::Mat color_matrix, const cv::Rect2d init_rec) :
+		name(name), distance(distance), rec(rec),  counter(counter), id(id), confidence(confidence), track_point(track_point), lock(lock), speed(speed), last_seen(last_seen)
 	{
 		tracker = cv::TrackerMOSSE::create();
 		tracker->init(color_matrix, init_rec);
@@ -74,12 +76,12 @@ struct ObjectTracking {
 			point right_bottom(br.x, tl.y);
 			point left_top(tl.x, br.y);
 			int distance_size = items[i].distance.size();
-			ClassificationItem new_result(items[i].name, items[i].distance[distance_size -1], left_bottom, right_top, right_bottom, left_top, items[i].counter, items[i].track_point, items[i].speed);
+			ClassificationItem new_result(items[i].name, items[i].distance[distance_size -1], items[i].id, items[i].confidence, left_bottom, right_top, right_bottom, left_top, items[i].counter, items[i].track_point, items[i].speed);
 			result_objects.push_back(new_result);
 		}
 		return result_objects;
 	}
-	void object_check(const cv::Mat color_matrix, cv::Rect2d object_rec,std::string name, double distance) {
+	void object_check(const cv::Mat color_matrix, cv::Rect2d object_rec,std::string name, double distance,double confidence) {
 		bool add_object = true;
 
 		for (int i = 0; i < update_items.size(); i++) {
@@ -108,7 +110,13 @@ struct ObjectTracking {
 			std::vector<cv::Rect2d> current_rec;
 			current_distance.push_back(distance);
 			current_rec.push_back(object_rec);
-			TrackingItem new_object(name,current_distance,current_rec,1,5,true,0,0,color_matrix, object_rec);
+			int new_id = 1;
+			for (int i = 0; i < items.size(); i++) {
+				if (items[i].name == name) {
+					new_id++;
+				}
+			}
+			TrackingItem new_object(name,current_distance,current_rec,new_id, confidence,1,5,true,0,0,color_matrix, object_rec);
 			items.push_back(new_object);
 			
 		}

@@ -123,7 +123,7 @@ struct CaffeModelImpl : public ModelInterface {
 						distance = centers.at<float>(1);
 					}
 
-					object_tracking.object_check(color_matrix, static_cast<cv::Rect2d>(object), class_names[object_class], distance);
+					object_tracking.object_check(color_matrix, static_cast<cv::Rect2d>(object), class_names[object_class], distance, confidence);
 					
 				}
 			}
@@ -131,6 +131,7 @@ struct CaffeModelImpl : public ModelInterface {
 		clock_t stamp = clock();
 		
 		classification_result.objects = object_tracking.post_process(stamp / (double)CLOCKS_PER_SEC);
+
 		return classification_result;
 	}
 };
