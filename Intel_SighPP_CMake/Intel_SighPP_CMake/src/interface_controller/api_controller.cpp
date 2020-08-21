@@ -15,7 +15,7 @@ void ApiController::new_items(const std::vector<PrioritisedClassificationResult>
 	SPDLOG_INFO("Sending items to API users");
 
 
-	int time = clock();
+	int time = std::clock();
 
 	SPDLOG_INFO(std::to_string(time - duration) + ": Outside the time");
 	if ((time - duration) > 2000)

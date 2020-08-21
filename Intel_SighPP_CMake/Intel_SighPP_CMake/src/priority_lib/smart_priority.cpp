@@ -68,7 +68,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	std::string result = "";
 	if (x_right < out_left) // Out left side
 	{
-		if (y_bottom > above)
+		if (y_bottom < above)
 		{
 			result += "Above, out left";
 			location_w = Location::OUT_LEFT;
@@ -84,7 +84,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_left > out_right) //out right side
 	{
-		if (y_bottom > above)
+		if (y_bottom < above)
 		{
 			result += "Above, out right";
 			location_w = Location::OUT_RIGHT;
@@ -98,7 +98,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_left < mid_w && x_right > mid_w) // centre
 	{
-		if (y_bottom > above)
+		if (y_bottom < above)
 		{
 			result += "Above, centre";
 			location_h = Height::ABOVE;
@@ -112,7 +112,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_right > out_left && x_right < mid_w) // in left
 	{
-		if (y_bottom > above)
+		if (y_bottom < above)
 		{
 			result += "Above, in left";
 			location_w = Location::IN_LEFT;
@@ -126,7 +126,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_left < out_right && x_left > mid_w) // in right
 	{
-		if (y_bottom > above)
+		if (y_bottom < above)
 		{
 			result += "Above, in right";
 			location_w = Location::IN_RIGHT;
