@@ -105,7 +105,12 @@ struct ObjectTracking {
 			}
 			
 		}
+
 		if (add_object) {
+			bool object_id[100];
+			for (int j = 0; j < 100; j++) {
+				object_id[j] = true;
+			}
 			std::vector<double> current_distance;
 			std::vector<cv::Rect2d> current_rec;
 			current_distance.push_back(distance);
@@ -113,8 +118,15 @@ struct ObjectTracking {
 			int new_id = 1;
 			for (int i = 0; i < items.size(); i++) {
 				if (items[i].name == name) {
-					new_id++;
+					object_id[items[i].id] = false;
 				}
+			}
+			for (int j = 1; j < 100; j++) {
+				if (object_id[j]) {
+					new_id = j;
+					break;
+				}
+
 			}
 			TrackingItem new_object(name,current_distance,current_rec,new_id, confidence,1,5,true,0,0,color_matrix, object_rec);
 			items.push_back(new_object);
