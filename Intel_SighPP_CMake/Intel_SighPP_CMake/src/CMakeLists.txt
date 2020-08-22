@@ -41,7 +41,7 @@ set(SRC_FILES
 
 
 add_executable(intel_sightPP ${SRC_FILES}) #"Intel Sight ++.cpp" "service_controller.cpp") #${SRC_FILES})
-	
+
     #
   #  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/models/MobileNetSSD_deploy.caffemodel
     #${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/models/MobileNetSSD_deploy.prototxt

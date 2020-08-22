@@ -10,7 +10,6 @@ inline std::string append(std::string& s, const std::string key, const std::stri
 	s.append(" \"").append(key).append("\": ");
 	if (is_string_value) s.append("\"").append(value).append("\"");
 	else s.append(value);
-
 	if (is_last) return s;
 	return s.append(", ");
 }

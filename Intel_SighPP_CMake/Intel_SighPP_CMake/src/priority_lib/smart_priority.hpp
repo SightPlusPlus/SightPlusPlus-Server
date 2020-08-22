@@ -30,9 +30,9 @@ public:
 	void msg_add_name(ClassificationItem& item);
 	void msg_add_distance(ClassificationItem& item);
 	void determine_prio(ClassificationItem& item);
-	int run_emegency_rules(ClassificationItem& item);
-	int run_high_rules(ClassificationItem& item);
-	int run_medium_rules(ClassificationItem& item);
+	bool run_emegency_rules(ClassificationItem& item);
+	bool run_high_rules(ClassificationItem& item);
+	bool run_medium_rules(ClassificationItem& item);
 
 	void sort() {
 		std::sort(all_data.begin(), all_data.end(), [](const ClassificationItem& item_1, const ClassificationItem& item_2) {

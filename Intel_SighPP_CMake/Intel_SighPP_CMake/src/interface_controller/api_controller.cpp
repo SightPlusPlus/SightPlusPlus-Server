@@ -17,10 +17,9 @@ void ApiController::new_items(const std::vector<PrioritisedClassificationResult>
 
 	int time = std::clock();
 
-	SPDLOG_INFO(std::to_string(time - duration) + ": Outside the time");
+	SPDLOG_INFO("Testing Time counter, time is {} outside loop", std::to_string(time - duration));
 	if ((time - duration) > 2000)
 	{
-		SPDLOG_INFO(std::to_string(time - duration) + ": Working on time");
 		for (auto&& result : results)
 		{
 			for (auto&& item : result.objects)

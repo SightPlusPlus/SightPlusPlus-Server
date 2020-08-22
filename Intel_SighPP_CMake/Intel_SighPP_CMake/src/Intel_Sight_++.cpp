@@ -182,11 +182,11 @@ int main(int argc, char** argv)
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
-	std::string name_prio_depth = "depth_prio";
-	std::string name_prio_smart = "smart_prio";
+	std::string name_prio_depth = "prio_depth";
+	std::string name_prio_smart = "prio_smart";
 	depth_priority prio_depth{&name_prio_depth};
 	smart_priority prio_smart(name_prio_smart);
-	SPDLOG_INFO("Using prioritiser module: {}", prio_depth.get_name());
+	SPDLOG_INFO("Using prioritiser module: {}", prio_smart.get_name());
 
 	//std::string name_prio_size = "size";
 	//priority_module* prio_depth = new size_priority(&name_prio_size);

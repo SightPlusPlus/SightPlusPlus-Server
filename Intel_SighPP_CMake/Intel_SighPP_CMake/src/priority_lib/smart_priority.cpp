@@ -13,14 +13,14 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 	msg_add_name(item);
 	msg_add_distance(item);
 
-		int prio = run_emegency_rules(item);
-		if (prio < 1)
+		bool prio = run_emegency_rules(item);
+		if (prio)
 		{
 			prio = run_high_rules(item);
-			if (prio < 1)
+			if (prio)
 			{
 				prio = run_medium_rules(item);
-				if (prio < 1)
+				if (prio)
 				{
 					item.priority = Priority::LOW;
 				}
@@ -169,7 +169,7 @@ void smart_priority::msg_add_distance(ClassificationItem& item) {
 	}
 	item.msg += insert;
 }
-int smart_priority::run_emegency_rules(ClassificationItem& item) {
+bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 
 	double distance = item.distance;
 	double speed = item.speed;
@@ -179,7 +179,7 @@ int smart_priority::run_emegency_rules(ClassificationItem& item) {
 		if (is_middle(item))
 		{
 			item.priority = Priority::URGENT;
-			return -1;
+			return true;
 		}
 	}
 	if (distance < 1)
@@ -187,31 +187,31 @@ int smart_priority::run_emegency_rules(ClassificationItem& item) {
 		if (speed > 0.4 && is_middle(item))
 		{
 			item.priority = Priority::URGENT;
-			return -1;
+			return true;
 		}
 	}
 	else if (distance < 2 && is_middle(item)) {
 		if (speed > 0.8)
 		{
 			item.priority = Priority::URGENT;
-			return -1;
+			return true;
 		}
 	}
 
-	return 0;
+	return false;
 
 }
 
 
 
-int smart_priority::run_high_rules(ClassificationItem& item) {
+bool smart_priority::run_high_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 
 	if (distance < 1.5)
 	{
 		item.priority = Priority::HIGH;
-		return 1;
+		return true;
 	}
 
 	if (distance < 2)
@@ -219,7 +219,7 @@ int smart_priority::run_high_rules(ClassificationItem& item) {
 		if (speed > 0.4 && is_middle(item))
 		{
 			item.priority = Priority::HIGH;
-			return 1;
+			return true;
 		}
 	}
 
@@ -228,7 +228,7 @@ int smart_priority::run_high_rules(ClassificationItem& item) {
 		if (speed > 0.2)
 		{
 			item.priority = Priority::HIGH;
-			return 1;
+			return true;
 		}
 	}
 
@@ -238,13 +238,13 @@ int smart_priority::run_high_rules(ClassificationItem& item) {
 		if (speed > 0.9)
 		{
 			item.priority = Priority::HIGH;
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 
 }
-int smart_priority::run_medium_rules(ClassificationItem& item) {
+bool smart_priority::run_medium_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 
@@ -253,7 +253,7 @@ int smart_priority::run_medium_rules(ClassificationItem& item) {
 		if (speed > -0.2)
 		{
 			item.priority = Priority::MEDIUM;
-			return 1;
+			return true;
 		}
 	}
 	else if (item.distance < 7)
@@ -261,15 +261,9 @@ int smart_priority::run_medium_rules(ClassificationItem& item) {
 		if (speed > 0)
 		{
 			item.priority = Priority::MEDIUM;
-			return 1;
+			return true;
 		}
 	}
 
-	return 0;
+	return false;
 }
-
-
-
-
-
-

@@ -3,17 +3,21 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_TOOLCHAIN_FILE C:/Users/svens/vcpkg/scripts/buildsystems/vcpkg.cmake
-  CACHE STRING "Vcpkg toolchain file")
-set(VCPKG_TARGET_TRIPLET x64-windows)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/<$<$CONFIG:DEBUG$>:${OUTPUT_DEBUG}$><$<$CONFIG:RELEASE$>:${OUTPUT_REL}$>")
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/${OUTPUT_DEBUG})
+# Output directory for libraries in Release configuration
+#sset(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/${OUTPUT_REL})
+#set(CMAKE_TOOLCHAIN_FILE C:/Users/svens/vcpkg/scripts/buildsystems/vcpkg.cmake
+# CACHE STRING "Vcpkg toolchain file")
+#set(VCPKG_TARGET_TRIPLET x64-windows)
 
+#set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 project (Intel_SighPP_CMake VERSION 0.1)
 
 
-find_package(OpenCV CONFIG REQUIRED)
+find_package(OpenCV 3.4 CONFIG REQUIRED)
 find_package(realsense2 CONFIG REQUIRED)
 find_package(TBB CONFIG REQUIRED)
 find_package(websocketpp CONFIG REQUIRED)
