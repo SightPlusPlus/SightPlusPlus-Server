@@ -162,10 +162,10 @@ void smart_priority::msg_add_distance(ClassificationItem& item) {
 	double value = std::ceil(item.distance * 100.0) / 100.0;
 	std::string insert = "";
 	if (value > 1) {
-		insert = ", " + to_string_precise(value) + " meters";
+		insert = ", " + two_deci::to_string_precise(value) + " meters";
 	}
 	else {
-		insert = ", " + to_string_precise(value) + " meter";
+		insert = ", " + two_deci::to_string_precise(value) + " meter";
 	}
 	item.msg += insert;
 }

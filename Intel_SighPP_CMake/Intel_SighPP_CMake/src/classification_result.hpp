@@ -25,8 +25,8 @@ struct point {
 	std::string to_json()
 	{
 		std::string s = "{";
-		append(s, "x", to_string_precise(x), true, false);
-		append(s, "y", to_string_precise(y), true, true);
+		append(s, "x", two_deci::to_string_precise(x), true, false);
+		append(s, "y", two_deci::to_string_precise(y), true, true);
 		s.append("}");
 		return s;
 	}
@@ -73,7 +73,7 @@ struct ClassificationItem
 	{
 		std::string s = "{";
 		append(s, "name", name, true, false);
-		append(s, "distance", to_string_precise(distance), false, false);
+		append(s, "distance", two_deci::to_string_precise(distance), false, false);
 		append(s, "msg", msg, true, false);
 		append(s, "priority", std::to_string(static_cast<int>(priority)),true,false);
 		append(s, "bottom_left", bottom_left.to_json(), false, false);

@@ -26,8 +26,10 @@ enum class Height
 	BELOW = 2
 };
 
-namespace {
-	std::string to_string_precise(double& d) {
+
+struct two_deci
+{
+	static std::string to_string_precise(double& d) {
 		std::ostringstream streamObj;
 		//Add double to stream
 		streamObj << std::setprecision(2);
@@ -36,4 +38,5 @@ namespace {
 		std::string strObj = streamObj.str();
 		return strObj;
 	}
-}
+};
+
