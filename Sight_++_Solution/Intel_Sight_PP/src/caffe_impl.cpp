@@ -11,7 +11,7 @@
 #include "ml_interface.hpp"
 #include "model_helper.hpp"
 #include "classification_result.hpp"
-#include "object_tracking.cpp"
+#include "object_tracking.hpp"
 
 // Based on the rs-dnn example
 
