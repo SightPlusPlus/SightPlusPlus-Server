@@ -1,0 +1,53 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Visual Studio 16 2019 Win64",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64" ],
+      "buildRoot": "${projectDir}\\build\\${name}",
+      "installRoot": "${projectDir}\\install\\${name}",
+      "cmakeCommandArgs": "-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          "value": "x64-windows",
+          "type": "STRING"
+        },
+        {
+          "name": "TBB_DIR",
+          "value": "C:/dev/vcpkg/installed/x64-windows/share/tbb",
+          "type": "PATH"
+        },
+        {
+          "name": "realsense2_DIR",
+          "value": "C:/dev/vcpkg/installed/x64-windows/share/realsense2",
+          "type": "PATH"
+        },
+        {
+          "name": "OpenCV_DIR",
+          "value": "C:/dev/vcpkg/installed/x64-windows/share/opencv",
+          "type": "PATH"
+        },
+        {
+          "name": "VCPKG_APPLOCAL_DEPS",
+          "value": "true",
+          "type": "BOOL"
+        },
+        {
+          "name": "VCPKG_VERBOSE",
+          "value": "false",
+          "type": "BOOL"
+        },
+        {
+          "name": "spdlog_DIR",
+          "value": "C:/Users/svens/vcpkg/installed/x64-windows/share/spdlog",
+          "type": "PATH"
+        }
+      ],
+      "cmakeToolchain": "C:/Users/svens/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    }
+  ]
+}
