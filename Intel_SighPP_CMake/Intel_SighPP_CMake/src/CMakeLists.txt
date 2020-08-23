@@ -27,6 +27,8 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_controller.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/depth_priority.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/depth_priority.hpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/smart_priority.cpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/smart_priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/prioritiser.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.cpp
@@ -39,7 +41,7 @@ set(SRC_FILES
 
 
 add_executable(intel_sightPP ${SRC_FILES}) #"Intel Sight ++.cpp" "service_controller.cpp") #${SRC_FILES})
-	
+
     #
   #  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/models/MobileNetSSD_deploy.caffemodel
     #${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/models/MobileNetSSD_deploy.prototxt

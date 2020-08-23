@@ -2,17 +2,18 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include <sstream>
+#include <iomanip>
 #include "./priority_lib/priority.hpp"
 inline std::string append(std::string& s, const std::string key, const std::string value, const bool is_string_value, const bool is_last)
 {
 	s.append(" \"").append(key).append("\": ");
 	if (is_string_value) s.append("\"").append(value).append("\"");
 	else s.append(value);
-
 	if (is_last) return s;
 	return s.append(", ");
 }
+
 
 
 struct point {
@@ -24,8 +25,8 @@ struct point {
 	std::string to_json()
 	{
 		std::string s = "{";
-		append(s, "x", std::to_string(x), false, false);
-		append(s, "y", std::to_string(y), false, true);
+		append(s, "x", two_deci::to_string_precise(x), true, false);
+		append(s, "y", two_deci::to_string_precise(y), true, true);
 		s.append("}");
 		return s;
 	}
@@ -34,14 +35,21 @@ struct point {
 struct ClassificationItem
 {
 	std::string name;
-	double distance;
+	std::vector<std::string> data;
+	std::string msg;
+	std::string position;
+	double distance = 0;
+	double speed = 0;
 	point bottom_left;
 	point top_right;
-
-	Priority priority;
+	point top_left;
+	point bottom_right;
+	Priority priority = Priority::UNDEFINED;
+	Location location = Location::CENTRE;
+	Height height = Height::CENTRE;
 	
-	ClassificationItem(const std::string name) : name(name), bottom_left(point(0, 0)), top_right(point(0, 0)) {}
-	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), priority(Priority::UNDEFINED) {}
+	ClassificationItem(const std::string name) : name(name), bottom_left(point(0, 0)), top_right(point(0, 0)),  top_left(point(0, 0)), bottom_right(point(0, 0)) {}
+	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), top_left(point(280, 150)), bottom_right(point(400, 300)), priority(Priority::UNDEFINED) {}
 
 
 
@@ -65,11 +73,13 @@ struct ClassificationItem
 	{
 		std::string s = "{";
 		append(s, "name", name, true, false);
-		append(s, "distance", std::to_string(distance), false, false);
-		append(s, "priority", std::to_string(static_cast<int>(priority)), false, true);
+		append(s, "distance", two_deci::to_string_precise(distance), false, false);
+		append(s, "msg", msg, true, false);
+		append(s, "priority", std::to_string(static_cast<int>(priority)),true,false);
 		append(s, "bottom_left", bottom_left.to_json(), false, false);
-		append(s, "top_right", top_right.to_json(), false, false);
+		append(s, "top_right", top_right.to_json(), false, true);
 		s.append("}");
+
 		return s;
 	}
 
