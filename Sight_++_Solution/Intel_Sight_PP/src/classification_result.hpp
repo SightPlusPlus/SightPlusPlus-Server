@@ -37,10 +37,15 @@ struct ClassificationItem
 	double distance;
 	point bottom_left;
 	point top_right;
-
+	point bottom_right;
+	point top_left;
+	int counter;
+	int track_point;
+	double speed;
 	Priority priority;
 
-	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), priority(Priority::UNDEFINED) {}
+	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right, const point bottom_right, const point top_left, const int counter, const int track_point, const double speed) :
+		name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), bottom_right(bottom_right), top_left(top_left), counter(counter), track_point(track_point), speed(speed), priority(Priority::UNDEFINED) {}
 
 
 	
@@ -65,9 +70,9 @@ struct ClassificationItem
 		std::string s = "{";
 		append(s, "name", name, true, false);
 		append(s, "distance", std::to_string(distance), false, false);
-		append(s, "priority", std::to_string(static_cast<int>(priority)), false, true);
+		append(s, "priority", std::to_string(static_cast<int>(priority)), false, false);
 		append(s, "bottom_left", bottom_left.to_json(), false, false);
-		append(s, "top_right", top_right.to_json(), false, false);
+		append(s, "top_right", top_right.to_json(), false, true);
 		s.append("}");
 		return s;
 	}
