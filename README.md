@@ -31,6 +31,7 @@ This section is an instruction guide on how to install and run CMake. This will 
 
 #### Running the software within VS
 - Now that you have built the CMake, you can run the system in debug mode from VS.
+- Note: You may need to copy the models folder to the location of the executable as this is needed, especially if you changed the build directory.
 - There are a few options.
 - Option 1, target view:
   - In this method, first, navigate to the solution explorer to the right to the home icon.
@@ -64,9 +65,18 @@ camke --build .
 OS/linux:
 make .
 ```
-- The executables will now be found within bin/debug
+- The executables will now be found within your desired build folder. bin/debug by default.
 - Note: You will also be able to open the VS project file via the *.sln* file within the build folder.
-- run the
+- Note: You may need to copy the models folder to the location of the executable as this is needed, especially if you changed the build directory.
+- Following you can run the executable such as Inter_SightPP.exe with the flags following.
+
+###flags
+Flags for running the system include:
+- "realsense" = run the system using a realsense camera
+- "-color" = view the rgb output from the service for testing
+- "-depth" = view the deoth output from the service for testing
+- "-rec <filename>" = record input to a file
+- "-play <filename>" = set imput to a file
 ## User Manual
 ## Future work
 ## Contrubuting
