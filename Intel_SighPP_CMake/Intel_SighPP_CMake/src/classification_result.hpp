@@ -34,22 +34,33 @@ struct point {
 
 struct ClassificationItem
 {
+
+
 	std::string name;
 	std::vector<std::string> data;
 	std::string msg;
 	std::string position;
 	double distance = 0;
 	double speed = 0;
+	int id = 0;;
+	double confidence = 0;;
+	int track_point = 0;;
+	int counter = 0;;
 	point bottom_left;
 	point top_right;
-	point top_left;
 	point bottom_right;
+	point top_left;
 	Priority priority = Priority::UNDEFINED;
 	Location location = Location::CENTRE;
 	Height height = Height::CENTRE;
 	
+	//Creation of tests
 	ClassificationItem(const std::string name) : name(name), bottom_left(point(0, 0)), top_right(point(0, 0)),  top_left(point(0, 0)), bottom_right(point(0, 0)) {}
-	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), top_left(point(280, 150)), bottom_right(point(400, 300)), priority(Priority::UNDEFINED) {}
+	//YOLO MODEL CONSTRUCT RESULTS. TODO: Standardise to CAFFE CONSTRUCTOR
+	ClassificationItem(const std::string name, const double distance, const point bottom_left, const point top_right) : name(name), distance(distance), bottom_left(bottom_left), top_right(top_right), top_left(point(0, 0)), bottom_right(point(0, 0)) {}
+	//CAFFE MODEL CONSTRUCT RESULTS
+	ClassificationItem(const std::string name, const double distance, const int id, const double confidence, const point bottom_left, const point top_right, const point bottom_right, const point top_left, const int counter, const int track_point, const double speed) :
+		name(name), distance(distance), confidence(confidence), id(id), bottom_left(bottom_left), top_right(top_right), bottom_right(bottom_right), top_left(top_left), counter(counter), track_point(track_point), speed(speed), priority(Priority::UNDEFINED) {}
 
 
 
@@ -73,7 +84,7 @@ struct ClassificationItem
 	{
 		std::string s = "{";
 		append(s, "name", name, true, false);
-		append(s, "distance", two_deci::to_string_precise(distance), false, false);
+		append(s, "distance", two_deci::to_string_precise(distance), false, false);   
 		append(s, "msg", msg, true, false);
 		append(s, "priority", std::to_string(static_cast<int>(priority)),true,false);
 		append(s, "bottom_left", bottom_left.to_json(), false, false);
@@ -84,6 +95,7 @@ struct ClassificationItem
 	}
 
 };
+
 
 struct ClassificationResult {
 	// TODO What results to store?

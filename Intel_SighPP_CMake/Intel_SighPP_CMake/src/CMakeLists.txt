@@ -25,6 +25,8 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_impl_rgb.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_interface.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_controller.hpp
+   ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ ML_Lib/object_tracking.cpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/object_tracking.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/depth_priority.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/depth_priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/smart_priority.cpp

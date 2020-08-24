@@ -14,13 +14,13 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 	msg_add_distance(item);
 
 		bool prio = run_emegency_rules(item);
-		if (prio)
+		if (!prio)
 		{
 			prio = run_high_rules(item);
-			if (prio)
+			if (!prio)
 			{
 				prio = run_medium_rules(item);
-				if (prio)
+				if (!prio)
 				{
 					item.priority = Priority::LOW;
 				}
