@@ -47,7 +47,8 @@ This section is an instruction guide on how to install and run CMake. This will 
 
 #### Building Cmake in terminal
 - To build the CMake in the terminal, navigate to the top file of the CMake repo.
-- Create a new folder that you would like to build the repo in.
+- Create a new folder that you would like to build the repo in
+  - Please use a name from this list so it is ignored from the repo: output,build,out,compile,debug or test
 - Run the following command to build the repo into a visual studio source. Change the vcpkg location to your own path. Note: one could also remove the "Visual Studio 16 2019" to build it into your systems default Packages.
 ```bash
 cmake .. -G "Visual Studio 16 2019" "-DCMAKE_TOOLCHAIN_FILE=<Path to vcpkg>/vcpkg/scripts/buildsystems/vcpkg.cmake"
