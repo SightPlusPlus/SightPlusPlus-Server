@@ -6,7 +6,7 @@
 #include "tbb/parallel_for_each.h"
 #include "model_helper.hpp"
 #include <opencv2/imgproc.hpp>
-
+#include "object_tracking.hpp"
 #include "../classification_result.hpp"
 using namespace std;
 
@@ -25,6 +25,7 @@ struct YoloModelImpl : public ModelInterface {
 	const float meanVal = 127.5;
 
 	const float confidence_threshold = 0.8f;
+	ObjectTracking object_tracking;
 	/// <summary>
 	/// Constrcutor to create a arknet-based object recognition network
 	/// </summary>
@@ -133,10 +134,7 @@ struct YoloModelImpl : public ModelInterface {
 					else {
 						distance = centers.at<float>(1);
 					}
-					// Two point's locations to draw the rectangle
-					point left_bottom(left,top);
-					point right_top(left+width, top+height);
-					classification_result.objects.emplace_back(class_names[classIdPoint.x], distance, left_bottom, right_top);
+					object_tracking.object_check(color_matrix, static_cast<cv::Rect2d>(object), class_names[object_class], distance, confidence);
 	            }
 
 	        }
