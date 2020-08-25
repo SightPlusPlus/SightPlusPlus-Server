@@ -11,8 +11,9 @@
 #include "../classification_result.hpp"
 using namespace std;
 
-// Based on the internet example
-
+/// <summary>
+/// This struct creates a darknet-based YOLOV3 object recognition network
+/// </summary>
 struct YoloModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
@@ -26,7 +27,12 @@ struct YoloModelImpl : public ModelInterface {
 	const float nmsThreshold = 0.4;
 
 	const float confidence_threshold = 0.8f;
-	
+	/// <summary>
+	/// Constrcutor to create a arknet-based YOLOV3 object recognition network
+	/// </summary>
+	/// <param name="modelConfiguration">path to the cfg files where the structures of YOLOV3 network are defined</param>
+	/// <param name="modelWeights">path to the weight files where weights for correspond cfg-file are defined</param>
+	/// <param name="class_names_path">path to the txt file where classes of objects are defined </param>
 	YoloModelImpl(string modelConfiguration, string modelWeights, const string class_names_path)
 	{
 		cout << "Constructing a Yolo model impl\n";
@@ -41,7 +47,13 @@ struct YoloModelImpl : public ModelInterface {
 
 	}
 
-	// This is similar to the caffe_imple example
+	/// <summary>
+ 	/// Identify objects and calculate distance of the objects
+ 	/// Based on the internet example(https://www.learnopencv.com/deep-learning-based-object-detection-using-yolov3-with-opencv-python-c/)
+ 	/// </summary>
+ 	/// <param name="color_matrix">color matrix obtained from the camera</param>
+ 	/// <param name="depth_matrix">depth matrix obtained from the camera</param>
+ 	/// <returns>a list of objects with class names, distance and locations </returns>
 	ClassificationResult do_work(cv::Mat color_matrix, cv::Mat depth_matrix) override {
 		
 		cout << "Doing Yolo impl work" << endl;
@@ -55,7 +67,7 @@ struct YoloModelImpl : public ModelInterface {
 		vector<cv::Mat> outs;
 
 	    static vector<cv::String> names;
-	    //Get output names from output layers
+	    // Get output names from output layers
 	    if(names.empty()){
 	        vector<int> outLayers = net.getUnconnectedOutLayers();
 	        vector<cv::String> layersNames = net.getLayerNames();
@@ -91,17 +103,17 @@ struct YoloModelImpl : public ModelInterface {
 
 	                cv::Rect object(static_cast<int>(left), static_cast<int>(top),static_cast<int>(width), static_cast<int>(height));
 					object = object & cv::Rect(0, 0, depth_matrix.cols, depth_matrix.rows);
-					// calculate depth (distance) using k-mean algorithms
-					// simialr to the caffe_impl file
+					// Calculate valid depth inside the detection region
 					cv::Mat object_depth = depth_matrix(object);
 					cv::Mat pixel_array;
 					object_depth.convertTo(pixel_array, CV_32F);
 					pixel_array = pixel_array.reshape(1, pixel_array.total());
 					cv::Mat label, centers;
+					// Calculate depth (distance) using k-mean algorithms
 					kmeans(pixel_array, 2, label,
 							cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 10, 0.1), 1,
 							cv::KMEANS_PP_CENTERS, centers);
-					// replace pixel values with their center value:
+					// Replace pixel values with their center value:
 					float* p = pixel_array.ptr<float>();
 					int group_zero = 0;
 					int group_one = 0;
@@ -123,6 +135,7 @@ struct YoloModelImpl : public ModelInterface {
 					else {
 						distance = centers.at<float>(1);
 					}
+					// Two point's locations to draw the rectangle
 					point left_bottom(left,top);
 					point right_top(left+width, top+height);
 					classification_result.objects.emplace_back(class_names[classIdPoint.x], distance, left_bottom, right_top);
