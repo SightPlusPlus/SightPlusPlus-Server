@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "../classification_result.hpp"
-#include "ml_interface.hpp"
 #include "../cv-helpers.hpp"
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
@@ -16,18 +15,14 @@
 /// </summary>
 class MLController {
 
-	// The following two lines are for testing and demonstration, not used in the actual system
-
-	//std::vector<ModelInterface<rs2::video_frame>*> rgb_models;
-	//std::vector<ModelInterface<rs2::depth_frame>*> depth_models;
-
 	std::vector<ModelInterface*> models_;
 
 	tbb::concurrent_vector<ClassificationResult> results_;
 
 public:
 	/// <summary>
-	/// Get's the results and clears them, so that they are not used again
+	/// Get all objects with their classes, distance and corresponding realtive locations within the frame
+	/// and clears them afterwards, so that they are not used again to avoid reusing the same result in the following frames
 	/// </summary>
 	std::vector<ClassificationResult> get_and_clear_results()
 	{
@@ -67,15 +62,6 @@ public:
 	{
 		models_.push_back(&model);
 	}
-
-	// The following two functions are for testing and demonstration, not used in the actual system
-	//void add_rgb_model(ModelInterface<rs2::video_frame>& model) {
-	//	rgb_models.push_back(&model);
-	//}
-	//
-	//void add_depth_model(ModelInterface<rs2::depth_frame>& model) {
-	//	depth_models.push_back(&model);
-	//}
 
 	/// <summary>
 	/// Gets the size of the list containing all object recognition models added so far

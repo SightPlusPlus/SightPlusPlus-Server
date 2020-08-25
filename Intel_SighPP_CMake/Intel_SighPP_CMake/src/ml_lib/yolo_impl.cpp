@@ -4,7 +4,6 @@
 #include <iomanip>
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
-#include "ml_interface.hpp"
 #include "model_helper.hpp"
 #include <opencv2/imgproc.hpp>
 
@@ -12,7 +11,7 @@
 using namespace std;
 
 /// <summary>
-/// This struct creates a darknet-based YOLOV3 object recognition network
+/// This struct creates a darknet-based object recognition network
 /// </summary>
 struct YoloModelImpl : public ModelInterface {
 
@@ -24,18 +23,17 @@ struct YoloModelImpl : public ModelInterface {
 	const float WHRatio = inWidth / (float)inHeight;
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
-	const float nmsThreshold = 0.4;
 
 	const float confidence_threshold = 0.8f;
 	/// <summary>
-	/// Constrcutor to create a arknet-based YOLOV3 object recognition network
+	/// Constrcutor to create a arknet-based object recognition network
 	/// </summary>
-	/// <param name="modelConfiguration">path to the cfg files where the structures of YOLOV3 network are defined</param>
-	/// <param name="modelWeights">path to the weight files where weights for correspond cfg-file are defined</param>
-	/// <param name="class_names_path">path to the txt file where classes of objects are defined </param>
+	/// <param name="modelConfiguration">relative path to the cfg files where the structures of network are defined</param>
+	/// <param name="modelWeights">relative path to the weight files where weights for correspond cfg-file are defined</param>
+	/// <param name="class_names_path">relative path to the txt file where classes of objects are defined </param>
 	YoloModelImpl(string modelConfiguration, string modelWeights, const string class_names_path)
 	{
-		cout << "Constructing a Yolo model impl\n";
+		cout << "Constructing a darknet-based model impl\n";
 		
 		net = cv::dnn::readNetFromDarknet(modelConfiguration,modelWeights);
 		
