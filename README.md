@@ -9,6 +9,7 @@ MSc IXN Group Thesis in collaboraiton with Intel
 This project uses [Vcpkg](https://github.com/Microsoft/vcpkg) for library dependencies. Install the following libraries with Vcpkg to run the solution (make sure to install the 64-bit versions, as this system is being developed with 64-bit systems in mind):
 
 * realsense2
+* opencv3
 * opencv3[contrib]
 * tbb
 * websocketpp
@@ -30,6 +31,7 @@ This section is an instruction guide on how to install and run CMake. This will 
 
 #### Running the software within VS
 - Now that you have built the CMake, you can run the system in debug mode from VS.
+- Note: You may need to copy the models folder to the location of the executable as this is needed, especially if you changed the build directory.
 - There are a few options.
 - Option 1, target view:
   - In this method, first, navigate to the solution explorer to the right to the home icon.
@@ -46,7 +48,8 @@ This section is an instruction guide on how to install and run CMake. This will 
 
 #### Building Cmake in terminal
 - To build the CMake in the terminal, navigate to the top file of the CMake repo.
-- Create a new folder that you would like to build the repo in.
+- Create a new folder that you would like to build the repo in
+  - Please use a name from this list so it is ignored from the repo: output,build,out,compile,debug or test
 - Run the following command to build the repo into a visual studio source. Change the vcpkg location to your own path. Note: one could also remove the "Visual Studio 16 2019" to build it into your systems default Packages.
 ```bash
 cmake .. -G "Visual Studio 16 2019" "-DCMAKE_TOOLCHAIN_FILE=<Path to vcpkg>/vcpkg/scripts/buildsystems/vcpkg.cmake"
@@ -62,9 +65,18 @@ camke --build .
 OS/linux:
 make .
 ```
-- The executables will now be found within bin/debug
+- The executables will now be found within your desired build folder. bin/debug by default.
 - Note: You will also be able to open the VS project file via the *.sln* file within the build folder.
-- run the
+- Note: You may need to copy the models folder to the location of the executable as this is needed, especially if you changed the build directory.
+- Following you can run the executable such as Inter_SightPP.exe with the flags following.
+
+###flags
+Flags for running the system include:
+- "realsense" = run the system using a realsense camera
+- "-color" = view the rgb output from the service for testing
+- "-depth" = view the deoth output from the service for testing
+- "-rec <filename>" = record input to a file
+- "-play <filename>" = set imput to a file
 ## User Manual
 ## Future work
 ## Contrubuting

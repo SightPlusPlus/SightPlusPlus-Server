@@ -4,18 +4,29 @@ Sight_++_Solution/.vs
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Custom 
+# Custom
 *.bag
 
-Intel Sight ++/.vs/
 
+# Project Specfic
+
+Intel_SighPP_CMake/build
+Intel_SighPP_CMake/test
+Intel_SighPP_CMake/out
+Intel_SighPP_CMake/output
+Intel_SighPP_CMake/debug
+Intel_SighPP_CMake/compile
+Intel Sight ++/.vs/
+Intel_SighPP_CMake/Intel_SighPP_CMake/out
+Sight_++_Solution/Intel_Sight_PP/caffe
+Intel_SighPP_CMake/CMakeSettings.json
+Intel_SighPP_CMake/Intel_SighPP_CMake/CMakeSettings.json
 # User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

@@ -5,10 +5,12 @@
 #include "spdlog/spdlog.h"
 #include "model_helper.hpp"
 #include <opencv2\imgproc.hpp>
-
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
 #include "../classification_result.hpp"
+#include "ml_interface.hpp"
+#include "model_helper.hpp"
+#include "object_tracking.hpp"
 
 /// <summary>
 /// This struct creates a caffe-based object recognition network
@@ -24,7 +26,8 @@ struct CaffeModelImpl : public ModelInterface {
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
 
-	const float confidence_threshold = 0.8f;
+	const float confidence_threshold = 0.9f;
+	ObjectTracking object_tracking;
 	/// <summary>
 	/// Constructor to create a caffe-based object recognition network
 	/// </summary>
@@ -36,6 +39,9 @@ struct CaffeModelImpl : public ModelInterface {
 		SPDLOG_INFO("Constructing a caffe model impl, using {}, {}, {}", prototxt_path, caffemodel_path, class_names_path);
 
 		net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
+		net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
+		// Use configuration to speed up the net.forward
+		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);
 		class_names = read_class_name_file(class_names_path);
 	}
 
@@ -47,6 +53,9 @@ struct CaffeModelImpl : public ModelInterface {
  	/// <param name="depth_matrix">depth matrix obtained from the camera</param>
  	/// <returns>a list of objects with class names, distance and locations </returns>
 	ClassificationResult do_work(cv::Mat color_matrix, cv::Mat depth_matrix) override {
+
+		SPDLOG_INFO("Update tracking position of objects");
+		object_tracking.frame_update(color_matrix);
 
 		SPDLOG_INFO("Using Caffe model to find objects");
 
@@ -124,13 +133,15 @@ struct CaffeModelImpl : public ModelInterface {
 					else {
 						distance = centers.at<float>(1);
 					}
-					// Two point's locations to draw the rectangle
-					point left_bottom(x_left_bottom, y_left_bottom);
-					point right_top(x_right_top, y_right_top);
-					classification_result.objects.emplace_back(class_names[object_class], distance, left_bottom, right_top);
+
+					object_tracking.object_check(color_matrix, static_cast<cv::Rect2d>(object), class_names[object_class], distance, confidence);
+
 				}
 			}
 		);
+		clock_t stamp = clock();
+
+		classification_result.objects = object_tracking.post_process(stamp / (double)CLOCKS_PER_SEC);
 
 		return classification_result;
 	}
