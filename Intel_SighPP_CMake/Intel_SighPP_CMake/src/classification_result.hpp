@@ -65,11 +65,15 @@ struct ClassificationItem
 
 
 	std::string to_string() {
-		std::string s = "";
+		std::string s = "\n\n";
 		try
 		{
 			s.append("Printing ClassificationItem: " + name + "\n");
+			s.append("Msg" + msg + "\n");
 			s.append("ClassificationItem distance: " + std::to_string(distance) + "\n");
+			s.append("id: " + std::to_string(id) + "\n");
+			s.append("speed: " + std::to_string(speed) + "\n");
+			s.append("condifence " + std::to_string(confidence) + "\n");
 			s.append("Priority: " + std::to_string(static_cast<int>(priority)) + "\n");
 		}
 		catch (const std::exception&)

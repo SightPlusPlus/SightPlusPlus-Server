@@ -13,5 +13,5 @@ class ApiController
 public:
 	ApiController() = default;;
 	void add_user(ApiUserInterface& user);
-	void new_items(const std::vector<PrioritisedClassificationResult>& results);
+	void new_items(const std::vector<ClassificationItem>& results);
 };

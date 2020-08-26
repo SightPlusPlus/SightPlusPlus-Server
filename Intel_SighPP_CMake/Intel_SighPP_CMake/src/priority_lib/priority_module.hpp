@@ -26,17 +26,13 @@ public:
 	void build_data(std::vector<ClassificationResult>& data);
 	
 
-	PrioritisedClassificationResult* run(std::vector<ClassificationResult>* result)
+	std::vector<ClassificationItem>* run(std::vector<ClassificationResult>* result)
 	{
 		
 		all_data.clear();
-		PrioritisedClassificationResult* dept = new PrioritisedClassificationResult;
 		priority_module::build_data(*result);
-		dept->model_name = name;
 		assign_priority();
-		dept->objects = all_data;
-		std::cout << dept->to_string();
-		return dept;
+		return &all_data;
 	}
 
 };

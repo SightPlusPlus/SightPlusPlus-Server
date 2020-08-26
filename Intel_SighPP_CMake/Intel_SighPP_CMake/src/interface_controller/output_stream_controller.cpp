@@ -38,7 +38,7 @@ public:
 		}
 	}
 
-	void stream_to_windows(const rs2::frame& depth_frame, cv::Mat depth_matrix, const rs2::video_frame& color_frame, cv::Mat color_matrix, const std::vector<PrioritisedClassificationResult>& vector) const
+	void stream_to_windows(const rs2::frame& depth_frame, cv::Mat depth_matrix, const rs2::video_frame& color_frame, cv::Mat color_matrix, const std::vector<ClassificationItem>& vector) const
 	{
 		if (show_depth_output_)
 		{
@@ -60,7 +60,7 @@ public:
 		imshow(depth_output_window_, depth_mat);
 	}
 
-	void color_window(cv::Mat color_matrix, cv::Mat depth_matrix, const std::vector<PrioritisedClassificationResult>& vector) const
+	void color_window(cv::Mat color_matrix, cv::Mat depth_matrix, const std::vector<ClassificationItem>& vector) const
 	{
 		//const auto width = frame.as<rs2::video_frame>().get_width();
 		//const auto height = frame.as<rs2::video_frame>().get_height();
@@ -68,10 +68,8 @@ public:
 		//const cv::Mat color_mat(cv::Size(width, height), CV_8UC3, const_cast<void*>(frame.get_data()), cv::Mat::AUTO_STEP);
 
 
-		for (auto&& prioritised_classification_result : vector)
+		for (auto&& item : vector)
 		{
-			for (auto&& item : prioritised_classification_result.objects)
-			{
 				cv::Rect object(item.bottom_left.x, item.bottom_left.y, item.top_right.x - item.bottom_left.x, item.top_right.y - item.bottom_left.y);
 				object = object & cv::Rect(0, 0, depth_matrix.cols, depth_matrix.rows);
 
@@ -94,7 +92,7 @@ public:
 					cv::Scalar(255, 255, 255), cv::FILLED);
 
 				cv::putText(color_matrix, ss.str(), center, cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
-			}
+			
 		}
 
 		// Switch RGB to BGR as openCV uses BGR
