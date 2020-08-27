@@ -173,12 +173,13 @@ int main(int argc, char** argv)
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
 	CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
+	CaffeModelImpl caffe_own_better("./models/cup702000.prototxt", "./models/cup702000.caffemodel", "./models/no_bn-classnames.txt");
 	CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
 
 	// Add more ML implementations here as needed
 	//ml_controller.add_model(ml_depth);
 	//ml_controller.add_model(ml_rgb);
-	ml_controller.add_model(caffe_own);
+	ml_controller.add_model(caffe_own_better);
 	ml_controller.add_model(caffe_pre);
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());

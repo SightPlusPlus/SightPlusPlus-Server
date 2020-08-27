@@ -3,6 +3,7 @@
 #include "priority_module.hpp"
 #include <spdlog/spdlog.h>
 #include <string>
+#include <map>
 
 class smart_priority : public priority_module
 {
@@ -24,11 +25,14 @@ public:
 		: priority_module(&name) {
 		determine_location_markers();
 	}
-
 	void determine_location_markers();
+	//data: 
 	void msg_add_location(ClassificationItem& item);
 	void msg_add_name(ClassificationItem& item);
 	void msg_add_distance(ClassificationItem& item);
+	//Tracking check
+
+	//Prio Current Level
 	void determine_prio(ClassificationItem& item);
 	bool run_emegency_rules(ClassificationItem& item);
 	bool run_high_rules(ClassificationItem& item);
@@ -40,32 +44,13 @@ public:
 			});
 	}
 
-	/*
-			if (item.distance < 1)
-			{
-				SPDLOG_INFO("Setting priority to HIGH");
-				item.priority = Priority::HIGH;
-			}
-			else if (item.distance < 2)
-			{
-				SPDLOG_INFO("Setting priority to MEDIUM");
-				item.priority = Priority::MEDIUM;
-			}
-			else
-			{
-				SPDLOG_INFO("Setting priority to LOW");
-				item.priority = Priority::LOW;
-			}*/
-
-
 	void assign_priority() override
 	{
 		for (auto&& item : all_data)
 		{
-			SPDLOG_INFO("ItemDistance: {}", item.distance);
+			SPDLOG_INFO("Prioritising item {}",(item.id));
 			determine_prio(item);
-
-			SPDLOG_INFO("ItemMsg: {}", item.msg);
+			SPDLOG_INFO("Item result:  {}", item.to_string());
 		}
 
 

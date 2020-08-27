@@ -74,6 +74,8 @@ struct ClassificationItem
 			s.append("id: " + std::to_string(id) + "\n");
 			s.append("speed: " + std::to_string(speed) + "\n");
 			s.append("condifence " + std::to_string(confidence) + "\n");
+			s.append("Tracker " + std::to_string(track_point) + "\n");
+			s.append("Counter " + std::to_string(counter) + "\n");
 			s.append("Priority: " + std::to_string(static_cast<int>(priority)) + "\n");
 		}
 		catch (const std::exception&)
