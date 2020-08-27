@@ -20,9 +20,7 @@ set(SRC_FILES
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_impl_websocket.cpp
 	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_user_interface.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/caffe_impl.cpp
-   ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ ML_Lib/ml_impl_depth.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/model_helper.hpp
-    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_impl_rgb.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_interface.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_controller.hpp
    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ ML_Lib/object_tracking.cpp
