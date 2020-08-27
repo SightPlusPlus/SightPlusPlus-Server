@@ -11,7 +11,18 @@ class ApiController
 	std::vector<ApiUserInterface*> api_users_;
 	int duration = std::clock();
 public:
-	ApiController() = default;;
+	
+	ApiController() = default;
+	
+	/// <summary>
+	/// Add output API implementation to list of current users.
+	/// </summary>
+	/// <param name="user">User to add to current users.</param>
 	void add_user(ApiUserInterface& user);
+
+	/// <summary>
+	/// Receives new classification result items and sends them to connected API users.
+	/// </summary>
+	/// <param name="results">Items to send to API users</param>
 	void new_items(const std::vector<PrioritisedClassificationResult>& results);
 };
