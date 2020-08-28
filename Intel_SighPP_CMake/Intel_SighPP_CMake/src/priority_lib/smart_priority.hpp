@@ -1,6 +1,7 @@
 #pragma once
 
 #include "priority_module.hpp"
+#include "priority_clock.hpp"
 #include <spdlog/spdlog.h>
 #include <string>
 #include <map>
@@ -10,6 +11,8 @@ class smart_priority : public priority_module
 protected:
 	int const size_w = 640;
 	int const size_h = 480;
+	int const cooldown = 5000;
+	double const walking_speed = 1.4;
 	int centre_line = 0;
 	int out_left = 0;
 	int out_right = 0;
@@ -18,7 +21,7 @@ protected:
 	int above = 0;
 	int bottom  = 0;
 	int mid_w = 0;
-
+	priority_clock pc;
 public:
 
 	smart_priority(std::string name = "default")
@@ -30,7 +33,13 @@ public:
 	void msg_add_location(ClassificationItem& item);
 	void msg_add_name(ClassificationItem& item);
 	void msg_add_distance(ClassificationItem& item);
+	double time_until_colision(ClassificationItem& item);
+	
 	//Tracking check
+	bool run_cooldown_tracker(ClassificationItem& item);
+	bool check_cooldown_skip(ClassificationItem& item);
+	bool exit_cooldown_high_rules(ClassificationItem& item);
+
 
 	//Prio Current Level
 	void determine_prio(ClassificationItem& item);
@@ -44,18 +53,7 @@ public:
 			});
 	}
 
-	void assign_priority() override
-	{
-		for (auto&& item : all_data)
-		{
-			SPDLOG_INFO("Prioritising item {}",(item.id));
-			determine_prio(item);
-			SPDLOG_INFO("Item result:  {}", item.to_string());
-		}
-
-
-		sort();
-	}
+	void assign_priority();
 
 
 };

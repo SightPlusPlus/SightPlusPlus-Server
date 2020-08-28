@@ -7,11 +7,20 @@
 
 void smart_priority::determine_prio(ClassificationItem& item) {
 	// Basic no comparison priority maker
-	
 
-	msg_add_location(item);
-	msg_add_name(item);
-	msg_add_distance(item);
+	if (item.track_point < 5)
+	{
+		item.priority = Priority::LOW;
+		return;
+	}
+
+	if (run_cooldown_tracker)
+	{
+
+
+		msg_add_location(item);
+		msg_add_name(item);
+		msg_add_distance(item);
 
 		bool prio = run_emegency_rules(item);
 		if (!prio)
@@ -27,13 +36,93 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 			}
 		}
 
-
+	}
 	if (item.priority == Priority::UNDEFINED)
 	{
 		item.priority = Priority::LOW;
 	}
+}
 
 
+bool smart_priority::run_cooldown_tracker(ClassificationItem& item)
+{
+	if (item.track_point != 5)
+	{
+		return false;
+	}
+
+	if (pc.check_contains(item.id))
+	{
+		
+		if (item.counter == 1)//check if new item reusing ID
+		{
+			pc.update_timer(item.id);
+			return true;
+		}
+		else if (pc.check_cooldown(item.id, cooldown)) // item is off cooldown
+		{
+			pc.update_timer(item.id);
+			return true;
+		}
+		else 
+		{
+			if (check_cooldown_skip)
+			{
+				pc.update_timer(item.id);
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		pc.insert_new_id(item.id);
+		return true;
+	}
+
+	return false;
+}
+
+bool smart_priority::check_cooldown_skip(ClassificationItem& item)
+{
+	if (run_emegency_rules(item))
+	{
+		return true;
+	}
+	if (exit_cooldown_high_rules(item))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool smart_priority::exit_cooldown_high_rules(ClassificationItem& item)
+{
+	double distance = item.distance;
+	double speed = item.speed;
+
+	if (time_until_colision(item) < 4 && is_middle(item))
+	{
+		return true;
+	}
+
+
+	if (distance < 1.5 && speed > walking_speed/2 && is_middle(item))
+	{
+		return true;
+	}
+
+	if (distance < 10)
+	{
+		if (time_until_colision(item) < 5)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void smart_priority::determine_location_markers() {
@@ -169,6 +258,12 @@ void smart_priority::msg_add_distance(ClassificationItem& item) {
 	}
 	item.msg += insert;
 }
+
+double smart_priority::time_until_colision(ClassificationItem& item)
+{
+	return item.distance / item.speed;
+}
+
 bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 
 	double distance = item.distance;
@@ -184,14 +279,14 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 	}
 	if (distance < 1)
 	{
-		if (speed > 0.4 && is_middle(item))
+		if (speed > walking_speed/2 && is_middle(item))
 		{
 			item.priority = Priority::URGENT;
 			return true;
 		}
 	}
-	else if (distance < 2 && is_middle(item)) {
-		if (speed > 0.8)
+	else if (distance < 5 && is_middle(item)) {
+		if (time_until_colision(item) < 3)
 		{
 			item.priority = Priority::URGENT;
 			return true;
@@ -201,9 +296,6 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 	return false;
 
 }
-
-
-
 bool smart_priority::run_high_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
@@ -266,4 +358,20 @@ bool smart_priority::run_medium_rules(ClassificationItem& item) {
 	}
 
 	return false;
+}
+
+void smart_priority::assign_priority()
+{
+
+	for (auto&& item : all_data)
+	{
+
+
+		SPDLOG_INFO("Prioritising item {}", (item.id));
+		determine_prio(item);
+		SPDLOG_INFO("Item result:  {}", item.to_string());
+	}
+
+
+	sort();
 }
