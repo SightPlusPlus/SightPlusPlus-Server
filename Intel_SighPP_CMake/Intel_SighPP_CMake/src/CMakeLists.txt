@@ -1,4 +1,4 @@
-﻿# CMakeList.txt : CMake project for Intel_SighPP_CMake, include source and define
+# CMakeList.txt : CMake project for Intel_SighPP_CMake, include source and define
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)
@@ -12,18 +12,16 @@ cmake_minimum_required (VERSION 3.8)
 
 set(SRC_FILES 
 
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/classification_result.hpp
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/classification_result.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/setup_helper.hpp
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/output_stream_controller.cpp    
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/output_stream_controller.hpp
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.cpp
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.hpp
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_impl_websocket.cpp
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_user_interface.hpp
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/output_stream_controller.cpp    
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/output_stream_controller.hpp
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.cpp
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_controller.hpp
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_impl_websocket.cpp
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/interface_controller/api_user_interface.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/caffe_impl.cpp
-    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ ML_Lib/ml_impl_depth.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/model_helper.hpp
-    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_impl_rgb.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_interface.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_controller.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ ML_Lib/object_tracking.cpp
@@ -39,9 +37,10 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_manager/CameraInput.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_manager/CameraInput.h
-	${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/Intel_Sight_++.cpp
+	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/Intel_Sight_++.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_controller.hpp
-    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_controller.cpp)
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_controller.cpp
+)
 
 
 
