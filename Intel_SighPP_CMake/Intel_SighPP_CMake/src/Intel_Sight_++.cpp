@@ -1,37 +1,23 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <opencv2/opencv.hpp>
+#include "spdlog/spdlog.h"
 
-#include "ml_lib/ml_controller.hpp"
-#include "ml_lib/ml_interface.hpp"
-#include "ml_lib/ml_impl_depth.cpp"
-#include "ml_lib/ml_impl_rgb.cpp"
-#include "service_controller.cpp"
-#include "interface_controller/output_stream_controller.cpp"
-#include <iostream>
-#include "ml_lib/caffe_impl.cpp"
-#include "ml_lib/yolo_impl.cpp"
-#include "priority_lib/depth_priority.hpp"
-#include "priority_lib/size_priority.cpp"
 #include "classification_result.hpp"
-
+#include "service_controller.hpp"
+#include "setup_helper.hpp"
 #include "interface_controller/api_controller.hpp"
 #include "interface_controller/api_impl_websocket.cpp"
-#include <iostream>
-#include <librealsense2/rs.hpp>
-#include <opencv2/opencv.hpp>
-#include "spdlog/spdlog.h"
-#include "setup_helper.hpp"
+#include "interface_controller/output_stream_controller.hpp"
+#include "ml_lib/caffe_impl.cpp"
+#include "ml_lib/ml_controller.hpp"
+#include "priority_lib/depth_priority.hpp"
 #include "priority_lib/smart_priority.hpp"
-
 
 int main(int argc, char** argv)
 {
 #define _SOLUTIONDIR = R"($(SolutionDir))"
 
-	// TODO Allow for Reading a file or using stream from camera
-	// TODO Read command line parameter to use recording or live stream
-	// TODO Add protection against files not being found
 	rs2::pipeline pipe;
 	rs2::config cfg;
 
@@ -58,28 +44,21 @@ int main(int argc, char** argv)
 	/// <returns></returns>
 	if (argc > 1)
 	{
-
 		SPDLOG_INFO("Flags found");
 		for (size_t i = 1; i < argc; i++)
 		{
 			// Capture next arg
 			std::string next_arg = argv[i];
 
-
 			SPDLOG_INFO("Next flag is {}", next_arg);
 			if (next_arg.compare("realsense") == 0)
 			{
 				SPDLOG_INFO("Streaming from camera");
-				// TODO enable_all_stream() enables the streams with 640x480
 				cfg.enable_all_streams();
-				//cfg.enable_stream(RS2_STREAM_COLOR, 1280, 720, RS2_FORMAT_RGB8);
-				//cfg.enable_stream(RS2_STREAM_DEPTH, 1280, 720, RS2_FORMAT_Z16, 30);
-
 				continue;
 			}
 
-
-			else if (next_arg.compare("-rec") == 0 && (i + 1) < argc)
+			if (next_arg.compare("-rec") == 0 && (i + 1) < argc)
 			{
 				try
 				{
@@ -97,13 +76,13 @@ int main(int argc, char** argv)
 			else if (next_arg.compare("-rec") == 0 && !((i + 1) < argc))
 			{
 				SPDLOG_ERROR("Missing required flag for recording, record to what file?");
+				continue;
 			}
 
-			else if (next_arg.compare("-play") == 0 && (i + 1) < argc)
+			if (next_arg.compare("-play") == 0 && (i + 1) < argc)
 			{
 				try
 				{
-
 					std::string file_ = argv[++i];
 					std::string path_ = ".\\recordings\\" + file_;
 					SPDLOG_INFO("Playing from file:  {}", path_);
@@ -118,28 +97,33 @@ int main(int argc, char** argv)
 			else if (next_arg.compare("-play") == 0 && !((i + 1) < argc))
 			{
 				SPDLOG_ERROR("Missing required flag for recording, play from what file?");
+				continue;
 			}
 
-			else if (next_arg.compare("-depth") == 0)
+			if (next_arg.compare("-depth") == 0)
 			{
 				SPDLOG_INFO("Streaming depth output to window");
 				stream_depth = true;
+				continue;
 			}
 
-			else if (next_arg.compare("-color") == 0)
+			if (next_arg.compare("-color") == 0)
 			{
 				SPDLOG_INFO("Streaming color output to window");
 				stream_color = true;
+				continue;
 			}
 
-			else if (next_arg.compare("-port") == 0 && (i + 1) < argc)
+			if (next_arg.compare("-port") == 0 && (i + 1) < argc)
 			{
 				port = std::atoi(argv[++i]);
 				SPDLOG_INFO("Using port {} for websocket", std::to_string(port));
+				continue;
 			}
 			else if (next_arg.compare("-port") == 0 && !((i + 1) < argc))
 			{
 				SPDLOG_ERROR("Missing value for flag -port");
+				continue;
 			}
 		}
 
@@ -149,8 +133,6 @@ int main(int argc, char** argv)
 		SPDLOG_INFO("Using default recording");
 		cfg.enable_device_from_file(".\\recordings\\outdoors.bag");
 	}
-
-
 
 	auto config = pipe.start(cfg);
 
@@ -166,7 +148,6 @@ int main(int argc, char** argv)
 
 	//MLImplDepth ml_depth;
 	//MLImplRGB ml_rgb;
-
 
 	// TODO Add correct paths for testing
 	// TODO Add command line parameter for files to use?
@@ -189,14 +170,8 @@ int main(int argc, char** argv)
 	smart_priority prio_smart(name_prio_smart);
 	SPDLOG_INFO("Using prioritiser module: {}", prio_smart.get_name());
 
-	//std::string name_prio_size = "size";
-	//priority_module* prio_depth = new size_priority(&name_prio_size);
-
-
-
 	SPDLOG_INFO("Setting up Prioritiser");
 	Prioritiser* prioritiser = new Prioritiser;
-	//add modules
 	prioritiser->add_module(prio_smart);
 	// Todo: load prio model from flag
 	prioritiser->set_module(name_prio_smart);

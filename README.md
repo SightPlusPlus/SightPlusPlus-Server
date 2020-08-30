@@ -75,8 +75,9 @@ Flags for running the system include:
 - "realsense" = run the system using a realsense camera
 - "-color" = view the rgb output from the service for testing
 - "-depth" = view the deoth output from the service for testing
-- "-rec <filename>" = record input to a file
-- "-play <filename>" = set imput to a file
+- "-rec \<filename\>" = record input to a file
+- "-play \<filename\>" = set imput to a file
+- "-port \<port number\>" = sets the websocket port, default is 7979
 ## User Manual
 ## Future work
 ## Contrubuting

@@ -14,7 +14,6 @@ void ApiController::new_items(const std::vector<PrioritisedClassificationResult>
 {
 	SPDLOG_INFO("Sending items to API users");
 
-
 	int time = std::clock();
 
 	SPDLOG_INFO("Testing Time counter, time is {} outside loop", std::to_string(time - duration));
