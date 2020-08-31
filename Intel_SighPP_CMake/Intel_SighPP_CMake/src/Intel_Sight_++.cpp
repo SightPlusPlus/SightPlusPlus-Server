@@ -34,6 +34,7 @@ int main(int argc, char** argv)
 	// TODO Add protection against files not being found
 	rs2::pipeline pipe;
 	rs2::config cfg;
+	MLController ml_controller;
 
 	auto stream_depth = false;
 	auto stream_color = false;
@@ -141,6 +142,44 @@ int main(int argc, char** argv)
 			{
 				SPDLOG_ERROR("Missing value for flag -port");
 			}
+			else if (next_arg.compare("-caffe") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+
+					std::string file_ = argv[++i];
+					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
+					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
+					std::string txt_path_ = "./models/" + file_ + ".txt";
+					SPDLOG_INFO("Caffe-based network added:  {}", caffemodel_path_);
+					CaffeModelImpl network_caffe(prototxt_path_, caffemodel_path_, txt_path_);
+					ml_controller.add_model(network_caffe);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading caffe-based network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+
+					std::string file_ = argv[++i];
+					std::string cfg_path_ = "./models/" + file_ + ".cfg";
+					std::string weights_path_ = "./models/" + file_ + ".weights";
+					std::string label_path_ = "./models/" + file_ + ".txt";
+					SPDLOG_INFO("Yolo network added:  {}", cfg_path_);
+					YoloModelImpl network_yolo(cfg_path_, weights_path_, label_path_);
+					ml_controller.add_model(network_yolo);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading darknet-based yolo network from file: {}", exception.what());
+				}
+			}
 		}
 
 	}
@@ -161,7 +200,7 @@ int main(int argc, char** argv)
 		SPDLOG_INFO("{}: {}x{}", profile.stream_name(), profile.width(), profile.height());
 	}
 
-	MLController ml_controller;
+	//MLController ml_controller;
 	// TODO Read command line parameters for which models to use?
 
 	//MLImplDepth ml_depth;
@@ -172,14 +211,15 @@ int main(int argc, char** argv)
 	// TODO Add command line parameter for files to use?
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
-	CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
-	CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
+	
+	//CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
+	//CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
 
 	// Add more ML implementations here as needed
 	//ml_controller.add_model(ml_depth);
 	//ml_controller.add_model(ml_rgb);
-	ml_controller.add_model(caffe_own);
-	ml_controller.add_model(caffe_pre);
+	//ml_controller.add_model(caffe_own);
+	//ml_controller.add_model(caffe_pre);
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
