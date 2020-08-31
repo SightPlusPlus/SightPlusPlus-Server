@@ -134,7 +134,7 @@ struct YoloModelImpl : public ModelInterface {
 					else {
 						distance = centers.at<float>(1);
 					}
-					object_tracking.object_check(color_matrix, static_cast<cv::Rect2d>(object), class_names[object_class], distance, confidence);
+					object_tracking.object_check(color_matrix, static_cast<cv::Rect2d>(object), class_names[classIdPoint.x], distance, confidence);
 	            }
 
 	        }
