@@ -6,7 +6,7 @@
 #include "../cv-helpers.hpp"
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
-
+#include "ml_interface.hpp"
 #include "spdlog/spdlog.h"
 #include "../setup_helper.hpp"
 
