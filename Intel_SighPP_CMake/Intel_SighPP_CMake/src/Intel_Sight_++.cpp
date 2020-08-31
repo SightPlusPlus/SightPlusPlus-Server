@@ -34,7 +34,8 @@ int main(int argc, char** argv)
 	// TODO Add protection against files not being found
 	rs2::pipeline pipe;
 	rs2::config cfg;
-	MLController ml_controller;
+	std::vector<CaffeModelImpl> caffe_models;
+	std::vector<YoloModelImpl> yolo_models;
 
 	auto stream_depth = false;
 	auto stream_color = false;
@@ -106,8 +107,8 @@ int main(int argc, char** argv)
 				{
 
 					std::string file_ = argv[++i];
-					std::string path_ = ".\\recordings\\" + file_;
-					SPDLOG_INFO("Playing from file:  {}", path_);
+					std::string path_ = "./recordings/" + file_ + ".bag";
+					std::cout << "playing from file: " << path_ << std::endl;
 					cfg.enable_device_from_file(path_);
 					continue;
 				}
@@ -151,9 +152,9 @@ int main(int argc, char** argv)
 					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
 					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
 					std::string txt_path_ = "./models/" + file_ + ".txt";
-					SPDLOG_INFO("Caffe-based network added:  {}", caffemodel_path_);
-					CaffeModelImpl network_caffe(prototxt_path_, caffemodel_path_, txt_path_);
-					ml_controller.add_model(network_caffe);
+					CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+					caffe_models.push_back(caffe_model); 
+					SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
 					continue;
 				}
 				catch (const std::exception& exception)
@@ -170,9 +171,9 @@ int main(int argc, char** argv)
 					std::string cfg_path_ = "./models/" + file_ + ".cfg";
 					std::string weights_path_ = "./models/" + file_ + ".weights";
 					std::string label_path_ = "./models/" + file_ + ".txt";
-					SPDLOG_INFO("Yolo network added:  {}", cfg_path_);
-					YoloModelImpl network_yolo(cfg_path_, weights_path_, label_path_);
-					ml_controller.add_model(network_yolo);
+					YoloModelImpl yolo_model(cfg_path_, weights_path_, label_path_);
+					yolo_models.push_back(yolo_model);
+					SPDLOG_INFO("Yolo network loaded:  {}", file_);
 					continue;
 				}
 				catch (const std::exception& exception)
@@ -200,7 +201,7 @@ int main(int argc, char** argv)
 		SPDLOG_INFO("{}: {}x{}", profile.stream_name(), profile.width(), profile.height());
 	}
 
-	//MLController ml_controller;
+	MLController ml_controller;
 	// TODO Read command line parameters for which models to use?
 
 	//MLImplDepth ml_depth;
@@ -211,9 +212,21 @@ int main(int argc, char** argv)
 	// TODO Add command line parameter for files to use?
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
+
+	for (auto i = caffe_models.begin(); i != caffe_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One caffe-based network added...");
+	}
 	
-	//CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
-	//CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
+	for (auto i = yolo_models.begin(); i != yolo_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One yolo network added...");
+	}	
+	
+	//CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn.txt");
+	//CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy.txt");
 
 	// Add more ML implementations here as needed
 	//ml_controller.add_model(ml_depth);
