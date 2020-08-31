@@ -41,7 +41,7 @@ struct CaffeModelImpl : public ModelInterface {
 		net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
 		net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
 		// Use configuration to speed up the net.forward
-		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);
+		net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 		class_names = read_class_name_file(class_names_path);
 	}
 
@@ -61,10 +61,6 @@ struct CaffeModelImpl : public ModelInterface {
 
 		auto input_blob = cv::dnn::blobFromImage(color_matrix, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false);
 		net.setInput(input_blob, "data");
-
-		net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
-		// Use configuration to speed up the net.forward
-		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);
 
 		auto detection = net.forward("detection_out");
 
