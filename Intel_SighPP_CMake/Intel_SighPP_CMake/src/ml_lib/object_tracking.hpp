@@ -5,9 +5,6 @@
 #include <opencv2/tracking.hpp>
 #include "../classification_result.hpp"
 
-/// <summary>
-/// TrackingItem stores the information of the tracked items
-/// </summary>
 struct TrackingItem
 {
 	std::string name;
@@ -23,7 +20,6 @@ struct TrackingItem
 	// the number of frames we have processed after we last saw this tracked object
 	int last_seen;
 
-	//constructor function with newly assigned tracker
 	TrackingItem(const std::string name, const std::vector<double> distance, const std::vector<cv::Rect2d> rec, const int id, const double confidence, const int counter, const int track_point, const bool lock, const double speed, const int last_seen, const cv::Mat color_matrix, const cv::Rect2d init_rec) :
 		name(name), distance(distance), rec(rec), counter(counter), id(id), confidence(confidence), track_point(track_point), lock(lock), speed(speed), last_seen(last_seen)
 	{
@@ -49,18 +45,20 @@ struct ObjectTracking {
 	/// <summary>
 	/// remove redundant objects, calculate speed and return result dataset
 	/// </summary>
-	/// <param name="stamp">the time from clock().</param>
+	/// <param name="stamp">number of clock ticks elapsed since the program was launched for speed calculation</param>
 	/// <returns>the classification result for prioritiser</returns>
 	std::vector<ClassificationItem> post_process(double stamp);
 
 	/// <summary>
 	/// check whether the current object is a new untracked object
+	/// if the object has been tracked, update its properties
+	/// if the object is new untracked object, add it into the tracked objects
 	/// </summary>
 	/// <param name="color_matrix">color frame for tracker initialization</param>
-	/// <param name="object_rec">the area of object identified in current frame</param>
+	/// <param name="object_rec">the position of object identified in current frame</param>
 	/// <param name="name">the name of the identified object</param>
 	/// <param name="distance">the distance of the identified object</param>
-	/// <param name="confidence">the distance of the identified object</param>
+	/// <param name="confidence">the confidence of the identified object</param>
 	void object_check(const cv::Mat color_matrix, cv::Rect2d object_rec, std::string name, double distance, double confidence);
 
 };
