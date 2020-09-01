@@ -54,7 +54,8 @@ int main(int argc, char** argv)
 	/// 4) -depth			: This is used to show the depth stream in a window
 	/// 5) -color			: This is used to show the color stream in a window
 	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
-	/// </summary>
+	/// 6) -caffe no_bn		: This is used to import the caffe-based network named no_bn.caffemodel etc.
+	/// 6) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
 	/// <returns></returns>
@@ -108,7 +109,7 @@ int main(int argc, char** argv)
 
 					std::string file_ = argv[++i];
 					std::string path_ = "./recordings/" + file_ + ".bag";
-					std::cout << "playing from file: " << path_ << std::endl;
+					SPDLOG_INFO("playing from file:  {}", path_);
 					cfg.enable_device_from_file(path_);
 					continue;
 				}
