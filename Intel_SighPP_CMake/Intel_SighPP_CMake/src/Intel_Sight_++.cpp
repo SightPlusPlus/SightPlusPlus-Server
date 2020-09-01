@@ -145,11 +145,11 @@ int main(int argc, char** argv)
 			{
 				SPDLOG_ERROR("Missing value for flag -port");
 			}
-			else if (next_arg.compare("-caffe") == 0 && (i + 1) < argc)
+
+			if (next_arg.compare("-caffe") == 0 && (i + 1) < argc)
 			{
 				try
 				{
-
 					std::string file_ = argv[++i];
 					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
 					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
@@ -164,11 +164,16 @@ int main(int argc, char** argv)
 					SPDLOG_CRITICAL("Error with loading caffe-based network from file: {}", exception.what());
 				}
 			}
-			else if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
+			else if (next_arg.compare("-caffe") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing files for caffe-based network");
+				continue;
+			}
+						
+			if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
 			{
 				try
 				{
-
 					std::string file_ = argv[++i];
 					std::string cfg_path_ = "./models/" + file_ + ".cfg";
 					std::string weights_path_ = "./models/" + file_ + ".weights";
@@ -182,6 +187,11 @@ int main(int argc, char** argv)
 				{
 					SPDLOG_CRITICAL("Error with loading darknet-based yolo network from file: {}", exception.what());
 				}
+			}
+			else if (next_arg.compare("-yolo") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing files for darknet-based yolo network");
+				continue;
 			}
 		}
 
@@ -226,15 +236,7 @@ int main(int argc, char** argv)
 		ml_controller.add_model(*i);
 		SPDLOG_INFO("One yolo network added...");
 	}	
-	
-	//CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn.txt");
-	//CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy.txt");
 
-	// Add more ML implementations here as needed
-	//ml_controller.add_model(ml_depth);
-	//ml_controller.add_model(ml_rgb);
-	//ml_controller.add_model(caffe_own);
-	//ml_controller.add_model(caffe_pre);
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
