@@ -20,6 +20,8 @@ int main(int argc, char** argv)
 
 	rs2::pipeline pipe;
 	rs2::config cfg;
+	std::vector<CaffeModelImpl> caffe_models;
+	std::vector<YoloModelImpl> yolo_models;
 
 	auto stream_depth = false;
 	auto stream_color = false;
@@ -38,7 +40,9 @@ int main(int argc, char** argv)
 	/// 4) -depth			: This is used to show the depth stream in a window
 	/// 5) -color			: This is used to show the color stream in a window
 	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
-	/// </summary>
+	/// 7) -caffe no_bn		: This is used to import the caffe-based network named no_bn.caffemodel etc.
+	/// 8) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
+	/// <summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
 	/// <returns></returns>
@@ -84,8 +88,8 @@ int main(int argc, char** argv)
 				try
 				{
 					std::string file_ = argv[++i];
-					std::string path_ = ".\\recordings\\" + file_;
-					SPDLOG_INFO("Playing from file:  {}", path_);
+					std::string path_ = "./recordings/" + file_ + ".bag";
+					SPDLOG_INFO("playing from file:  {}", path_);
 					cfg.enable_device_from_file(path_);
 					continue;
 				}
@@ -125,6 +129,54 @@ int main(int argc, char** argv)
 				SPDLOG_ERROR("Missing value for flag -port");
 				continue;
 			}
+
+			if (next_arg.compare("-caffe") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+					std::string file_ = argv[++i];
+					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
+					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
+					std::string txt_path_ = "./models/" + file_ + ".txt";
+					CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+					caffe_models.push_back(caffe_model); 
+					SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading caffe-based network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-caffe") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing flag/argument for loading the caffe-based network");
+				continue;
+			}
+						
+			if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+					std::string file_ = argv[++i];
+					std::string cfg_path_ = "./models/" + file_ + ".cfg";
+					std::string weights_path_ = "./models/" + file_ + ".weights";
+					std::string label_path_ = "./models/" + file_ + ".txt";
+					YoloModelImpl yolo_model(cfg_path_, weights_path_, label_path_);
+					yolo_models.push_back(yolo_model);
+					SPDLOG_INFO("Yolo network loaded:  {}", file_);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading darknet-based yolo network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-yolo") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing flag/argument for loading the darknet-based yolo network");
+				continue;
+			}
 		}
 
 	}
@@ -153,14 +205,19 @@ int main(int argc, char** argv)
 	// TODO Add command line parameter for files to use?
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
-	CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
-	CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
 
-	// Add more ML implementations here as needed
-	//ml_controller.add_model(ml_depth);
-	//ml_controller.add_model(ml_rgb);
-	ml_controller.add_model(caffe_own);
-	ml_controller.add_model(caffe_pre);
+	for (auto i = caffe_models.begin(); i != caffe_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One caffe-based network added...");
+	}
+	
+	for (auto i = yolo_models.begin(); i != yolo_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One yolo network added...");
+	}	
+
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
