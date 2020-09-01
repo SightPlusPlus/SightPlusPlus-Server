@@ -166,7 +166,7 @@ int main(int argc, char** argv)
 			}
 			else if (next_arg.compare("-caffe") == 0 && !((i + 1) < argc))
 			{
-				SPDLOG_ERROR("Missing files for caffe-based network");
+				SPDLOG_ERROR("Missing flag/argument for loading the caffe-based network");
 				continue;
 			}
 						
@@ -190,7 +190,7 @@ int main(int argc, char** argv)
 			}
 			else if (next_arg.compare("-yolo") == 0 && !((i + 1) < argc))
 			{
-				SPDLOG_ERROR("Missing files for darknet-based yolo network");
+				SPDLOG_ERROR("Missing flag/argument for loading the darknet-based yolo network");
 				continue;
 			}
 		}
