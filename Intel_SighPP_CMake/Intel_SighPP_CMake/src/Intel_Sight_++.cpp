@@ -54,8 +54,9 @@ int main(int argc, char** argv)
 	/// 4) -depth			: This is used to show the depth stream in a window
 	/// 5) -color			: This is used to show the color stream in a window
 	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
-	/// 6) -caffe no_bn		: This is used to import the caffe-based network named no_bn.caffemodel etc.
-	/// 6) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
+	/// 7) -caffe no_bn		: This is used to import the caffe-based network named no_bn.caffemodel etc.
+	/// 8) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
+	/// <summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
 	/// <returns></returns>
