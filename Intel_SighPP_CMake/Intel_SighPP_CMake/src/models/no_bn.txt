@@ -1,2 +1,4 @@
 background
 cup
+glass
+bottle
