@@ -5,6 +5,7 @@
 #include "../classification_result.hpp"
 
 struct ModelInterface {
+	virtual ~ModelInterface() = default;
 	/// <summary>
  	/// Function to identify objects and return the resutls 
  	/// (obejct class names, relative location, distance and confidence)
