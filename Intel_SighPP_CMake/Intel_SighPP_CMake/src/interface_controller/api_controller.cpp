@@ -18,8 +18,7 @@ void ApiController::new_items(const std::vector<ClassificationItem>& results)
 	auto time = std::clock();
 
 	SPDLOG_INFO("Testing Time counter, time is {} outside loop", std::to_string(time - duration));
-	if ((time - duration) > 2000)
-	{
+	
 		for (auto&& item : results)
 		{
 			
@@ -34,5 +33,5 @@ void ApiController::new_items(const std::vector<ClassificationItem>& results)
 			
 		}
 		duration = clock();
-	}
+	
 }

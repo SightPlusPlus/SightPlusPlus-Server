@@ -5,12 +5,15 @@ bool priority_clock::check_cooldown(int id, int time_dif)
 {
 	auto time = clock();
 	auto F = cooldowns.find(id);
-
+	SPDLOG_INFO("Item {}, looking for time {}", id, time_dif);
 	if (F != cooldowns.end())
 	{
 		auto old_time = F->second;
+		SPDLOG_INFO("Item {}, time is  {}", id, (time - old_time));
 		if ((time - old_time) > time_dif)
 		{
+
+			SPDLOG_INFO("Item {}, time is  {}", id, (time - old_time));
 			return true;
 		}
 	}
@@ -35,6 +38,7 @@ bool priority_clock::update_timer(int id)
 	if (F != cooldowns.end())
 	{
 		F->second = clock();
+		SPDLOG_INFO("Item {},time updated to {}", id, F->second);
 		return true;
 	}
 	return false;
@@ -42,9 +46,12 @@ bool priority_clock::update_timer(int id)
 
 bool priority_clock::insert_new_id(int id)
 {
+	SPDLOG_INFO("Item {}, inserting into timer map",id);
 	auto F = cooldowns.find(id);
 	if (F == cooldowns.end())
+
 	{
+		SPDLOG_INFO("Item {}, inserting into timer map sucessful", id);
 		auto time = clock();
 		cooldowns.insert(std::pair<int, clock_t>(id, time));
 		return true;
@@ -72,6 +79,7 @@ bool priority_clock::clear_ids(int time_dif)
 			cooldowns.erase(element.first);
 		}
 	}
+	return true;
 }
 
 

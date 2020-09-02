@@ -3,6 +3,7 @@
 #include "priority_module.hpp"
 #include "priority_clock.hpp"
 #include <spdlog/spdlog.h>
+#include "../classification_result.hpp"
 #include <string>
 #include <map>
 
@@ -22,6 +23,7 @@ protected:
 	int bottom  = 0;
 	int mid_w = 0;
 	priority_clock pc;
+	Priority min = Priority::UNDEFINED;
 public:
 
 	smart_priority(std::string name = "default")
@@ -39,6 +41,7 @@ public:
 	bool run_cooldown_tracker(ClassificationItem& item);
 	bool check_cooldown_skip(ClassificationItem& item);
 	bool exit_cooldown_high_rules(ClassificationItem& item);
+	bool move_up_prio();
 
 
 	//Prio Current Level
@@ -46,6 +49,7 @@ public:
 	bool run_emegency_rules(ClassificationItem& item);
 	bool run_high_rules(ClassificationItem& item);
 	bool run_medium_rules(ClassificationItem& item);
+	bool smart_priority::is_middle(ClassificationItem& item);
 
 	void sort() {
 		std::sort(all_data.begin(), all_data.end(), [](const ClassificationItem& item_1, const ClassificationItem& item_2) {

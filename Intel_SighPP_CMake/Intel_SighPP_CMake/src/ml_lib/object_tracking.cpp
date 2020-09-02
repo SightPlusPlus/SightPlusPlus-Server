@@ -53,7 +53,7 @@ void ObjectTracking::object_check(const cv::Mat color_matrix, cv::Rect2d object_
 
 	for (int i = 0; i < update_items.size(); i++) {
 		cv::Rect overlap = static_cast<cv::Rect2d>(object_rec) & update_items[i];
-		if (overlap.area() > ((update_items[i].area() + object_rec.area()) / 4)
+		if (overlap.area() > ((update_items[i].area() + object_rec.area()) / 8)
 			&& name == items[i].name
 			&& items[i].lock == false) {
 			add_object = false;

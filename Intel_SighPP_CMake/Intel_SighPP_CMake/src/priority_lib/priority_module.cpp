@@ -4,6 +4,35 @@
 #include "priority_module.hpp"
 int pivot = 0;
 
+void priority_module::add_to_checklist(std::string& input)
+{
+	if (std::find(checklist.begin(), checklist.end(), input) != checklist.end())
+	{
+		checklist.push_back(input);
+	}
+	else
+	{
+		SPDLOG_INFO("_____________Items already in the list____________");
+	}
+}
+
+void priority_module::remove_from_checklist(std::string& input)
+{
+	try
+	{
+		std::remove(checklist.begin(), checklist.end(), input);
+	}
+	catch (const std::exception&)
+	{
+		SPDLOG_INFO("_____________Error in removing from checklist____________");
+	}
+}
+
+void priority_module::clear_checklist()
+{
+	checklist.clear();
+}
+
 void priority_module::build_data(std::vector<ClassificationResult>& data) {
 
 	for (size_t i = 0; i < data.size(); i++)

@@ -3,6 +3,28 @@
 #include <spdlog/spdlog.h>
 #include <iostream>
 
+void smart_priority::determine_location_markers() {
+	int fifth_w = ceil(size_w / 5);
+	int fifth_h = ceil(size_h / 5);
+	int eighth_h = ceil(size_h / 8);
+
+	mid_w = ceil(size_w / 2);
+	in_left = mid_w - fifth_w;
+	in_right = mid_w + fifth_w;
+	out_left = 0 + fifth_w;
+	out_right = size_w - fifth_w;
+	above = 0 + eighth_h;
+
+}
+
+
+bool smart_priority::is_middle(ClassificationItem& item) {
+	if (item.location == Location::CENTRE || item.location == Location::IN_LEFT || item.location == Location::IN_RIGHT)
+	{
+		return true;
+	}
+	return false;
+}
 
 
 void smart_priority::determine_prio(ClassificationItem& item) {
@@ -14,9 +36,13 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 		return;
 	}
 
-	if (run_cooldown_tracker)
+
+	SPDLOG_INFO("/n/n Processing item {} : {}", item.name, item.id);
+	if (run_cooldown_tracker(item))
 	{
 
+
+		SPDLOG_INFO("Item {}, runing this time", item.name, item.id);
 
 		msg_add_location(item);
 		msg_add_name(item);
@@ -41,6 +67,9 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 	{
 		item.priority = Priority::LOW;
 	}
+	else if (item.priority > min){
+		min = item.priority;
+	}
 }
 
 
@@ -53,25 +82,27 @@ bool smart_priority::run_cooldown_tracker(ClassificationItem& item)
 
 	if (pc.check_contains(item.id))
 	{
-		
+
 		if (item.counter == 1)//check if new item reusing ID
 		{
+			SPDLOG_INFO("NEW Item {} : {}", item.name, item.id);
 			pc.update_timer(item.id);
 			return true;
 		}
 		else if (pc.check_cooldown(item.id, cooldown)) // item is off cooldown
 		{
+			SPDLOG_INFO("Item OFF COOLDOWN{} : {}", item.name, item.id);
 			pc.update_timer(item.id);
 			return true;
 		}
-		else 
+		else
 		{
-			if (check_cooldown_skip)
+			if (check_cooldown_skip(item))
 			{
 				pc.update_timer(item.id);
 				return true;
 			}
-			else 
+			else
 			{
 				return false;
 			}
@@ -92,10 +123,10 @@ bool smart_priority::check_cooldown_skip(ClassificationItem& item)
 	{
 		return true;
 	}
-	if (exit_cooldown_high_rules(item))
+	/*if (exit_cooldown_high_rules(item))
 	{
 		return true;
-	}
+	}*/
 	return false;
 }
 
@@ -104,13 +135,13 @@ bool smart_priority::exit_cooldown_high_rules(ClassificationItem& item)
 	double distance = item.distance;
 	double speed = item.speed;
 
-	if (time_until_colision(item) < 4 && is_middle(item))
+	if (time_until_colision(item) < 2 && is_middle(item))
 	{
 		return true;
 	}
 
 
-	if (distance < 1.5 && speed > walking_speed/2 && is_middle(item))
+	if (distance < 1.5 && speed > walking_speed / 2 && is_middle(item))
 	{
 		return true;
 	}
@@ -125,26 +156,21 @@ bool smart_priority::exit_cooldown_high_rules(ClassificationItem& item)
 	return false;
 }
 
-void smart_priority::determine_location_markers() {
-	int fifth_w = ceil(size_w / 5);
-	int fifth_h = ceil(size_h / 5);
-	int eighth_h = ceil(size_h / 8);
-
-	mid_w = ceil(size_w / 2);
-	in_left = mid_w - fifth_w;
-	in_right = mid_w + fifth_w;
-	out_left = 0 + fifth_w;
-	out_right = size_w - fifth_w;
-	above = 0 + eighth_h;
-
-}
-bool is_middle(ClassificationItem& item) {
-	if (item.location == Location::CENTRE || item.location == Location::IN_LEFT || item.location == Location::IN_RIGHT)
+bool smart_priority::move_up_prio()
+{
+	if (min == Priority::MEDIUM)
 	{
-		return true;
+		for each (auto item in all_data)
+		{
+			if (item.priority == Priority::MEDIUM)
+			{
+				item.priority = Priority::HIGH;
+			}
+		}
 	}
-	return false;
 }
+
+
 
 void smart_priority::msg_add_location(ClassificationItem& item) {
 
@@ -269,7 +295,7 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 	int return_value = 0;
-	if (distance < 0.5)
+	if (distance < 0.75)
 	{
 		if (is_middle(item))
 		{
@@ -277,15 +303,13 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 			return true;
 		}
 	}
-	if (distance < 1)
+	if (time_until_colision(item) <= 2 && is_middle(item))
 	{
-		if (speed > walking_speed/2 && is_middle(item))
-		{
-			item.priority = Priority::URGENT;
-			return true;
-		}
+		item.priority = Priority::URGENT;
+		return true;
 	}
-	else if (distance < 5 && is_middle(item)) {
+
+	else if (distance < 3 && is_middle(item)) {
 		if (time_until_colision(item) < 3)
 		{
 			item.priority = Priority::URGENT;
@@ -296,67 +320,56 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 	return false;
 
 }
+
 bool smart_priority::run_high_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 
-	if (distance < 1.5)
+	
+	if (distance < 1)
 	{
 		item.priority = Priority::HIGH;
 		return true;
 	}
 
-	if (distance < 2)
+	else if (std::find(checklist.begin(), checklist.end(), item.name) != checklist.end())
 	{
-		if (speed > 0.4 && is_middle(item))
-		{
-			item.priority = Priority::HIGH;
-			return true;
-		}
+		item.priority = Priority::HIGH;
+		return true;
+	}
+	else if (time_until_colision(item) <= 4 && is_middle(item))
+	{
+		item.priority = Priority::HIGH;
+		return true;
 	}
 
-	if (distance < 3 && is_middle(item))
+	else if (distance < 3 && is_middle(item))
 	{
-		if (speed > 0.2)
-		{
-			item.priority = Priority::HIGH;
-			return true;
-		}
+		item.priority = Priority::HIGH;
+		return true;
 	}
 
 
-	if (distance < 7)
-	{
-		if (speed > 0.9)
-		{
-			item.priority = Priority::HIGH;
-			return true;
-		}
-	}
-	return false;
+
 
 }
 bool smart_priority::run_medium_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 
-	if (item.distance < 3)
+	if (item.distance < 5)
 	{
-		if (speed > -0.2)
+		item.priority = Priority::MEDIUM;
+		return true;
+	}
+	else if (item.distance < 10)
+	{
+		if (speed > 0.5)
 		{
 			item.priority = Priority::MEDIUM;
 			return true;
 		}
 	}
-	else if (item.distance < 7)
-	{
-		if (speed > 0)
-		{
-			item.priority = Priority::MEDIUM;
-			return true;
-		}
-	}
-
 	return false;
 }
 
@@ -365,13 +378,11 @@ void smart_priority::assign_priority()
 
 	for (auto&& item : all_data)
 	{
-
-
 		SPDLOG_INFO("Prioritising item {}", (item.id));
 		determine_prio(item);
 		SPDLOG_INFO("Item result:  {}", item.to_string());
 	}
 
-
+	pc.clear_ids(10000);
 	sort();
 }

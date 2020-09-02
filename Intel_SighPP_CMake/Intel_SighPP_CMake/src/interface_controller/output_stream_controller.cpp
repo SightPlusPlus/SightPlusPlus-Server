@@ -74,7 +74,9 @@ public:
 				object = object & cv::Rect(0, 0, depth_matrix.cols, depth_matrix.rows);
 
 				std::ostringstream ss;
-				ss << item.name << " ";
+				ss << item.name << ", ID:";
+				ss << item.id << ", conf:";
+				ss << item.confidence << " ";
 				ss << std::setprecision(2) << item.distance << " meters away";
 				cv::String conf(ss.str());
 
@@ -96,9 +98,9 @@ public:
 		}
 
 		// Switch RGB to BGR as openCV uses BGR
-		cv::Mat bgr;
-		cvtColor(color_matrix, bgr, cv::COLOR_RGB2BGR);
-		cv::imshow(color_output_window_, bgr);
+		//cv::Mat bgr;
+		//cvtColor(color_matrix, bgr, cv::COLOR_RGB2BGR);
+		cv::imshow(color_output_window_, color_matrix);
 	}
 
 	/// <summary>
