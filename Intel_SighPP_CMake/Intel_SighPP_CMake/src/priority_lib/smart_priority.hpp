@@ -14,6 +14,7 @@ protected:
 	int const size_h = 480;
 	int const cooldown = 5000;
 	int const cooldown_shortening = 1000;
+	int const cooldown_emergency = 2500;
 	double const walking_speed = 1.4;
 	int centre_line = 0;
 	int out_left = 0;

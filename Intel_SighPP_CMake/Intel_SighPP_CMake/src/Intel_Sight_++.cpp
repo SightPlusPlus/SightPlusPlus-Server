@@ -10,6 +10,7 @@
 #include "interface_controller/api_impl_websocket.cpp"
 #include "interface_controller/output_stream_controller.hpp"
 #include "ml_lib/caffe_impl.cpp"
+#include "ml_lib/yolo_impl.cpp"
 #include "ml_lib/ml_controller.hpp"
 #include "priority_lib/depth_priority.hpp"
 #include "priority_lib/smart_priority.hpp"

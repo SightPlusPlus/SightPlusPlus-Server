@@ -129,7 +129,10 @@ bool smart_priority::check_cooldown_skip(ClassificationItem& item)
 {
 	if (run_emegency_rules(item))
 	{
-		return true;
+		if (pc.check_cooldown(item.id, cooldown_emergency))
+		{
+			return true;
+		}
 	}
 
 	//TODO: ANY OTHER REASONS FOR SKIPPIONG COOLDOWN?
@@ -315,13 +318,13 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 		return true;
 	}
 
-	else if (distance < 3 && is_middle(item)) {
+	/*else if (distance < 3 && is_middle(item)) {
 		if (time_until_colision(item) < 3)
 		{
 			item.priority = Priority::URGENT;
 			return true;
 		}
-	}
+	}*/
 
 	return false;
 
