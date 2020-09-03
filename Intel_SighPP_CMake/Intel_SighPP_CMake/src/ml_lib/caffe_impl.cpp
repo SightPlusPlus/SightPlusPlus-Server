@@ -26,7 +26,7 @@ struct CaffeModelImpl : public ModelInterface {
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
 
-	const float confidence_threshold = 0.9f;
+	const float confidence_threshold = 0.7f;
 	ObjectTracking object_tracking;
 
 	CaffeModelImpl(std::string prototxt_path, std::string caffemodel_path, const std::string class_names_path)

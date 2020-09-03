@@ -44,9 +44,6 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 
 		SPDLOG_INFO("Item {}, runing this time", item.name, item.id);
 
-		msg_add_location(item);
-		msg_add_name(item);
-		msg_add_distance(item);
 
 		bool prio = run_emegency_rules(item);
 		if (!prio)
@@ -63,6 +60,11 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 		}
 
 	}
+
+
+	msg_add_location(item);
+	msg_add_name(item);
+	msg_add_distance(item);
 	if (item.priority == Priority::UNDEFINED)
 	{
 		item.priority = Priority::LOW;
@@ -86,6 +88,12 @@ bool smart_priority::run_cooldown_tracker(ClassificationItem& item)
 		if (item.counter == 1)//check if new item reusing ID
 		{
 			SPDLOG_INFO("NEW Item {} : {}", item.name, item.id);
+			pc.update_timer(item.id);
+			return true;
+		}
+		else if (std::find(checklist.begin(), checklist.end(), item.name) != checklist.end() && pc.check_cooldown(item.id, cooldown-cooldown_shortening))
+		{
+			SPDLOG_INFO("Item OFF COOLDOWN{} : {}", item.name, item.id);
 			pc.update_timer(item.id);
 			return true;
 		}
@@ -123,10 +131,8 @@ bool smart_priority::check_cooldown_skip(ClassificationItem& item)
 	{
 		return true;
 	}
-	/*if (exit_cooldown_high_rules(item))
-	{
-		return true;
-	}*/
+
+	//TODO: ANY OTHER REASONS FOR SKIPPIONG COOLDOWN?
 	return false;
 }
 
@@ -295,7 +301,7 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 	int return_value = 0;
-	if (distance < 0.75)
+	if (distance < 0.5)
 	{
 		if (is_middle(item))
 		{
