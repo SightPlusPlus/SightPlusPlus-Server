@@ -59,12 +59,12 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 			}
 		}
 
+		msg_add_location(item);
+		msg_add_name(item);
+		msg_add_distance(item);
 	}
 
 
-	msg_add_location(item);
-	msg_add_name(item);
-	msg_add_distance(item);
 	if (item.priority == Priority::UNDEFINED)
 	{
 		item.priority = Priority::LOW;
@@ -81,44 +81,39 @@ bool smart_priority::run_cooldown_tracker(ClassificationItem& item)
 	{
 		return false;
 	}
-
-	if (pc.check_contains(item.id))
+	std::string id = pc.get_unique_id(item);
+	SPDLOG_INFO("Tracking item : {}", id);
+	if (pc.check_contains(id))
 	{
 
 		if (item.counter == 1)//check if new item reusing ID
 		{
 			SPDLOG_INFO("NEW Item {} : {}", item.name, item.id);
-			pc.update_timer(item.id);
+			pc.update_timer(id);
 			return true;
 		}
-		else if (std::find(checklist.begin(), checklist.end(), item.name) != checklist.end() && pc.check_cooldown(item.id, cooldown-cooldown_shortening))
+		else if (std::find(checklist.begin(), checklist.end(), item.name) != checklist.end() && pc.check_cooldown(id, cooldown - cooldown_shortening))
 		{
-			SPDLOG_INFO("Item OFF COOLDOWN{} : {}", item.name, item.id);
-			pc.update_timer(item.id);
+			SPDLOG_INFO("Item OFF COOLDOWN PRIO LIST{} : {}", item.name, item.id);
+			pc.update_timer(id);
 			return true;
 		}
-		else if (pc.check_cooldown(item.id, cooldown)) // item is off cooldown
+		else if (pc.check_cooldown(id, cooldown)) // item is off cooldown
 		{
-			SPDLOG_INFO("Item OFF COOLDOWN{} : {}", item.name, item.id);
-			pc.update_timer(item.id);
+			SPDLOG_INFO("Item OFF COOLDOWN NORMAL{} : {}", item.name, item.id);
+			pc.update_timer(id);
 			return true;
 		}
-		else
+		else if (check_cooldown_skip(item))
 		{
-			if (check_cooldown_skip(item))
-			{
-				pc.update_timer(item.id);
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			SPDLOG_INFO("Item OFF COOLDOWN SKIP{} : {}", item.name, item.id);
+			pc.update_timer(id);
+			return true;
 		}
 	}
-	else
+	else if (item.counter < 2) // make sure its a new item with one fps safety net
 	{
-		pc.insert_new_id(item.id);
+		pc.insert_new_id(id);
 		return true;
 	}
 
@@ -129,9 +124,15 @@ bool smart_priority::check_cooldown_skip(ClassificationItem& item)
 {
 	if (run_emegency_rules(item))
 	{
-		if (pc.check_cooldown(item.id, cooldown_emergency))
+		if (pc.check_cooldown(pc.get_unique_id(item),cooldown_emergency))
 		{
+			SPDLOG_INFO("Item OFF COOLDOWN EMERGENCY SKIP{} : {}", item.name, item.id);
 			return true;
+		}
+		else 
+		{
+			SPDLOG_INFO("Item {} not off cooldown ", item.name);
+			item.priority = Priority::UNDEFINED;
 		}
 	}
 
@@ -178,9 +179,6 @@ bool smart_priority::move_up_prio()
 		}
 	}
 }
-
-
-
 void smart_priority::msg_add_location(ClassificationItem& item) {
 
 	int x_left = item.top_left.x;

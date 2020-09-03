@@ -23,7 +23,7 @@ struct TrackingItem
 	TrackingItem(const std::string name, const std::vector<double> distance, const std::vector<cv::Rect2d> rec, const int id, const double confidence, const int counter, const int track_point, const bool lock, const double speed, const int last_seen, const cv::Mat color_matrix, const cv::Rect2d init_rec) :
 		name(name), distance(distance), rec(rec), counter(counter), id(id), confidence(confidence), track_point(track_point), lock(lock), speed(speed), last_seen(last_seen)
 	{
-		tracker = cv::TrackerBoosting::create();
+		tracker = cv::TrackerMOSSE::create();
 		tracker->init(color_matrix, init_rec);
 	}
 
