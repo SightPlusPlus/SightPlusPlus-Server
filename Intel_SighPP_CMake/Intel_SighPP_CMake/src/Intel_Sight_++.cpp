@@ -1,39 +1,27 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <opencv2/opencv.hpp>
+#include "spdlog/spdlog.h"
 
-#include "ml_lib/ml_controller.hpp"
-#include "ml_lib/ml_interface.hpp"
-#include "ml_lib/ml_impl_depth.cpp"
-#include "ml_lib/ml_impl_rgb.cpp"
-#include "service_controller.cpp"
-#include "interface_controller/output_stream_controller.cpp"
-#include <iostream>
-#include "ml_lib/caffe_impl.cpp"
-#include "ml_lib/yolo_impl.cpp"
-#include "priority_lib/depth_priority.hpp"
-#include "priority_lib/size_priority.cpp"
 #include "classification_result.hpp"
-
+#include "service_controller.hpp"
+#include "setup_helper.hpp"
 #include "interface_controller/api_controller.hpp"
 #include "interface_controller/api_impl_websocket.cpp"
-#include <iostream>
-#include <librealsense2/rs.hpp>
-#include <opencv2/opencv.hpp>
-#include "spdlog/spdlog.h"
-#include "setup_helper.hpp"
+#include "interface_controller/output_stream_controller.hpp"
+#include "ml_lib/caffe_impl.cpp"
+#include "ml_lib/ml_controller.hpp"
+#include "priority_lib/depth_priority.hpp"
 #include "priority_lib/smart_priority.hpp"
-
 
 int main(int argc, char** argv)
 {
 #define _SOLUTIONDIR = R"($(SolutionDir))"
 
-	// TODO Allow for Reading a file or using stream from camera
-	// TODO Read command line parameter to use recording or live stream
-	// TODO Add protection against files not being found
 	rs2::pipeline pipe;
 	rs2::config cfg;
+	std::vector<CaffeModelImpl> caffe_models;
+	std::vector<YoloModelImpl> yolo_models;
 
 	auto stream_depth = false;
 	auto stream_color = false;
@@ -52,34 +40,29 @@ int main(int argc, char** argv)
 	/// 4) -depth			: This is used to show the depth stream in a window
 	/// 5) -color			: This is used to show the color stream in a window
 	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
-	/// </summary>
+	/// 7) -caffe no_bn		: This is used to import the caffe-based network named no_bn.caffemodel etc.
+	/// 8) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
+	/// <summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
 	/// <returns></returns>
 	if (argc > 1)
 	{
-
 		SPDLOG_INFO("Flags found");
 		for (size_t i = 1; i < argc; i++)
 		{
 			// Capture next arg
 			std::string next_arg = argv[i];
 
-
 			SPDLOG_INFO("Next flag is {}", next_arg);
 			if (next_arg.compare("realsense") == 0)
 			{
 				SPDLOG_INFO("Streaming from camera");
-				// TODO enable_all_stream() enables the streams with 640x480
 				cfg.enable_all_streams();
-				//cfg.enable_stream(RS2_STREAM_COLOR, 1280, 720, RS2_FORMAT_RGB8);
-				//cfg.enable_stream(RS2_STREAM_DEPTH, 1280, 720, RS2_FORMAT_Z16, 30);
-
 				continue;
 			}
 
-
-			else if (next_arg.compare("-rec") == 0 && (i + 1) < argc)
+			if (next_arg.compare("-rec") == 0 && (i + 1) < argc)
 			{
 				try
 				{
@@ -97,16 +80,16 @@ int main(int argc, char** argv)
 			else if (next_arg.compare("-rec") == 0 && !((i + 1) < argc))
 			{
 				SPDLOG_ERROR("Missing required flag for recording, record to what file?");
+				continue;
 			}
 
-			else if (next_arg.compare("-play") == 0 && (i + 1) < argc)
+			if (next_arg.compare("-play") == 0 && (i + 1) < argc)
 			{
 				try
 				{
-
 					std::string file_ = argv[++i];
-					std::string path_ = ".\\recordings\\" + file_;
-					SPDLOG_INFO("Playing from file:  {}", path_);
+					std::string path_ = "./recordings/" + file_ + ".bag";
+					SPDLOG_INFO("playing from file:  {}", path_);
 					cfg.enable_device_from_file(path_);
 					continue;
 				}
@@ -118,28 +101,81 @@ int main(int argc, char** argv)
 			else if (next_arg.compare("-play") == 0 && !((i + 1) < argc))
 			{
 				SPDLOG_ERROR("Missing required flag for recording, play from what file?");
+				continue;
 			}
 
-			else if (next_arg.compare("-depth") == 0)
+			if (next_arg.compare("-depth") == 0)
 			{
 				SPDLOG_INFO("Streaming depth output to window");
 				stream_depth = true;
+				continue;
 			}
 
-			else if (next_arg.compare("-color") == 0)
+			if (next_arg.compare("-color") == 0)
 			{
 				SPDLOG_INFO("Streaming color output to window");
 				stream_color = true;
+				continue;
 			}
 
-			else if (next_arg.compare("-port") == 0 && (i + 1) < argc)
+			if (next_arg.compare("-port") == 0 && (i + 1) < argc)
 			{
 				port = std::atoi(argv[++i]);
 				SPDLOG_INFO("Using port {} for websocket", std::to_string(port));
+				continue;
 			}
 			else if (next_arg.compare("-port") == 0 && !((i + 1) < argc))
 			{
 				SPDLOG_ERROR("Missing value for flag -port");
+				continue;
+			}
+
+			if (next_arg.compare("-caffe") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+					std::string file_ = argv[++i];
+					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
+					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
+					std::string txt_path_ = "./models/" + file_ + ".txt";
+					CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+					caffe_models.push_back(caffe_model); 
+					SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading caffe-based network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-caffe") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing flag/argument for loading the caffe-based network");
+				continue;
+			}
+						
+			if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+					std::string file_ = argv[++i];
+					std::string cfg_path_ = "./models/" + file_ + ".cfg";
+					std::string weights_path_ = "./models/" + file_ + ".weights";
+					std::string label_path_ = "./models/" + file_ + ".txt";
+					YoloModelImpl yolo_model(cfg_path_, weights_path_, label_path_);
+					yolo_models.push_back(yolo_model);
+					SPDLOG_INFO("Yolo network loaded:  {}", file_);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading darknet-based yolo network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-yolo") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing flag/argument for loading the darknet-based yolo network");
+				continue;
 			}
 		}
 
@@ -149,8 +185,6 @@ int main(int argc, char** argv)
 		SPDLOG_INFO("Using default recording");
 		cfg.enable_device_from_file(".\\recordings\\outdoors.bag");
 	}
-
-
 
 	auto config = pipe.start(cfg);
 
@@ -167,20 +201,24 @@ int main(int argc, char** argv)
 	//MLImplDepth ml_depth;
 	//MLImplRGB ml_rgb;
 
-
 	// TODO Add correct paths for testing
 	// TODO Add command line parameter for files to use?
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
-	CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
-	CaffeModelImpl caffe_own_better("./models/cup702000.prototxt", "./models/cup702000.caffemodel", "./models/no_bn-classnames.txt");
-	CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
 
-	// Add more ML implementations here as needed
-	//ml_controller.add_model(ml_depth);
-	//ml_controller.add_model(ml_rgb);
-	ml_controller.add_model(caffe_own_better);
-	ml_controller.add_model(caffe_pre);
+
+	for (auto i = caffe_models.begin(); i != caffe_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One caffe-based network added...");
+	}
+	
+	for (auto i = yolo_models.begin(); i != yolo_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One yolo network added...");
+	}	
+
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
@@ -190,14 +228,8 @@ int main(int argc, char** argv)
 	smart_priority prio_smart(name_prio_smart);
 	SPDLOG_INFO("Using prioritiser module: {}", prio_smart.get_name());
 
-	//std::string name_prio_size = "size";
-	//priority_module* prio_depth = new size_priority(&name_prio_size);
-
-
-
 	SPDLOG_INFO("Setting up Prioritiser");
 	Prioritiser* prioritiser = new Prioritiser;
-	//add modules
 	prioritiser->add_module(prio_smart);
 	// Todo: load prio model from flag
 	prioritiser->set_module(name_prio_smart);

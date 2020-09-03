@@ -1,71 +1,47 @@
-#pragma once
-
-#include "librealsense2/rs.hpp"
-#include "opencv2/opencv.hpp"
-#include "../classification_result.hpp"
-#include "spdlog/spdlog.h"
 
 
-// TODO Should output stream window stuff be here or in a seperate class/file?
-class OutputStreamController {
+#include <spdlog\spdlog.h>
 
-	//std::vector<PrioritisedClassificationResult> prioritised_results_;
-	std::string depth_output_window_;
-	bool show_depth_output_;
+#include "output_stream_controller.hpp"
 
-	std::string color_output_window_;
-	bool show_color_output_;
-
-	rs2::colorizer color_map_;
-
-	// TODO Receive prioritised info from ServiceController
-	// TODO Output something?
-
-public:
-
-	OutputStreamController(const bool show_depth_window, const bool show_color_window) : show_depth_output_(show_depth_window), show_color_output_(show_color_window)
+OutputStreamController::OutputStreamController(const bool show_depth_window, const bool show_color_window)
+: show_depth_output_(show_depth_window), show_color_output_(show_color_window)
+{
+	SPDLOG_INFO("Setting up output stream windows");
+	if (show_depth_window)
 	{
-		SPDLOG_INFO("Setting up output stream windows");
-		if (show_depth_window)
-		{
-			depth_output_window_ = "Depth Image";
-			namedWindow(depth_output_window_, cv::WINDOW_AUTOSIZE);
-		}
-		if (show_color_window)
-		{
-			color_output_window_ = "Color Image";
-			namedWindow(color_output_window_, cv::WINDOW_AUTOSIZE);
-		}
+		depth_output_window_ = "Depth Image";
+		namedWindow(depth_output_window_, cv::WINDOW_AUTOSIZE);
 	}
 
-	void stream_to_windows(const rs2::frame& depth_frame, cv::Mat depth_matrix, const rs2::video_frame& color_frame, cv::Mat color_matrix, const std::vector<ClassificationItem>& vector) const
+	if (show_color_window)
 	{
-		if (show_depth_output_)
-		{
-			depth_window(depth_frame);
-		}
+		color_output_window_ = "Color Image";
+		namedWindow(color_output_window_, cv::WINDOW_AUTOSIZE);
+	}
+}
 
-		if (show_color_output_)
-		{
-			color_window(color_matrix, depth_matrix, vector);
-		}
+void OutputStreamController::stream_to_windows(const rs2::frame& depth_frame, cv::Mat depth_matrix, const rs2::video_frame& color_frame, cv::Mat color_matrix, const std::vector<PrioritisedClassificationResult>& vector) const
+{
+	if (show_depth_output_)
+	{
+		output_to_depth_window(depth_frame);
 	}
 
-	void depth_window(const rs2::frame& frame) const
+	if (show_color_output_)
 	{
-		const auto width = frame.as<rs2::video_frame>().get_width();
-		const auto height = frame.as<rs2::video_frame>().get_height();
-
-		const cv::Mat depth_mat(cv::Size(width, height), CV_8UC3, const_cast<void*>(frame.get_data()), cv::Mat::AUTO_STEP);
-		imshow(depth_output_window_, depth_mat);
+		output_to_color_window(color_matrix, depth_matrix, vector);
 	}
+}
 
-	void color_window(cv::Mat color_matrix, cv::Mat depth_matrix, const std::vector<ClassificationItem>& vector) const
-	{
-		//const auto width = frame.as<rs2::video_frame>().get_width();
-		//const auto height = frame.as<rs2::video_frame>().get_height();
+void OutputStreamController::output_to_depth_window(const rs2::frame& frame) const
+{
+	const auto width = frame.as<rs2::video_frame>().get_width();
+	const auto height = frame.as<rs2::video_frame>().get_height();
 
-		//const cv::Mat color_mat(cv::Size(width, height), CV_8UC3, const_cast<void*>(frame.get_data()), cv::Mat::AUTO_STEP);
+	const cv::Mat depth_mat(cv::Size(width, height), CV_8UC3, const_cast<void*>(frame.get_data()), cv::Mat::AUTO_STEP);
+	imshow(depth_output_window_, depth_mat);
+}
 
 
 		for (auto&& item : vector)
@@ -101,47 +77,37 @@ public:
 		//cv::Mat bgr;
 		//cvtColor(color_matrix, bgr, cv::COLOR_RGB2BGR);
 		cv::imshow(color_output_window_, color_matrix);
-	}
 
-	/// <summary>
-	/// Tells the system if the opencv stream output windows are ready, if enabled.
-	/// In the case where no output stream windows are enabled, returns true.
-	/// Based on the rs-dnn and rs-imshow examples.
-	/// </summary>
-	/// <returns>
-	///   Returns TRUE if the windows can receive frames, or if no output stream windows are enabled.
-	///   Returns FALSE if the windows can not receive frames.
-	/// </returns>
-	bool should_receieve_new_frames() const
+}
+
+bool OutputStreamController::should_receive_new_frames() const
+{
+	return wait_key() && is_depth_window_ready() && is_color_window_ready();
+}
+
+bool OutputStreamController::wait_key() const
+{
+	if (show_depth_output_ || show_color_output_)
 	{
-		return wait_key() && is_depth_window_ready() && is_color_window_ready();
+		return cv::waitKey(1) < 0;
 	}
+	return true;
+}
 
-	bool wait_key() const
+bool OutputStreamController::is_depth_window_ready() const
+{
+	if (show_depth_output_)
 	{
-		if (show_depth_output_ || show_color_output_)
-		{
-			return cv::waitKey(1) < 0;
-		}
-		return true;
+		return getWindowProperty(depth_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
 	}
+	return true;
+}
 
-	bool is_depth_window_ready() const
+bool OutputStreamController::is_color_window_ready() const
+{
+	if (show_color_output_)
 	{
-		if (show_depth_output_)
-		{
-			return getWindowProperty(depth_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
-		}
-		return true;
+		return getWindowProperty(color_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
 	}
-
-	bool is_color_window_ready() const
-	{
-		if (show_color_output_)
-		{
-			return getWindowProperty(color_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
-		}
-		return true;
-	}
-
-};
+	return true;
+}
