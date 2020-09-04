@@ -31,7 +31,7 @@ public:
 
 	/// <summary>
 	/// Object Creation. Not to be inherited furhter.
-	/// Initialises location markers based on ratio
+	/// Initialises location markers based on dividers, mostly in fifths of the screen.
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
