@@ -15,7 +15,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 #set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 project (Intel_SighPP_CMake VERSION 0.1)
-find_package(OpenCV 3.4 CONFIG REQUIRED)
+find_package(OpenCV CONFIG REQUIRED)
 find_package(realsense2 CONFIG REQUIRED)
 find_package(TBB CONFIG REQUIRED)
 find_package(websocketpp CONFIG REQUIRED)

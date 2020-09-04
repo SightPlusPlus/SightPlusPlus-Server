@@ -12,9 +12,9 @@ class smart_priority : public priority_module
 protected:
 	int const size_w = 640;
 	int const size_h = 480;
-	int const cooldown = 5000;
+	int const cooldown = 7000;
 	int const cooldown_shortening = 1000;
-	int const cooldown_emergency = 2500;
+	int const cooldown_emergency = 3000;
 	double const walking_speed = 1.4;
 	int centre_line = 0;
 	int out_left = 0;
@@ -30,7 +30,7 @@ protected:
 public:
 
 	/// <summary>
-	///Object Creation. Not to be inherited furhter.
+	/// Object Creation. Not to be inherited furhter.
 	/// Initialises location markers based on ratio
 	/// </summary>
 	/// <param name="name"></param>
@@ -48,25 +48,25 @@ public:
 	//________data and message control________: 
 
 	/// <summary>
-	/// Based on rectangle of object determin location
+	/// Based on rectangle of object, determin location.
 	/// </summary>
 	/// <param name="item"></param>
 	void msg_add_location(ClassificationItem& item);
 
 	/// <summary>
-	/// Add name of object to message for interface
+	/// Add name of object to message for interface.
 	/// </summary>
 	/// <param name="item"></param>
 	void msg_add_name(ClassificationItem& item);
 
 	/// <summary>
-	/// Add distance of object to message for interface
+	/// Add distance of object to message for interface.
 	/// </summary>
 	/// <param name="item"></param>
 	void msg_add_distance(ClassificationItem& item);
 
 	/// <summary>
-	/// Calculate speed until impact with user. Note does not yet take location into account.
+	/// Calculate time to impact with user. Note does not yet take location into account only distance.
 	/// </summary>
 	/// <param name="item"></param>
 	double time_until_colision(ClassificationItem& item);
@@ -74,11 +74,10 @@ public:
 	//__________Tracking checking rules______________
 
 	/// <summary>
-	/// Tracks the main cooldown of each object. If item is out of cooldown then it 
+	/// Tracks the main cooldown of each object. If the item is out of cooldown then it 
 	/// is approved to run through the priority rules. If not it is currently 
 	/// set to low prio.
-	///
-	/// Note: Items that are tracked but not currently seen are also set to low prio. This could be improved after report.
+	/// TODO: Items that are tracked but not currently seen are also set to low prio. This could be improved after report.
 	/// </summary>
 	/// <param name="item"></param>
 	/// <returns></returns>

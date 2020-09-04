@@ -207,7 +207,6 @@ int main(int argc, char** argv)
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
 
-
 	for (auto i = caffe_models.begin(); i != caffe_models.end(); ++i)
 	{
 		ml_controller.add_model(*i);
@@ -219,7 +218,6 @@ int main(int argc, char** argv)
 		ml_controller.add_model(*i);
 		SPDLOG_INFO("One yolo network added...");
 	}	
-
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 

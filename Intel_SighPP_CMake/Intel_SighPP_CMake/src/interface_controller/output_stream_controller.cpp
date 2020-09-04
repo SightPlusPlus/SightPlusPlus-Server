@@ -57,9 +57,10 @@ void OutputStreamController::output_to_color_window(cv::Mat color_matrix, cv::Ma
 
 		std::ostringstream ss;
 		ss << item.name << ", ID:";
-		ss << item.id << ", conf:";
-		ss << item.confidence << " ";
-		ss << std::setprecision(2) << item.distance << " meters away";
+		ss << item.id << ", cond:";
+		ss << item.confidence << "\n msg: ";
+		ss << item.msg << "";
+		//ss << std::setprecision(2) << item.distance << " meters away";
 		cv::String conf(ss.str());
 
 		rectangle(color_matrix, object, cv::Scalar(0, 255, 0));
@@ -79,50 +80,38 @@ void OutputStreamController::output_to_color_window(cv::Mat color_matrix, cv::Ma
 
 	}
 
-	// Switch RGB to BGR as openCV uses BGR
-	//cv::Mat bgr;
-	//cvtColor(color_matrix, bgr, cv::COLOR_RGB2BGR);
 	cv::imshow(color_output_window_, color_matrix);
 }
 
-	/// <summary>
-	/// Tells the system if the opencv stream output windows are ready, if enabled.
-	/// In the case where no output stream windows are enabled, returns true.
-	/// Based on the rs-dnn and rs-imshow examples.
-	/// </summary>
-	/// <returns>
-	///   Returns TRUE if the windows can receive frames, or if no output stream windows are enabled.
-	///   Returns FALSE if the windows can not receive frames.
-	/// </returns>
 
-	bool OutputStreamController::should_receive_new_frames() const
-	{
-		return wait_key() && is_depth_window_ready() && is_color_window_ready();
-	}
+bool OutputStreamController::should_receive_new_frames() const
+{
+	return wait_key() && is_depth_window_ready() && is_color_window_ready();
+}
 
-	bool OutputStreamController::wait_key() const
+bool OutputStreamController::wait_key() const
+{
+	if (show_depth_output_ || show_color_output_)
 	{
-		if (show_depth_output_ || show_color_output_)
-		{
-			return cv::waitKey(1) < 0;
-		}
-		return true;
+		return cv::waitKey(1) < 0;
 	}
+	return true;
+}
 
-	bool OutputStreamController::is_depth_window_ready() const
+bool OutputStreamController::is_depth_window_ready() const
+{
+	if (show_depth_output_)
 	{
-		if (show_depth_output_)
-		{
-			return getWindowProperty(depth_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
-		}
-		return true;
+		return getWindowProperty(depth_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
 	}
+	return true;
+}
 
-	bool OutputStreamController::is_color_window_ready() const
+bool OutputStreamController::is_color_window_ready() const
+{
+	if (show_color_output_)
 	{
-		if (show_color_output_)
-		{
-			return getWindowProperty(color_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
-		}
-		return true;
+		return getWindowProperty(color_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
 	}
+	return true;
+}

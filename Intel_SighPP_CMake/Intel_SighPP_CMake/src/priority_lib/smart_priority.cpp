@@ -17,7 +17,6 @@ void smart_priority::determine_location_markers() {
 
 }
 
-
 bool smart_priority::is_middle(ClassificationItem& item) {
 	if (item.location == Location::CENTRE || item.location == Location::IN_LEFT || item.location == Location::IN_RIGHT)
 	{
@@ -25,7 +24,6 @@ bool smart_priority::is_middle(ClassificationItem& item) {
 	}
 	return false;
 }
-
 
 void smart_priority::determine_prio(ClassificationItem& item) {
 	// Basic no comparison priority maker
@@ -36,15 +34,10 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 		return;
 	}
 
-
 	SPDLOG_INFO("/n/n Processing item {} : {}", item.name, item.id);
 	if (run_cooldown_tracker(item))
 	{
-
-
 		SPDLOG_INFO("Item {}, runing this time", item.name, item.id);
-
-
 		bool prio = run_emegency_rules(item);
 		if (!prio)
 		{
@@ -59,21 +52,18 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 			}
 		}
 
-		msg_add_location(item);
-		msg_add_name(item);
-		msg_add_distance(item);
 	}
-
-
+	msg_add_location(item);
+	msg_add_name(item);
+	msg_add_distance(item);
 	if (item.priority == Priority::UNDEFINED)
 	{
 		item.priority = Priority::LOW;
 	}
-	else if (item.priority > min){
+	else if (item.priority > min) {
 		min = item.priority;
 	}
 }
-
 
 bool smart_priority::run_cooldown_tracker(ClassificationItem& item)
 {
@@ -124,12 +114,12 @@ bool smart_priority::check_cooldown_skip(ClassificationItem& item)
 {
 	if (run_emegency_rules(item))
 	{
-		if (pc.check_cooldown(pc.get_unique_id(item),cooldown_emergency))
+		if (pc.check_cooldown(pc.get_unique_id(item), cooldown_emergency))
 		{
 			SPDLOG_INFO("Item OFF COOLDOWN EMERGENCY SKIP{} : {}", item.name, item.id);
 			return true;
 		}
-		else 
+		else
 		{
 			SPDLOG_INFO("Item {} not off cooldown ", item.name);
 			item.priority = Priority::UNDEFINED;
@@ -271,10 +261,10 @@ void smart_priority::msg_add_name(ClassificationItem& item) {
 	std::string insert = "";
 	if (item.msg.length() == 0)
 	{
-		insert = item.name;
+		insert = item.name + std::to_string(item.id);
 	}
 	else {
-		insert = ", " + item.name;
+		insert = ", " + item.name + std::to_string(item.id);
 	}
 
 
@@ -283,18 +273,25 @@ void smart_priority::msg_add_name(ClassificationItem& item) {
 void smart_priority::msg_add_distance(ClassificationItem& item) {
 	double value = std::ceil(item.distance * 100.0) / 100.0;
 	std::string insert = "";
-	if (value > 1) {
-		insert = ", " + two_deci::to_string_precise(value) + " meters";
-	}
-	else {
-		insert = ", " + two_deci::to_string_precise(value) + " meter";
+	insert = ", " + two_deci::to_string_precise(value);
+	if (item.counter < 5) {
+		if (value == 1) {
+			insert = insert + " meter";
+		}
+		else {
+			insert = insert + " meters";
+		}
 	}
 	item.msg += insert;
 }
 
 double smart_priority::time_until_colision(ClassificationItem& item)
 {
-	return item.distance / item.speed;
+	if (item.speed > 0.1)
+	{
+		return item.distance / item.speed;
+	}
+	return 100000000;
 }
 
 bool smart_priority::run_emegency_rules(ClassificationItem& item) {
@@ -302,7 +299,7 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 	int return_value = 0;
-	if (distance < 0.5)
+	if (distance < 0.4)
 	{
 		if (is_middle(item))
 		{
@@ -310,11 +307,11 @@ bool smart_priority::run_emegency_rules(ClassificationItem& item) {
 			return true;
 		}
 	}
-	if (time_until_colision(item) <= 2 && is_middle(item))
+	/*if (time_until_colision(item) <= 1.5 && is_middle(item))
 	{
 		item.priority = Priority::URGENT;
 		return true;
-	}
+	}*/
 
 	/*else if (distance < 3 && is_middle(item)) {
 		if (time_until_colision(item) < 3)
@@ -332,7 +329,7 @@ bool smart_priority::run_high_rules(ClassificationItem& item) {
 	double distance = item.distance;
 	double speed = item.speed;
 
-	
+
 	if (distance < 1)
 	{
 		item.priority = Priority::HIGH;
@@ -355,10 +352,6 @@ bool smart_priority::run_high_rules(ClassificationItem& item) {
 		item.priority = Priority::HIGH;
 		return true;
 	}
-
-
-
-
 }
 bool smart_priority::run_medium_rules(ClassificationItem& item) {
 	double distance = item.distance;

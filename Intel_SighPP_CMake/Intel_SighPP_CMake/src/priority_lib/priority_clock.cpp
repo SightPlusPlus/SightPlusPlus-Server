@@ -14,15 +14,15 @@ bool priority_clock::check_cooldown(std::string id, int time_dif)
 	auto F = cooldowns.find(id);
 	auto time = clock();
 
-	SPDLOG_INFO("Item Finding {}, looking for time {}", id, time_dif);
+	SPDLOG_INFO("Findling item {}, looking for time {}", id, time_dif);
 	if (F != cooldowns.end())
 	{
 		auto old_time = F->second;
 		SPDLOG_INFO("Item Found {}, time is  {}", id, (time - old_time));
 		if ((time - old_time) > time_dif)
 		{
-
-			SPDLOG_INFO("Item Cooldown ready {}, time is  {}", id, (time - old_time));
+			 
+			SPDLOG_INFO("Item {} Cooldown ready , time is  {}", id, (time - old_time));
 			return true;
 		}
 	}

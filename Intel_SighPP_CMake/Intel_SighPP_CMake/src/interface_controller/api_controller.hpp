@@ -19,6 +19,11 @@ public:
 	/// </summary>
 	/// <param name="user">User to add to current users.</param>
 	void add_user(ApiUserInterface& user);
+
+	/// <summary>
+	/// Receives new classification result items and sends them to connected API users.
+	/// </summary>
+	/// <param name="results">Items to send to API users</param>
 	void new_items(const std::vector<ClassificationItem>& results);
 
 };
