@@ -48,7 +48,7 @@ public:
 	//________data and message control________: 
 
 	/// <summary>
-	/// Based on rectangle of object, determin location.
+	/// Based on the rectangle box of recognised object, determin their locations.
 	/// </summary>
 	/// <param name="item"></param>
 	void msg_add_location(ClassificationItem& item);
