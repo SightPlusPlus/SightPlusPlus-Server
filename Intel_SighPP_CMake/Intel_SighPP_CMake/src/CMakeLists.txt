@@ -35,6 +35,8 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/size_priority.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority.hpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_clock.cpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_clock.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_manager/CameraInput.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/service_manager/CameraInput.h
 	  ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/Intel_Sight_++.cpp

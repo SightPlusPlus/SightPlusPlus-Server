@@ -13,11 +13,11 @@ class OutputStreamController {
 	bool show_color_output_;
 
 	rs2::colorizer color_map_;
-	
+
 public:
 
 	virtual ~OutputStreamController() {};
-	
+
 	OutputStreamController(const bool show_depth_window, const bool show_color_window);
 
 	/// <summary>
@@ -29,16 +29,16 @@ public:
 	/// <param name="color_matrix">OpenCV matrix of the color frame</param>
 	/// <param name="vector">Vector of recognised objects</param>
 	virtual void stream_to_windows(
-		const rs2::frame& depth_frame, cv::Mat depth_matrix, 
+		const rs2::frame& depth_frame, cv::Mat depth_matrix,
 		const rs2::video_frame& color_frame, cv::Mat color_matrix,
-		const std::vector<PrioritisedClassificationResult>& vector) const;
+		const std::vector<ClassificationItem>& vector) const;
 
 	/// <summary>
 	/// Output depth stream to window. Color map is pre-applied.
 	/// </summary>
 	/// <param name="frame">Depth frame with color-map pre-applied.</param>
 	virtual void output_to_depth_window(const rs2::frame& frame) const;
-	
+
 	/// <summary>
 	/// Output color stream to window.
 	/// Also draws rectangles around recognised objects.
@@ -46,7 +46,7 @@ public:
 	/// <param name="color_matrix">Color frame</param>
 	/// <param name="depth_matrix">Depth frame</param>
 	/// <param name="vector">Rectangles will be drawn around these items</param>
-	virtual void output_to_color_window(cv::Mat color_matrix, cv::Mat depth_matrix, const std::vector<PrioritisedClassificationResult>& vector) const;
+	virtual void output_to_color_window(cv::Mat color_matrix, cv::Mat depth_matrix, const std::vector<ClassificationItem>& vector) const;
 
 	/// <summary>
 	/// Tells the system if the OpenCV stream output windows are ready, if enabled.
