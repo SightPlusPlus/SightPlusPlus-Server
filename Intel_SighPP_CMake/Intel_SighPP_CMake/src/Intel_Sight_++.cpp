@@ -36,10 +36,15 @@ int main(int argc, char** argv)
 	rs2::config cfg;
 	std::vector<CaffeModelImpl> caffe_models;
 	std::vector<YoloModelImpl> yolo_models;
+	std::set<std::string> yolo_models_names;
+	std::set<std::string> caffe_models_names;
 
 	auto stream_depth = false;
 	auto stream_color = false;
 	auto port = 7979;
+	auto theme = 0;
+	std::set<std::string> outdoors_model = { "MobileNetSSD_deploy" }; 
+	std::set<std::string> indoors_model = { "no_bn" }; 
 
 	setup_logging();
 
@@ -154,9 +159,12 @@ int main(int argc, char** argv)
 					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
 					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
 					std::string txt_path_ = "./models/" + file_ + ".txt";
-					CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
-					caffe_models.push_back(caffe_model); 
-					SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
+					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(file_);
+					if(ret.second){
+						CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+						caffe_models.push_back(caffe_model);
+						SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
+					}
 					continue;
 				}
 				catch (const std::exception& exception)
@@ -178,9 +186,12 @@ int main(int argc, char** argv)
 					std::string cfg_path_ = "./models/" + file_ + ".cfg";
 					std::string weights_path_ = "./models/" + file_ + ".weights";
 					std::string label_path_ = "./models/" + file_ + ".txt";
-					YoloModelImpl yolo_model(cfg_path_, weights_path_, label_path_);
-					yolo_models.push_back(yolo_model);
-					SPDLOG_INFO("Yolo network loaded:  {}", file_);
+					std::pair<std::set<string>::iterator,bool> ret = yolo_models_names.insert(file_);
+					if(ret.second){
+						YoloModelImpl yolo_model(cfg_path_, weights_path_, label_path_);
+						yolo_models.push_back(yolo_model);
+						SPDLOG_INFO("Yolo network loaded:  {}", file_);
+					}
 					continue;
 				}
 				catch (const std::exception& exception)
@@ -192,7 +203,39 @@ int main(int argc, char** argv)
 			{
 				SPDLOG_ERROR("Missing flag/argument for loading the darknet-based yolo network");
 				continue;
+			}	
+
+			if(next_arg.compare("-outdoors") == 0)
+			{
+				theme = 1;
+				for(auto i = outdoors_model.begin(); i != outdoors_model.end(); ++i){
+					std::string prototxt_path_ = "./models/" + *i + ".prototxt";
+					std::string caffemodel_path_ = "./models/" + *i + ".caffemodel";
+					std::string txt_path_ = "./models/" + *i + ".txt";
+					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
+					if(ret.second){
+						CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+						caffe_model.set_resolution(300,300);
+						caffe_models.push_back(caffe_model);
+						SPDLOG_INFO("Caffe-based network loaded for outdoors environment:  {}", *i);
+					}
+				}
 			}
+			else if(next_arg.compare("-indoors") == 0)
+			{
+				theme = 2;
+				for(auto i = indoors_model.begin(); i != indoors_model.end(); ++i){
+					std::string prototxt_path_ = "./models/" + *i + ".prototxt";
+					std::string caffemodel_path_ = "./models/" + *i + ".caffemodel";
+					std::string txt_path_ = "./models/" + *i + ".txt";
+					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
+					if(ret.second){
+						CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+						caffe_model.set_resolution(640,480);
+						caffe_models.push_back(caffe_model);
+						SPDLOG_INFO("Caffe-based network loaded for indoors environment:  {}", *i);
+					}
+				}
 		}
 
 	}
@@ -237,7 +280,6 @@ int main(int argc, char** argv)
 		SPDLOG_INFO("One yolo network added...");
 	}	
 
-
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
 	std::string name_prio_depth = "prio_depth";
@@ -246,17 +288,16 @@ int main(int argc, char** argv)
 	smart_priority prio_smart(name_prio_smart);
 	SPDLOG_INFO("Using prioritiser module: {}", prio_smart.get_name());
 
-	//std::string name_prio_size = "size";
-	//priority_module* prio_depth = new size_priority(&name_prio_size);
-
-
-
 	SPDLOG_INFO("Setting up Prioritiser");
 	Prioritiser* prioritiser = new Prioritiser;
-	//add modules
 	prioritiser->add_module(prio_smart);
 	// Todo: load prio model from flag
-	prioritiser->set_module(name_prio_smart);
+	switch (theme)
+	{
+		case 1:
+		case 2:
+		default: prioritiser->set_module(name_prio_smart);
+	}
 	prioritiser->load_module();
 
 	SPDLOG_INFO("Setting up output API and API users");
