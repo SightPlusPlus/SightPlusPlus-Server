@@ -5,7 +5,7 @@
 #include "spdlog/spdlog.h"
 #include "ml_interface.hpp"
 #include "model_helper.hpp"
-#include <opencv2\imgproc.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
@@ -17,9 +17,11 @@ struct CaffeModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
 	std::vector<std::string> class_names;
+	size_t inWidth;
+	size_t inHeight;	
 
-	const size_t inWidth = 640;
-	const size_t inHeight = 480;
+	//const size_t inWidth = 640;
+	//const size_t inHeight = 480;
 	const float WHRatio = inWidth / (float)inHeight;
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
@@ -32,6 +34,8 @@ struct CaffeModelImpl : public ModelInterface {
 
 		net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
 		class_names = read_class_name_file(class_names_path);
+		inWidth = 300;
+		inHeight = 300;
 	}
 
 	// This is the same as the rs-dnn example
@@ -127,5 +131,10 @@ struct CaffeModelImpl : public ModelInterface {
 		);
 
 		return classification_result;
+	}
+
+	void set_resolution(size_t width, size_t height) override {
+		inWidth = width;
+		inHeight = height;
 	}
 };

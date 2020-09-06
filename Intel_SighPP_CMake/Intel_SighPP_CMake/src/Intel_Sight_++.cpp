@@ -34,6 +34,10 @@ int main(int argc, char** argv)
 	// TODO Add protection against files not being found
 	rs2::pipeline pipe;
 	rs2::config cfg;
+	std::vector<CaffeModelImpl> caffe_models;
+	std::vector<YoloModelImpl> yolo_models;
+	std::set<std::string> yolo_models_names;
+	std::set<std::string> caffe_models_names;
 
 	auto stream_depth = false;
 	auto stream_color = false;
@@ -105,8 +109,8 @@ int main(int argc, char** argv)
 				{
 
 					std::string file_ = argv[++i];
-					std::string path_ = ".\\recordings\\" + file_;
-					SPDLOG_INFO("Playing from file:  {}", path_);
+					std::string path_ = "./recordings/" + file_ + ".bag";
+					std::cout << "playing from file: " << path_ << std::endl;
 					cfg.enable_device_from_file(path_);
 					continue;
 				}
@@ -141,6 +145,56 @@ int main(int argc, char** argv)
 			{
 				SPDLOG_ERROR("Missing value for flag -port");
 			}
+			else if (next_arg.compare("-caffe") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+
+					std::string file_ = argv[++i];
+					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
+					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
+					std::string txt_path_ = "./models/" + file_ + ".txt";
+					int old_size = caffe_models_names.size();
+					caffe_models_names.insert(file_);
+					if(old_size == caffe_models_names.size()) continue;
+					else
+					{	
+						CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+						caffe_models.push_back(caffe_model); 
+					}
+					SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading caffe-based network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+
+					std::string file_ = argv[++i];
+					std::string cfg_path_ = "./models/" + file_ + ".cfg";
+					std::string weights_path_ = "./models/" + file_ + ".weights";
+					std::string label_path_ = "./models/" + file_ + ".txt";
+					int old_size = yolo_models_names.size();
+					yolo_models_names.insert(file_);
+					if(old_size == yolo_models_names.size()) continue;
+					else
+					{
+						YoloModelImpl yolo_model(cfg_path_, weights_path_, label_path_);
+						yolo_models.push_back(yolo_model);
+					}
+					SPDLOG_INFO("Yolo network loaded:  {}", file_);
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading darknet-based yolo network from file: {}", exception.what());
+				}
+			}
 		}
 
 	}
@@ -172,14 +226,27 @@ int main(int argc, char** argv)
 	// TODO Add command line parameter for files to use?
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
-	CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
-	CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
+
+	for (auto i = caffe_models.begin(); i != caffe_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One caffe-based network added...");
+	}
+	
+	for (auto i = yolo_models.begin(); i != yolo_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One yolo network added...");
+	}	
+	
+	//CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn.txt");
+	//CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy.txt");
 
 	// Add more ML implementations here as needed
 	//ml_controller.add_model(ml_depth);
 	//ml_controller.add_model(ml_rgb);
-	ml_controller.add_model(caffe_own);
-	ml_controller.add_model(caffe_pre);
+	//ml_controller.add_model(caffe_own);
+	//ml_controller.add_model(caffe_pre);
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 

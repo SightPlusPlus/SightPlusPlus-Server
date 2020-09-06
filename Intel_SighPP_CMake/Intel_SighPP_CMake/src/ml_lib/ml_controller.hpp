@@ -4,7 +4,7 @@
 
 #include "../classification_result.hpp"
 #include "ml_interface.hpp"
-#include "../cv-helpers.hpp"
+#include "../../cv-helpers.hpp"
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
 

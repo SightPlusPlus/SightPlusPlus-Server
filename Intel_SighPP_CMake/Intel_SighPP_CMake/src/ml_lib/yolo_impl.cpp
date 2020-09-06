@@ -17,9 +17,9 @@ struct YoloModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
 	vector<string> class_names;
+	size_t inWidth;
+	size_t inHeight;	
 	
-	const size_t inWidth = 640;
-	const size_t inHeight = 480;
 	const float WHRatio = inWidth / (float)inHeight;
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
@@ -38,6 +38,10 @@ struct YoloModelImpl : public ModelInterface {
 		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);		
 		
 		class_names = read_class_name_file(class_names_path);
+
+		inWidth = 300;
+
+		inHeight = 300;
 
 	}
 
@@ -135,4 +139,8 @@ struct YoloModelImpl : public ModelInterface {
 		return classification_result;
 	}
 
+	void set_resolution(size_t width, size_t height) override {
+		inWidth = width;
+		inHeight = height;
+	}
 };
