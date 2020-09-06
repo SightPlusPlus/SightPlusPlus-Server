@@ -22,8 +22,6 @@ struct CaffeModelImpl : public ModelInterface {
 	size_t inWidth;
 	size_t inHeight;	
 
-	//const size_t inWidth = 640;
-	//const size_t inHeight = 480;
 	const float WHRatio = inWidth / (float)inHeight;
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
@@ -32,6 +30,7 @@ struct CaffeModelImpl : public ModelInterface {
 	ObjectTracking object_tracking;
 	/// <summary>
 	/// Constructor to create a caffe-based object recognition network
+	/// Default resolution is set to 640x480
 	/// </summary>
 	/// <param name="prototxt_path">relative path to the definition of the model architecture in a protocol buffer definition file (prototxt)</param>
 	/// <param name="caffemodel_path">relative path to the caffe layers and their parameters where protocol buffer definitions for the project in caffe.proto are defined</param>
@@ -45,8 +44,8 @@ struct CaffeModelImpl : public ModelInterface {
 		// Use configuration to speed up the net.forward
 		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);
 		class_names = read_class_name_file(class_names_path);
-		inWidth = 300;
-		inHeight = 300;
+		inWidth = 640;
+		inHeight = 480;
 	}
 
 	/// <summary>

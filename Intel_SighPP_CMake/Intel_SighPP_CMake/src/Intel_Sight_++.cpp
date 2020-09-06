@@ -61,6 +61,8 @@ int main(int argc, char** argv)
 	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
 	/// 7) -caffe no_bn		: This is used to import the caffe-based network named no_bn.caffemodel etc.
 	/// 8) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
+	/// 9) -outdoors		: This is used to set up object detection networks, frame resolution and the prioritiser for outdoors environment.
+	/// 10) -indoors		: This is used to set up object detection networks, frame resolution and the prioritiser for indoors environment.
 	/// <summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
