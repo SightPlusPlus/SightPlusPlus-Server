@@ -25,4 +25,10 @@ public:
 	/// </summary>
 	/// <param name="results">Items to send to API users</param>
 	void new_items(const std::vector<PrioritisedClassificationResult>& results);
+
+	/// <summary>
+	/// Gets all prioritiser instruction updates from all API users.
+	/// </summary>
+	/// <returns>Vector of instructions</returns>
+	std::vector<PrioritiserUpdateInstruction> get_prioritiser_instruction_updates();
 };

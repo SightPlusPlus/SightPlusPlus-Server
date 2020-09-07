@@ -6,24 +6,33 @@
 #include <websocketpp/server.hpp>
 #include "spdlog/spdlog.h"
 
-/// <summary>
-/// Based on WebSocket++ Simple Broadcast Server.
-/// </summary>
-class BroadcastServer
+struct ApiWebSocketImpl : ApiUserInterface
 {
+	Priority minimum_priority;
+
 	std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> connections_;
 	websocketpp::server<websocketpp::config::asio> server_;
 
-public:
-
-	BroadcastServer()
+	ApiWebSocketImpl(int port, Priority minimum_priority) : minimum_priority(minimum_priority)
 	{
 		SPDLOG_INFO("Creating BroadcastServer");
 		server_.init_asio();
+		
+		server_.set_open_handler(websocketpp::lib::bind(&ApiWebSocketImpl::on_open, this, websocketpp::lib::placeholders::_1));
+		server_.set_close_handler(websocketpp::lib::bind(&ApiWebSocketImpl::on_close, this, websocketpp::lib::placeholders::_1));
+		server_.set_message_handler(websocketpp::lib::bind(&ApiWebSocketImpl::on_message, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
+		
+		websocketpp::lib::thread([this, port] {run(port); }).detach();
+	}
 
-		server_.set_open_handler(websocketpp::lib::bind(&BroadcastServer::on_open, this, websocketpp::lib::placeholders::_1));
-		server_.set_close_handler(websocketpp::lib::bind(&BroadcastServer::on_close, this, websocketpp::lib::placeholders::_1));
-		server_.set_message_handler(websocketpp::lib::bind(&BroadcastServer::on_message, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
+	void new_item(ClassificationItem item) override
+	{
+		SPDLOG_INFO("MinPriority: {} vs. ItemPriority: {}", static_cast<int>(minimum_priority), static_cast<int>(item.priority));
+		if (item.priority >= minimum_priority)
+		{
+			SPDLOG_INFO("Sending item: {}", item.to_json());
+			send(item.to_json());
+		}
 	}
 
 	void run(int port)
@@ -44,6 +53,9 @@ public:
 	}
 
 	void on_message(const websocketpp::connection_hdl handle, const websocketpp::server<websocketpp::config::asio>::message_ptr message) {
+		// TODO Transform to relevant format
+		// TODO Add to update instructions list
+
 		for (const auto& connection : connections_)
 		{
 			server_.send(connection, message);
@@ -55,27 +67,6 @@ public:
 		for (const auto& connection : connections_)
 		{
 			server_.send(connection, message, websocketpp::frame::opcode::TEXT);
-		}
-	}
-};
-
-struct ApiWebSocketImpl : ApiUserInterface
-{
-	Priority minimum_priority;
-	BroadcastServer server;
-
-	ApiWebSocketImpl(int port, Priority minimum_priority) : minimum_priority(minimum_priority)
-	{
-		websocketpp::lib::thread([s = &server, port] { s->run(port); }).detach();
-	}
-
-	void new_item(ClassificationItem item) override
-	{
-		SPDLOG_INFO("MinPriority: {} vs. ItemPriority: {}", static_cast<int>(minimum_priority), static_cast<int>(item.priority));
-		if (item.priority >= minimum_priority)
-		{
-			SPDLOG_INFO("Sending item: {}", item.to_json());
-			server.send(item.to_json());
 		}
 	}
 };

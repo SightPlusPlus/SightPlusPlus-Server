@@ -30,7 +30,12 @@ int ServiceController::main() try {
 
 		SPDLOG_INFO("Doing ML on matrices");
 		ml_controller_.new_frames(color_matrix, depth_matrix);
+		
 
+		auto prioritiser_instructions = api_controller_.get_prioritiser_instruction_updates();
+		// TODO Implement this function or one that does something similar
+		//prioritiser_.update_instructions(prioritiser_instructions);
+		
 		SPDLOG_INFO("Prioritising results");
 		auto prioritised_results = prioritiser_.prioritise(ml_controller_.get_and_clear_results());
 		SPDLOG_INFO("Prioritised {} results", prioritised_results.size());

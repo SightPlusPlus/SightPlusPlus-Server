@@ -36,3 +36,14 @@ void ApiController::new_items(const std::vector<PrioritisedClassificationResult>
 		duration = clock();
 	}
 }
+
+std::vector<PrioritiserUpdateInstruction> ApiController::get_prioritiser_instruction_updates()
+{
+	std::vector<PrioritiserUpdateInstruction> vector;
+	for (auto* api_user : api_users_)
+	{
+		if (api_user->instructions.empty()) continue;
+		vector.insert(vector.end(), api_user->instructions.begin(), api_user->instructions.end());
+	}
+	return vector;
+}
