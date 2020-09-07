@@ -1,4 +1,7 @@
-﻿#define MAXAPI_USE_MSCRT
+﻿// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
+#define MAXAPI_USE_MSCRT
 #define DllExport   __declspec( dllexport )
 #include <string>
 #include <iostream>
