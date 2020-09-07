@@ -249,11 +249,6 @@ int main(int argc, char** argv)
 
 	MLController ml_controller;
 	// TODO Read command line parameters for which models to use?
-
-	//MLImplDepth ml_depth;
-	//MLImplRGB ml_rgb;
-
-
 	// TODO Add correct paths for testing
 	// TODO Add command line parameter for files to use?
 

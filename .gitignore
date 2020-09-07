@@ -378,7 +378,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 .DS_Store
-.DS_Store
 Intel_SighPP_CMake/.DS_Store
-Intel_SighPP_CMake/Intel_SighPP_CMake/.DS_Store
 Intel_SighPP_CMake/Intel_SighPP_CMake/.DS_Store
