@@ -11,6 +11,7 @@
 #include <iostream>
 #include "ml_lib/caffe_impl.cpp"
 #include "ml_lib/yolo_impl.cpp"
+#include "ml_lib/model_creator.hpp"
 #include "priority_lib/depth_priority.hpp"
 #include "priority_lib/size_priority.cpp"
 #include "classification_result.hpp"
@@ -158,12 +159,9 @@ int main(int argc, char** argv)
 				try
 				{
 					std::string file_ = argv[++i];
-					std::string prototxt_path_ = "./models/" + file_ + ".prototxt";
-					std::string caffemodel_path_ = "./models/" + file_ + ".caffemodel";
-					std::string txt_path_ = "./models/" + file_ + ".txt";
 					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(file_);
 					if(ret.second){
-						CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+						CaffeModelImpl caffe_model = create_caffe_network(file_);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
 					}
@@ -185,12 +183,9 @@ int main(int argc, char** argv)
 				try
 				{
 					std::string file_ = argv[++i];
-					std::string cfg_path_ = "./models/" + file_ + ".cfg";
-					std::string weights_path_ = "./models/" + file_ + ".weights";
-					std::string label_path_ = "./models/" + file_ + ".txt";
 					std::pair<std::set<string>::iterator,bool> ret = yolo_models_names.insert(file_);
 					if(ret.second){
-						YoloModelImpl yolo_model(cfg_path_, weights_path_, label_path_);
+						YoloModelImpl yolo_model = create_yolo_network(file_);
 						yolo_models.push_back(yolo_model);
 						SPDLOG_INFO("Yolo network loaded:  {}", file_);
 					}
@@ -211,12 +206,9 @@ int main(int argc, char** argv)
 			{
 				theme = 1;
 				for(auto i = outdoors_model.begin(); i != outdoors_model.end(); ++i){
-					std::string prototxt_path_ = "./models/" + *i + ".prototxt";
-					std::string caffemodel_path_ = "./models/" + *i + ".caffemodel";
-					std::string txt_path_ = "./models/" + *i + ".txt";
 					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
 					if(ret.second){
-						CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+						CaffeModelImpl caffe_model = create_caffe_network(*i);
 						caffe_model.set_resolution(300,300);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded for outdoors environment:  {}", *i);
@@ -227,12 +219,9 @@ int main(int argc, char** argv)
 			{
 				theme = 2;
 				for(auto i = indoors_model.begin(); i != indoors_model.end(); ++i){
-					std::string prototxt_path_ = "./models/" + *i + ".prototxt";
-					std::string caffemodel_path_ = "./models/" + *i + ".caffemodel";
-					std::string txt_path_ = "./models/" + *i + ".txt";
 					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
 					if(ret.second){
-						CaffeModelImpl caffe_model(prototxt_path_, caffemodel_path_, txt_path_);
+						CaffeModelImpl caffe_model = create_caffe_network(*i);
 						caffe_model.set_resolution(640,480);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded for indoors environment:  {}", *i);
