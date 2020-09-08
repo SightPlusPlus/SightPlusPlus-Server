@@ -23,11 +23,16 @@ struct ModelInterface {
  	/// </summary>
  	/// <param name="width">width of the frame resolution</param>
  	/// <param name="height">height of the frame resolution</param>
-	virtual void set_resolution(size_t width, size_t height) = 0;
+	void set_resolution(size_t width, size_t height){
+		inWidth = width;
+		inHeight = height;
+	}
 	/// <summary>
  	/// Function to set confidence threshold in object detection networks
  	/// </summary>
  	/// <param name="threshold">confidence threshold</param>
-	virtual void set_confidence_threshold(float threshold) = 0;
+	void set_confidence_threshold(float threshold){
+		confidence_threshold = threshold;
+	}
 
 };
