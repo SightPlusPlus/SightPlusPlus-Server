@@ -17,16 +17,6 @@ struct CaffeModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
 	std::vector<std::string> class_names;
-	size_t inWidth;
-	size_t inHeight;	
-
-	//const size_t inWidth = 640;
-	//const size_t inHeight = 480;
-	const float WHRatio = inWidth / (float)inHeight;
-	const float inScaleFactor = 0.007843f;
-	const float meanVal = 127.5;
-
-	const float confidence_threshold = 0.8f;
 
 	CaffeModelImpl(std::string prototxt_path, std::string caffemodel_path, const std::string class_names_path)
 	{
@@ -34,8 +24,6 @@ struct CaffeModelImpl : public ModelInterface {
 
 		net = cv::dnn::readNetFromCaffe(prototxt_path, caffemodel_path);
 		class_names = read_class_name_file(class_names_path);
-		inWidth = 300;
-		inHeight = 300;
 	}
 
 	// This is the same as the rs-dnn example
@@ -57,7 +45,6 @@ struct CaffeModelImpl : public ModelInterface {
 		cv::Mat detection_matrix(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
 
 		ClassificationResult classification_result("caffe");
-
 		std::vector<int> object_id;
 		for (int i = 0; i < detection_matrix.rows; i++)
 		{
@@ -124,7 +111,6 @@ struct CaffeModelImpl : public ModelInterface {
 
 					point left_bottom(x_left_bottom, y_left_bottom);
 					point right_top(x_right_top, y_right_top);
-
 					classification_result.objects.emplace_back(class_names[object_class], distance, left_bottom, right_top);
 				}
 			}
@@ -136,5 +122,9 @@ struct CaffeModelImpl : public ModelInterface {
 	void set_resolution(size_t width, size_t height) override {
 		inWidth = width;
 		inHeight = height;
+	}
+
+	void set_confidence_threshold(float threshold) override {
+		confidence_threshold = threshold;
 	}
 };

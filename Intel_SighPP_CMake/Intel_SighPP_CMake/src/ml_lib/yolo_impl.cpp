@@ -17,15 +17,6 @@ struct YoloModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
 	vector<string> class_names;
-	size_t inWidth;
-	size_t inHeight;	
-	
-	const float WHRatio = inWidth / (float)inHeight;
-	const float inScaleFactor = 0.007843f;
-	const float meanVal = 127.5;
-	const float nmsThreshold = 0.4;
-
-	const float confidence_threshold = 0.8f;
 	
 	YoloModelImpl(string modelConfiguration, string modelWeights, const string class_names_path)
 	{
@@ -38,11 +29,6 @@ struct YoloModelImpl : public ModelInterface {
 		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);		
 		
 		class_names = read_class_name_file(class_names_path);
-
-		inWidth = 300;
-
-		inHeight = 300;
-
 	}
 
 	// This is similar to the caffe_imple example
@@ -142,5 +128,9 @@ struct YoloModelImpl : public ModelInterface {
 	void set_resolution(size_t width, size_t height) override {
 		inWidth = width;
 		inHeight = height;
+	}
+
+	void set_confidence_threshold(float threshold) override {
+		confidence_threshold = threshold;
 	}
 };
