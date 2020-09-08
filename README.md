@@ -2,8 +2,12 @@
 MSc IXN Group Thesis in collaboraiton with Intel
 ## Introduction
 ## Overview
-## Core sources
-
+## Core modules
+Below are links to the readme documentation and manuals of each component:
+- [Interface Controller](Intel_SighPP_CMake/Intel_SighPP_CMake/src/interface_controller)
+- [Prioritiser](Intel_SighPP_CMake/Intel_SighPP_CMake/src/priority_lib)
+- [ML and Object tracking](Intel_SighPP_CMake/Intel_SighPP_CMake/src/ml_lib)
+- [Main Class and Service Controller](Intel_SighPP_CMake/Intel_SighPP_CMake/src/)
 ## Installation and Development
 ### Packages required
 This project uses [Vcpkg](https://github.com/Microsoft/vcpkg) for library dependencies. Install the following libraries with Vcpkg to run the solution (make sure to install the 64-bit versions, as this system is being developed with 64-bit systems in mind):
@@ -14,6 +18,7 @@ This project uses [Vcpkg](https://github.com/Microsoft/vcpkg) for library depend
 * tbb
 * websocketpp
 * spdlog
+* GTest
 
 
 ### Installation and Run Manual of CMAKE

@@ -7,7 +7,7 @@
 #include <iomanip>
 #include "spdlog/spdlog.h"
 #include "model_helper.hpp"
-#include <opencv2\imgproc.hpp>
+#include <opencv2/imgproc.hpp>
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
 #include "../classification_result.hpp"
@@ -29,7 +29,7 @@ struct CaffeModelImpl : public ModelInterface {
 	const float inScaleFactor = 0.007843f;
 	const float meanVal = 127.5;
 
-	const float confidence_threshold = 0.9f;
+	const float confidence_threshold = 0.8f;
 	ObjectTracking object_tracking;
 	/// <summary>
 	/// Constructor to create a caffe-based object recognition network

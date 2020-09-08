@@ -13,19 +13,17 @@ void ApiController::add_user(ApiUserInterface& user)
 	api_users_.push_back(&user);
 }
 
-void ApiController::new_items(const std::vector<PrioritisedClassificationResult>& results)
+void ApiController::new_items(const std::vector<ClassificationItem>& results)
 {
 	SPDLOG_INFO("Sending items to API users");
 
-	int time = std::clock();
+	auto time = std::clock();
 
 	SPDLOG_INFO("Testing Time counter, time is {} outside loop", std::to_string(time - duration));
-	if ((time - duration) > 2000)
-	{
-		for (auto&& result : results)
+	
+		for (auto&& item : results)
 		{
-			for (auto&& item : result.objects)
-			{
+			
 				tbb::parallel_for_each(
 					api_users_.begin(),
 					api_users_.end(),
@@ -34,8 +32,8 @@ void ApiController::new_items(const std::vector<PrioritisedClassificationResult>
 						api_user->new_item(item);
 					}
 				);
-			}
+			
 		}
 		duration = clock();
-	}
+	
 }

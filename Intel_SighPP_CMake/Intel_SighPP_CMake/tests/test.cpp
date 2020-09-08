@@ -8,13 +8,13 @@
 #include <vector>
 #include <algorithm>
 #include "gtest/gtest.h"
-#include "../src/priority_lib/smart_priority.hpp" 
-#include "../src/priority_lib/smart_priority.cpp"   
-#include "../src/priority_lib/priority_module.cpp"
-#include "../src/classification_result.hpp"
 #include <Set>
 
 
+//#include "../src/priority_lib/smart_priority.hpp" 
+//#include "../src/priority_lib/smart_priority.cpp"   
+//#include "../src/priority_lib/priority_module.cpp"
+//#include "../src/classification_result.hpp"
 
 //namespace {
 //	class FooTest : public ::testing::Test {
