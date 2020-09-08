@@ -124,13 +124,4 @@ struct YoloModelImpl : public ModelInterface {
 
 		return classification_result;
 	}
-
-	void set_resolution(size_t width, size_t height) override {
-		inWidth = width;
-		inHeight = height;
-	}
-
-	void set_confidence_threshold(float threshold) override {
-		confidence_threshold = threshold;
-	}
 };
