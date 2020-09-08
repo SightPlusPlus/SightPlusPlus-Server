@@ -19,15 +19,8 @@ struct CaffeModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
 	std::vector<std::string> class_names;
-	size_t inWidth;
-	size_t inHeight;	
-
-	const float WHRatio = inWidth / (float)inHeight;
-	const float inScaleFactor = 0.007843f;
-	const float meanVal = 127.5;
-
-	const float confidence_threshold = 0.9f;
 	ObjectTracking object_tracking;
+
 	/// <summary>
 	/// Constructor to create a caffe-based object recognition network
 	/// Default resolution is set to 640x480
@@ -44,8 +37,6 @@ struct CaffeModelImpl : public ModelInterface {
 		// Use configuration to speed up the net.forward
 		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);
 		class_names = read_class_name_file(class_names_path);
-		inWidth = 640;
-		inHeight = 480;
 	}
 
 	/// <summary>
@@ -74,7 +65,6 @@ struct CaffeModelImpl : public ModelInterface {
 		cv::Mat detection_matrix(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
 
 		ClassificationResult classification_result("caffe");
-
 		std::vector<int> object_id;
 		for (int i = 0; i < detection_matrix.rows; i++)
 		{
@@ -152,5 +142,9 @@ struct CaffeModelImpl : public ModelInterface {
 	void set_resolution(size_t width, size_t height) override {
 		inWidth = width;
 		inHeight = height;
+	}
+
+	void set_confidence_threshold(float threshold) override {
+		confidence_threshold = threshold;
 	}
 };

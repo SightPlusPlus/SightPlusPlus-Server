@@ -5,6 +5,12 @@
 #include "../classification_result.hpp"
 
 struct ModelInterface {
+	size_t inWidth = 640;
+	size_t inHeight = 480;	
+	float WHRatio = inWidth / (float)inHeight;
+	float inScaleFactor = 0.007843f;
+	float meanVal = 127.5;
+	float confidence_threshold = 0.8f;
 	/// <summary>
  	/// Function to identify objects and return the resutls 
  	/// (obejct class names, relative location, distance and confidence)
@@ -18,5 +24,10 @@ struct ModelInterface {
  	/// <param name="width">width of the frame resolution</param>
  	/// <param name="height">height of the frame resolution</param>
 	virtual void set_resolution(size_t width, size_t height) = 0;
+	/// <summary>
+ 	/// Function to set confidence threshold in object detection networks
+ 	/// </summary>
+ 	/// <param name="threshold">confidence threshold</param>
+	virtual void set_confidence_threshold(float threshold) = 0;
 
 };
