@@ -1,9 +1,13 @@
+// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
 #pragma once
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/async.h"
+
 inline std::string get_date_time_string()
 {
 	const auto t = spdlog::details::os::localtime();

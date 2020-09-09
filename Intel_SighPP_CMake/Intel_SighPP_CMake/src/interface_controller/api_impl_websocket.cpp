@@ -1,3 +1,5 @@
+// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
 
 #include "api_user_interface.hpp"
 #include <set>
@@ -6,8 +8,9 @@
 #include <websocketpp/server.hpp>
 #include "spdlog/spdlog.h"
 
-#include "api_user_interface.hpp"
-
+/// <summary>
+/// Based on WebSocket++ Simple Broadcast Server.
+/// </summary>
 class BroadcastServer
 {
 	std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> connections_;

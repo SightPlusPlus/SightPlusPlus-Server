@@ -1,3 +1,6 @@
+// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
 #include "depth_priority.hpp"
 #include <iostream>
 //void depth_priority::sort_data() {

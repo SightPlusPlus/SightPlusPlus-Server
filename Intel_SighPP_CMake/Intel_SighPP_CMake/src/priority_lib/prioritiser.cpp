@@ -1,3 +1,6 @@
+// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
 #include "prioritiser.hpp"
 
 #include "spdlog/spdlog.h"
@@ -29,13 +32,10 @@ bool compare_items(ClassificationItem& item_1, ClassificationItem& item_2)
 	return result;
 }
 
-std::vector<PrioritisedClassificationResult> Prioritiser::prioritise(std::vector<ClassificationResult> results)
+std::vector<ClassificationItem> Prioritiser::prioritise(std::vector<ClassificationResult> results)
 {
-
-	std::vector<PrioritisedClassificationResult> vector_sorted;
 	SPDLOG_INFO("Prioritising results from {} models", results.size());
 	auto output = selected_module->run(&results);
-	vector_sorted.push_back(*(output));
 	//TODO Create Vector of multiple items?
-	return vector_sorted;
+	return *output;
 }
