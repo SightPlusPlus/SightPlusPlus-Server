@@ -29,12 +29,12 @@ public:
 		if (show_depth_window)
 		{
 			depth_output_window_ = "Depth Image";
-			namedWindow(depth_output_window_, cv::WINDOW_AUTOSIZE);
+			namedWindow(depth_output_window_, cv::WINDOW_FULLSCREEN);
 		}
 		if (show_color_window)
 		{
 			color_output_window_ = "Color Image";
-			namedWindow(color_output_window_, cv::WINDOW_AUTOSIZE);
+			namedWindow(color_output_window_, cv::WINDOW_FULLSCREEN);
 		}
 	}
 
@@ -130,7 +130,7 @@ public:
 	{
 		if (show_depth_output_)
 		{
-			return getWindowProperty(depth_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
+			return getWindowProperty(depth_output_window_, cv::WND_PROP_FULLSCREEN) >= 0;
 		}
 		return true;
 	}
@@ -139,7 +139,7 @@ public:
 	{
 		if (show_color_output_)
 		{
-			return getWindowProperty(color_output_window_, cv::WND_PROP_AUTOSIZE) >= 0;
+			return getWindowProperty(color_output_window_, cv::WND_PROP_FULLSCREEN) >= 0;
 		}
 		return true;
 	}
