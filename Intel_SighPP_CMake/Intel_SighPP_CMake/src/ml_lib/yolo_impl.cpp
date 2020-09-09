@@ -20,17 +20,10 @@ struct YoloModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
 	vector<string> class_names;
-	
-	const size_t inWidth = 640;
-	const size_t inHeight = 480;
-	const float WHRatio = inWidth / (float)inHeight;
-	const float inScaleFactor = 0.007843f;
-	const float meanVal = 127.5;
-
-	const float confidence_threshold = 0.8f;
 	ObjectTracking object_tracking;
 	/// <summary>
 	/// Constrcutor to create a arknet-based object recognition network
+	/// Default resolution is set to 640x480
 	/// </summary>
 	/// <param name="modelConfiguration">relative path to the cfg files where the structures of network are defined</param>
 	/// <param name="modelWeights">relative path to the weight files where weights for correspond cfg-file are defined</param>
@@ -38,15 +31,11 @@ struct YoloModelImpl : public ModelInterface {
 	YoloModelImpl(string modelConfiguration, string modelWeights, const string class_names_path)
 	{
 		cout << "Constructing a darknet-based model impl\n";
-		
 		net = cv::dnn::readNetFromDarknet(modelConfiguration,modelWeights);
-		
 		net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
 		// Use configuration to speed up the net.forward
 		net.setPreferableTarget(cv::dnn::DNN_TARGET_OPENCL);		
-		
 		class_names = read_class_name_file(class_names_path);
-
 	}
 
 	/// <summary>
@@ -146,5 +135,4 @@ struct YoloModelImpl : public ModelInterface {
 
 		return classification_result;
 	}
-
 };

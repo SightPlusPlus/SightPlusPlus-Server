@@ -22,17 +22,11 @@ struct CaffeModelImpl : public ModelInterface {
 
 	cv::dnn::Net net;
 	std::vector<std::string> class_names;
-
-	const size_t inWidth = 640;
-	const size_t inHeight = 480;
-	const float WHRatio = inWidth / (float)inHeight;
-	const float inScaleFactor = 0.007843f;
-	const float meanVal = 127.5;
-
-	const float confidence_threshold = 0.8f;
 	ObjectTracking object_tracking;
+
 	/// <summary>
 	/// Constructor to create a caffe-based object recognition network
+	/// Default resolution is set to 640x480
 	/// </summary>
 	/// <param name="prototxt_path">relative path to the definition of the model architecture in a protocol buffer definition file (prototxt)</param>
 	/// <param name="caffemodel_path">relative path to the caffe layers and their parameters where protocol buffer definitions for the project in caffe.proto are defined</param>
@@ -70,7 +64,6 @@ struct CaffeModelImpl : public ModelInterface {
 		cv::Mat detection_matrix(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
 
 		ClassificationResult classification_result("caffe");
-
 		std::vector<int> object_id;
 		for (int i = 0; i < detection_matrix.rows; i++)
 		{

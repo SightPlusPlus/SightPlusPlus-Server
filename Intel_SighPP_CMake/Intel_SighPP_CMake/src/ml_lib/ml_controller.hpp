@@ -6,7 +6,8 @@
 #include <vector>
 
 #include "../classification_result.hpp"
-#include "../cv-helpers.hpp"
+#include "ml_interface.hpp"
+#include "../../cv-helpers.hpp"
 #include "tbb/concurrent_vector.h"
 #include "tbb/parallel_for_each.h"
 #include "ml_interface.hpp"
