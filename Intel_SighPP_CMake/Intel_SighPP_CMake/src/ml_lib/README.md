@@ -4,9 +4,10 @@
 
 ## Documentation
 ### Components
-- What is each core feature of this module?
-- what is the technical explanation of how this modules components workspace
-#### Eg. Object Tracking or Caffe Model
+- ml_interface.hpp: object detection network interfaces
+- caffe_impl.cpp & yolo_impl.cpp:  Implementation of MobileNetSSD network and YOLOv3 network respectively
+- model_helper.hpp & model_creator.hpp: Header files containing simple functions for MobileNetSSD network and YOLOv3 network implementation
+- object_tracking.hpp & object_tracking.cpp: Object tracking system
 
 ### Design Decisions
 - What are key decisions that were taken with the module and why? Are there other options and why were they not taken?
