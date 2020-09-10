@@ -181,12 +181,20 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	int y_top = item.top_left.y;
 	int x_right = item.bottom_right.x;
 	int y_bottom = item.bottom_right.y;
+
+
+	SPDLOG_INFO("x_left = {}", x_left);
+	SPDLOG_INFO("y_top = {}", y_top);
+	SPDLOG_INFO("x_right = {}", x_right);
+	SPDLOG_INFO("y_bottom = {}", y_bottom);
+
+
 	Location location_w = Location::CENTRE;
 	Height location_h = Height::CENTRE;
 	std::string result = "";
 	if (x_right < out_left) // Out left side
 	{
-		if (y_bottom < above)
+		if (y_bottom > above)
 		{
 			result += "Above, out left";
 			location_w = Location::OUT_LEFT;
@@ -202,7 +210,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_left > out_right) //out right side
 	{
-		if (y_bottom < above)
+		if (y_bottom > above)
 		{
 			result += "Above, out right";
 			location_w = Location::OUT_RIGHT;
@@ -216,7 +224,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_left < mid_w && x_right > mid_w) // centre
 	{
-		if (y_bottom < above)
+		if (y_bottom > above)
 		{
 			result += "Above, centre";
 			location_h = Height::ABOVE;
@@ -230,7 +238,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_right > out_left && x_right < mid_w) // in left
 	{
-		if (y_bottom < above)
+		if (y_bottom > above)
 		{
 			result += "Above, in left";
 			location_w = Location::IN_LEFT;
@@ -244,7 +252,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_left < out_right && x_left > mid_w) // in right
 	{
-		if (y_bottom < above)
+		if (y_bottom > above)
 		{
 			result += "Above, in right";
 			location_w = Location::IN_RIGHT;
