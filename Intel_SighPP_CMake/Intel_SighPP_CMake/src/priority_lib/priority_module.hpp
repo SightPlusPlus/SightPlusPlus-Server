@@ -37,9 +37,21 @@ public:
 
 	std::vector<ClassificationItem>* run(std::vector<ClassificationResult>* result)
 	{
-		
-		all_data.clear();
+		SPDLOG_INFO("Prioritising run function starting");
+		try
+		{
+			if (!all_data.empty())
+			{
+				all_data.clear();
+			}
+		}
+		catch (const std::exception&)
+		{
+			SPDLOG_INFO("Failed to clear data with");
+		}
+		SPDLOG_INFO("Data Cleared in run priortiser");
 		priority_module::build_data(*result);
+		SPDLOG_INFO("Prioriter data ready for prioriting");
 		assign_priority();
 		return &all_data;
 	}

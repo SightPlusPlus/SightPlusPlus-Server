@@ -9,8 +9,9 @@
 #include "../classification_result.hpp"
 #include <string>
 #include <map>
+#include <set>
 
-class smart_priority : public priority_module
+class covid_priority : public priority_module
 {
 protected:
 	int size_w = 640;
@@ -29,6 +30,7 @@ protected:
 	int mid_w = 0;
 	priority_clock pc;
 	Priority min = Priority::UNDEFINED;
+	std::set<std::string> covid_list{"Person","person","bycycle","Bycycle"};
 
 public:
 
@@ -38,9 +40,8 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	smart_priority(std::string name = "default")
-		: priority_module(&name) {
-	}
+	covid_priority(std::string name = "default")
+		: priority_module(&name) {}
 	/// <summary>
 	/// Determines location markers for objects within the screen. 
 	/// </summary>
@@ -142,7 +143,7 @@ public:
 	/// </summary>
 	/// <param name="item"></param>
 	/// <returns></returns>
-	bool smart_priority::is_middle(ClassificationItem& item);
+	bool covid_priority::is_middle(ClassificationItem& item);
 
 	void sort() {
 		std::sort(all_data.begin(), all_data.end(), [](const ClassificationItem& item_1, const ClassificationItem& item_2) {

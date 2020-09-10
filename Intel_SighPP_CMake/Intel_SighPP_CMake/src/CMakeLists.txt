@@ -30,6 +30,8 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/depth_priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/smart_priority.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/smart_priority.hpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/covid_priority.cpp
+    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/covid_priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/prioritiser.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.cpp
