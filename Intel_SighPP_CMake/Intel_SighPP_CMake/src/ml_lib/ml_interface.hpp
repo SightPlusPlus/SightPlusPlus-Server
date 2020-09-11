@@ -8,12 +8,16 @@
 #include "../classification_result.hpp"
 
 struct ModelInterface {
+
 	size_t inWidth = 640;
 	size_t inHeight = 480;	
 	float WHRatio = inWidth / (float)inHeight;
 	float inScaleFactor = 0.007843f;
 	float meanVal = 127.5;
 	float confidence_threshold = 0.8f;
+  
+  virtual ~ModelInterface() = default;
+  
 	/// <summary>
  	/// Function to identify objects and return the resutls 
  	/// (obejct class names, relative location, distance and confidence)
