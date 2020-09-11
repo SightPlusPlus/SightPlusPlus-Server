@@ -82,11 +82,20 @@ struct CaffeModelImpl : public ModelInterface {
 				{
 					auto object_class = static_cast<size_t>(detection_matrix.at<float>(id, 1));
 
-					auto x_left_bottom = static_cast<int>(detection_matrix.at<float>(id, 3) * color_matrix.cols);
-					auto y_left_bottom = static_cast<int>(detection_matrix.at<float>(id, 4) * color_matrix.rows);
+					auto x_left_bottom = static_cast<int>(detection_matrix.at<float>(id, 3) * inHeight);
+					auto y_left_bottom = static_cast<int>(detection_matrix.at<float>(id, 4) * inWidth);
 
-					auto x_right_top = static_cast<int>(detection_matrix.at<float>(id, 5) * color_matrix.cols);
-					auto y_right_top = static_cast<int>(detection_matrix.at<float>(id, 6) * color_matrix.rows);
+					auto x_right_top = static_cast<int>(detection_matrix.at<float>(id, 5) * inHeight);
+					auto y_right_top = static_cast<int>(detection_matrix.at<float>(id, 6) * inWidth);
+
+
+					SPDLOG_INFO("x_left_bottom height = {}", x_left_bottom);
+
+					SPDLOG_INFO("y_left_bottom  = {}", y_left_bottom);
+
+					SPDLOG_INFO("x_right_top  = {}", x_right_top);
+
+					SPDLOG_INFO("y_right_top  = {}", y_right_top);
 					cv::Rect object(
 						static_cast<int>(x_left_bottom), static_cast<int>(y_left_bottom),
 						static_cast<int>(x_right_top - x_left_bottom), static_cast<int>(y_right_top - y_left_bottom));
