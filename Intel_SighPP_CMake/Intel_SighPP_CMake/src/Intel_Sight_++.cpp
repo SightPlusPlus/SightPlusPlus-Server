@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 	/// 8) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
 	/// 9) -outdoors		: This is used to set up object detection networks, frame resolution and the prioritiser for outdoors environment.
 	/// 10) -indoors		: This is used to set up object detection networks, frame resolution and the prioritiser for indoors environment.
-	/// 11) -covid		: This is used to set up object detection networks, frame resolution and the prioritiser for Outdoors environment and uses a prioritiser that enforces social distancing.
+	/// 11) -covid			: This is used to set up object detection networks, frame resolution and the prioritiser for Outdoors environment and uses a prioritiser that enforces social distancing.
 	/// <summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
@@ -206,8 +206,8 @@ int main(int argc, char** argv)
 					if (ret.second) {
 						CaffeModelImpl caffe_model = create_caffe_network(*i);
 						caffe_model.set_resolution(300, 300);
-						prio_covid.determine_location_markers(300, 300);
-						prio_smart.determine_location_markers(300, 300);
+						prio_covid.determine_location_markers(640, 480);
+						prio_smart.determine_location_markers(640, 480);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded for outdoors environment:  {}", *i);
 					}
@@ -236,8 +236,8 @@ int main(int argc, char** argv)
 					if (ret.second) {
 						CaffeModelImpl caffe_model = create_caffe_network(*i); 
 						caffe_model.set_resolution(300, 300);
-						prio_covid.determine_location_markers(300, 300);
-						prio_smart.determine_location_markers(300, 300);
+						prio_covid.determine_location_markers(640, 480);
+						prio_smart.determine_location_markers(640, 480);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded for outdoors environment:  {}", *i);
 					}
