@@ -5,7 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <iostream>
 
-void covid_priority::determine_location_markers(int h, int w) {
+void covid_priority::determine_location_markers(int w, int h) {
 
 	size_h = h;
 	size_w = w;
@@ -19,7 +19,17 @@ void covid_priority::determine_location_markers(int h, int w) {
 	out_left = 0 + fifth_w;
 	out_right = size_w - fifth_w;
 	above = size_h - eighth_h;
-	SPDLOG_INFO("Above height = {}", mid_w);
+	SPDLOG_INFO("mid_w height = {}", mid_w);
+
+	SPDLOG_INFO("in_left height = {}", in_left);
+
+	SPDLOG_INFO("in_right height = {}", in_right);
+
+	SPDLOG_INFO("out_left height = {}", out_left);
+
+	SPDLOG_INFO("out_right height = {}", out_right);
+
+	SPDLOG_INFO("above height = {}", above);
 
 }
 
@@ -59,6 +69,7 @@ void covid_priority::determine_prio(ClassificationItem& item) {
 		}
 
 	}
+
 	msg_add_location(item);
 	msg_add_name(item);
 	msg_add_distance(item);
@@ -238,6 +249,8 @@ void covid_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_right > out_left && x_right < mid_w) // in left
 	{
+
+		SPDLOG_INFO("in Right {}, above {} {} ", x_right, y_bottom, (y_bottom > above));
 		if (y_bottom > above)
 		{
 			result += "Above, in left";

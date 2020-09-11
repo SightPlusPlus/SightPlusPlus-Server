@@ -56,6 +56,7 @@ struct CaffeModelImpl : public ModelInterface {
 
 		SPDLOG_INFO("Using Caffe model to find objects");
 
+		SPDLOG_INFO("Width and height {} {}" , inWidth, inHeight);
 		auto input_blob = cv::dnn::blobFromImage(color_matrix, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false);
 		net.setInput(input_blob, "data");
 
@@ -86,7 +87,6 @@ struct CaffeModelImpl : public ModelInterface {
 
 					auto x_right_top = static_cast<int>(detection_matrix.at<float>(id, 5) * color_matrix.cols);
 					auto y_right_top = static_cast<int>(detection_matrix.at<float>(id, 6) * color_matrix.rows);
-
 					cv::Rect object(
 						static_cast<int>(x_left_bottom), static_cast<int>(y_left_bottom),
 						static_cast<int>(x_right_top - x_left_bottom), static_cast<int>(y_right_top - y_left_bottom));

@@ -44,7 +44,7 @@ public:
 	/// <summary>
 	/// Determines location markers for objects within the screen. 
 	/// </summary>
-	void determine_location_markers(int h, int w);
+	void determine_location_markers(int w, int h);
 
 
 	//________data and message control________: 

@@ -5,7 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <iostream>
 
-void smart_priority::determine_location_markers(int h, int w) {
+void smart_priority::determine_location_markers(int w, int h) {
 
 	size_h = h;
 	size_w = w;
@@ -19,7 +19,18 @@ void smart_priority::determine_location_markers(int h, int w) {
 	in_right = mid_w + fifth_w;
 	out_left = 0 + fifth_w;
 	out_right = size_w - fifth_w;
-	above = 0 + eighth_h;
+	above = size_h - eighth_h;
+	SPDLOG_INFO("mid_w height = {}", mid_w);
+
+	SPDLOG_INFO("in_left height = {}", in_left);
+
+	SPDLOG_INFO("in_right height = {}", in_right);
+
+	SPDLOG_INFO("out_left height = {}", out_left);
+
+	SPDLOG_INFO("out_right height = {}", out_right);
+
+	SPDLOG_INFO("above height = {}", above);
 
 }
 
@@ -37,6 +48,9 @@ void smart_priority::determine_prio(ClassificationItem& item) {
 	if (item.track_point < 5)
 	{
 		item.priority = Priority::LOW;
+		msg_add_location(item);
+		msg_add_name(item);
+		msg_add_distance(item);
 		return;
 	}
 
@@ -238,6 +252,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_right > out_left && x_right < mid_w) // in left
 	{
+
 		if (y_bottom > above)
 		{
 			result += "Above, in left";
@@ -252,6 +267,9 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	}
 	else if (x_left < out_right && x_left > mid_w) // in right
 	{
+
+		SPDLOG_INFO("in Right {} {} {} , above {} {} {} ", x_left, out_right, mid_w, y_bottom, above, (y_bottom > above));
+		SPDLOG_INFO("in Right {}, above {} {} {} ", x_left, y_bottom, above,(y_bottom > above));
 		if (y_bottom > above)
 		{
 			result += "Above, in right";
