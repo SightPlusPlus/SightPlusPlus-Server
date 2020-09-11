@@ -1,17 +1,20 @@
-﻿#define MAXAPI_USE_MSCRT
+﻿// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
+#define MAXAPI_USE_MSCRT
 #define DllExport   __declspec( dllexport )
 #include <string>
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include "gtest/gtest.h"
-#include "../src/priority_lib/smart_priority.hpp" 
-#include "../src/priority_lib/smart_priority.cpp"   
-#include "../src/priority_lib/priority_module.cpp"
-#include "../src/classification_result.hpp"
 #include <Set>
 
 
+//#include "../src/priority_lib/smart_priority.hpp" 
+//#include "../src/priority_lib/smart_priority.cpp"   
+//#include "../src/priority_lib/priority_module.cpp"
+//#include "../src/classification_result.hpp"
 
 //namespace {
 //	class FooTest : public ::testing::Test {

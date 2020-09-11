@@ -1,8 +1,12 @@
+// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
 #pragma once
+
 #include <fstream>
+
 /// <summary>
 /// Read class names from txt file
-/// Based on https://stackoverflow.com/questions/7868936/read-file-line-by-line-using-ifstream-in-c
 /// </summary>
 /// <param name="filepath">path the txt file where the class names are stored</param>
 /// <returns>a list of class names</returns>

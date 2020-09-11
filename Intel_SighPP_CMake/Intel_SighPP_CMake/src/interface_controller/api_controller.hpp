@@ -1,3 +1,6 @@
+// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
 #pragma once
 
 #include <vector>
@@ -24,5 +27,6 @@ public:
 	/// Receives new classification result items and sends them to connected API users.
 	/// </summary>
 	/// <param name="results">Items to send to API users</param>
-	void new_items(const std::vector<PrioritisedClassificationResult>& results);
+	void new_items(const std::vector<ClassificationItem>& results);
+
 };

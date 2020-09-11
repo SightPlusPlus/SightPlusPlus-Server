@@ -1,3 +1,6 @@
+// License: Apache 2.0. See LICENSE file in root directory.
+// Copyright(c) 2020 Sight++. All Rights Reserved.
+
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <opencv2/opencv.hpp>
@@ -10,7 +13,9 @@
 #include "interface_controller/api_impl_websocket.cpp"
 #include "interface_controller/output_stream_controller.hpp"
 #include "ml_lib/caffe_impl.cpp"
+#include "ml_lib/yolo_impl.cpp"
 #include "ml_lib/ml_controller.hpp"
+#include "ml_lib/model_creator.hpp"
 #include "priority_lib/depth_priority.hpp"
 #include "priority_lib/smart_priority.hpp"
 
@@ -20,10 +25,17 @@ int main(int argc, char** argv)
 
 	rs2::pipeline pipe;
 	rs2::config cfg;
+	std::vector<CaffeModelImpl> caffe_models;
+	std::vector<YoloModelImpl> yolo_models;
+	std::set<std::string> yolo_models_names;
+	std::set<std::string> caffe_models_names;
 
 	auto stream_depth = false;
 	auto stream_color = false;
 	auto port = 7979;
+	auto theme = 0;
+	std::set<std::string> outdoors_model = { "MobileNetSSD_deploy" }; 
+	std::set<std::string> indoors_model = { "no_bn" }; 
 
 	setup_logging();
 
@@ -38,7 +50,11 @@ int main(int argc, char** argv)
 	/// 4) -depth			: This is used to show the depth stream in a window
 	/// 5) -color			: This is used to show the color stream in a window
 	/// 6) -port			: This is used to select the port the websocket server runs on, default is 7979
-	/// </summary>
+	/// 7) -caffe no_bn		: This is used to import the caffe-based network named no_bn.caffemodel etc.
+	/// 8) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
+	/// 9) -outdoors		: This is used to set up object detection networks, frame resolution and the prioritiser for outdoors environment.
+	/// 10) -indoors		: This is used to set up object detection networks, frame resolution and the prioritiser for indoors environment.
+	/// <summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
 	/// <returns></returns>
@@ -84,8 +100,8 @@ int main(int argc, char** argv)
 				try
 				{
 					std::string file_ = argv[++i];
-					std::string path_ = ".\\recordings\\" + file_;
-					SPDLOG_INFO("Playing from file:  {}", path_);
+					std::string path_ = "./recordings/" + file_ + ".bag";
+					SPDLOG_INFO("playing from file:  {}", path_);
 					cfg.enable_device_from_file(path_);
 					continue;
 				}
@@ -125,6 +141,80 @@ int main(int argc, char** argv)
 				SPDLOG_ERROR("Missing value for flag -port");
 				continue;
 			}
+
+			if (next_arg.compare("-caffe") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+					std::string file_ = argv[++i];
+					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(file_);
+					if(ret.second){
+						CaffeModelImpl caffe_model = create_caffe_network(file_);
+						caffe_models.push_back(caffe_model);
+						SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
+					}
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading caffe-based network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-caffe") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing flag/argument for loading the caffe-based network");
+				continue;
+			}
+						
+			if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
+			{
+				try
+				{
+					std::string file_ = argv[++i];
+					std::pair<std::set<string>::iterator,bool> ret = yolo_models_names.insert(file_);
+					if(ret.second){
+						YoloModelImpl yolo_model = create_yolo_network(file_);
+						yolo_models.push_back(yolo_model);
+						SPDLOG_INFO("Yolo network loaded:  {}", file_);
+					}
+					continue;
+				}
+				catch (const std::exception& exception)
+				{
+					SPDLOG_CRITICAL("Error with loading darknet-based yolo network from file: {}", exception.what());
+				}
+			}
+			else if (next_arg.compare("-yolo") == 0 && !((i + 1) < argc))
+			{
+				SPDLOG_ERROR("Missing flag/argument for loading the darknet-based yolo network");
+				continue;
+			}	
+
+			if(next_arg.compare("-outdoors") == 0)
+			{
+				theme = 1;
+				for(auto i = outdoors_model.begin(); i != outdoors_model.end(); ++i){
+					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
+					if(ret.second){
+						CaffeModelImpl caffe_model = create_caffe_network(*i);
+						caffe_model.set_resolution(300,300);
+						caffe_models.push_back(caffe_model);
+						SPDLOG_INFO("Caffe-based network loaded for outdoors environment:  {}", *i);
+					}
+				}
+			}
+			else if(next_arg.compare("-indoors") == 0)
+			{
+				theme = 2;
+				for(auto i = indoors_model.begin(); i != indoors_model.end(); ++i){
+					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
+					if(ret.second){
+						CaffeModelImpl caffe_model = create_caffe_network(*i);
+						caffe_model.set_resolution(640,480);
+						caffe_models.push_back(caffe_model);
+						SPDLOG_INFO("Caffe-based network loaded for indoors environment:  {}", *i);
+					}
+				}
 		}
 
 	}
@@ -145,22 +235,22 @@ int main(int argc, char** argv)
 
 	MLController ml_controller;
 	// TODO Read command line parameters for which models to use?
-
-	//MLImplDepth ml_depth;
-	//MLImplRGB ml_rgb;
-
 	// TODO Add correct paths for testing
 	// TODO Add command line parameter for files to use?
 
 	auto profile = config.get_stream(RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
-	CaffeModelImpl caffe_own("./models/no_bn.prototxt", "./models/no_bn.caffemodel", "./models/no_bn-classnames.txt");
-	CaffeModelImpl caffe_pre("./models/MobileNetSSD_deploy.prototxt", "./models/MobileNetSSD_deploy.caffemodel", "./models/MobileNetSSD_deploy-classnames.txt");
 
-	// Add more ML implementations here as needed
-	//ml_controller.add_model(ml_depth);
-	//ml_controller.add_model(ml_rgb);
-	ml_controller.add_model(caffe_own);
-	ml_controller.add_model(caffe_pre);
+	for (auto i = caffe_models.begin(); i != caffe_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One caffe-based network added...");
+	}
+	
+	for (auto i = yolo_models.begin(); i != yolo_models.end(); ++i)
+	{
+		ml_controller.add_model(*i);
+		SPDLOG_INFO("One yolo network added...");
+	}	
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
@@ -174,7 +264,12 @@ int main(int argc, char** argv)
 	Prioritiser* prioritiser = new Prioritiser;
 	prioritiser->add_module(prio_smart);
 	// Todo: load prio model from flag
-	prioritiser->set_module(name_prio_smart);
+	switch (theme)
+	{
+		case 1:
+		case 2:
+		default: prioritiser->set_module(name_prio_smart);
+	}
 	prioritiser->load_module();
 
 	SPDLOG_INFO("Setting up output API and API users");
