@@ -36,6 +36,7 @@ void priority_module::clear_checklist()
 
 void priority_module::build_data(std::vector<ClassificationResult>& data) {
 
+	SPDLOG_INFO("Building data into single vector");
 	for (size_t i = 0; i < data.size(); i++)
 	{
 		all_data.insert(all_data.end(), data[i].objects.begin(), data[i].objects.end());

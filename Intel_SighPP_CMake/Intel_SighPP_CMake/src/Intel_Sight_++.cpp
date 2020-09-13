@@ -18,6 +18,7 @@
 #include "ml_lib/model_creator.hpp"
 #include "priority_lib/depth_priority.hpp"
 #include "priority_lib/smart_priority.hpp"
+#include "priority_lib/covid_priority.hpp"
 
 int main(int argc, char** argv)
 {
@@ -29,13 +30,19 @@ int main(int argc, char** argv)
 	std::vector<YoloModelImpl> yolo_models;
 	std::set<std::string> yolo_models_names;
 	std::set<std::string> caffe_models_names;
+	std::string name_prio_depth = "prio_depth";
+	std::string name_prio_smart = "prio_smart";
+	std::string name_prio_covid = "prio_covid";
+	depth_priority prio_depth{ &name_prio_depth };
+	smart_priority prio_smart(name_prio_smart);
+	covid_priority prio_covid{ name_prio_covid };
 
 	auto stream_depth = false;
 	auto stream_color = false;
 	auto port = 7979;
 	auto theme = 0;
-	std::set<std::string> outdoors_model = { "MobileNetSSD_deploy" }; 
-	std::set<std::string> indoors_model = { "no_bn" }; 
+	std::set<std::string> outdoors_model = { "MobileNetSSD_deploy" };
+	std::set<std::string> indoors_model = { "no_bn" };
 
 	setup_logging();
 
@@ -54,6 +61,7 @@ int main(int argc, char** argv)
 	/// 8) -yolo yolo		: This is used to import the darknet-based network (YoloV3).
 	/// 9) -outdoors		: This is used to set up object detection networks, frame resolution and the prioritiser for outdoors environment.
 	/// 10) -indoors		: This is used to set up object detection networks, frame resolution and the prioritiser for indoors environment.
+	/// 11) -covid			: This is used to set up object detection networks, frame resolution and the prioritiser for Outdoors environment and uses a prioritiser that enforces social distancing.
 	/// <summary>
 	/// <param name="argc"></param>
 	/// <param name="argv"></param>
@@ -147,8 +155,8 @@ int main(int argc, char** argv)
 				try
 				{
 					std::string file_ = argv[++i];
-					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(file_);
-					if(ret.second){
+					std::pair<std::set<string>::iterator, bool> ret = caffe_models_names.insert(file_);
+					if (ret.second) {
 						CaffeModelImpl caffe_model = create_caffe_network(file_);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded:  {}", file_);
@@ -165,14 +173,14 @@ int main(int argc, char** argv)
 				SPDLOG_ERROR("Missing flag/argument for loading the caffe-based network");
 				continue;
 			}
-						
+
 			if (next_arg.compare("-yolo") == 0 && (i + 1) < argc)
 			{
 				try
 				{
 					std::string file_ = argv[++i];
-					std::pair<std::set<string>::iterator,bool> ret = yolo_models_names.insert(file_);
-					if(ret.second){
+					std::pair<std::set<string>::iterator, bool> ret = yolo_models_names.insert(file_);
+					if (ret.second) {
 						YoloModelImpl yolo_model = create_yolo_network(file_);
 						yolo_models.push_back(yolo_model);
 						SPDLOG_INFO("Yolo network loaded:  {}", file_);
@@ -188,33 +196,53 @@ int main(int argc, char** argv)
 			{
 				SPDLOG_ERROR("Missing flag/argument for loading the darknet-based yolo network");
 				continue;
-			}	
+			}
 
-			if(next_arg.compare("-outdoors") == 0)
+			if (next_arg.compare("-outdoors") == 0)
 			{
 				theme = 1;
-				for(auto i = outdoors_model.begin(); i != outdoors_model.end(); ++i){
-					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
-					if(ret.second){
+				for (auto i = outdoors_model.begin(); i != outdoors_model.end(); ++i) {
+					std::pair<std::set<string>::iterator, bool> ret = caffe_models_names.insert(*i);
+					if (ret.second) {
 						CaffeModelImpl caffe_model = create_caffe_network(*i);
-						caffe_model.set_resolution(300,300);
+						caffe_model.set_resolution(300, 300);
+						prio_covid.determine_location_markers(640, 480);
+						prio_smart.determine_location_markers(640, 480);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded for outdoors environment:  {}", *i);
 					}
 				}
 			}
-			else if(next_arg.compare("-indoors") == 0)
+			else if (next_arg.compare("-indoors") == 0)
 			{
 				theme = 2;
-				for(auto i = indoors_model.begin(); i != indoors_model.end(); ++i){
-					std::pair<std::set<string>::iterator,bool> ret = caffe_models_names.insert(*i);
-					if(ret.second){
+				for (auto i = indoors_model.begin(); i != indoors_model.end(); ++i) {
+					std::pair<std::set<string>::iterator, bool> ret = caffe_models_names.insert(*i);
+					if (ret.second) {
 						CaffeModelImpl caffe_model = create_caffe_network(*i);
-						caffe_model.set_resolution(640,480);
+						caffe_model.set_resolution(640, 480);
+						prio_covid.determine_location_markers(640, 480);
+						prio_smart.determine_location_markers(640, 480);
 						caffe_models.push_back(caffe_model);
 						SPDLOG_INFO("Caffe-based network loaded for indoors environment:  {}", *i);
 					}
 				}
+			}
+			else if (next_arg.compare("-covid") == 0)
+			{
+				theme = 3;
+				for (auto i = outdoors_model.begin(); i != outdoors_model.end(); ++i) {
+					std::pair<std::set<string>::iterator, bool> ret = caffe_models_names.insert(*i);
+					if (ret.second) {
+						CaffeModelImpl caffe_model = create_caffe_network(*i); 
+						caffe_model.set_resolution(300, 300);
+						prio_covid.determine_location_markers(640, 480);
+						prio_smart.determine_location_markers(640, 480);
+						caffe_models.push_back(caffe_model);
+						SPDLOG_INFO("Caffe-based network loaded for outdoors environment:  {}", *i);
+					}
+				}
+			}
 		}
 
 	}
@@ -245,33 +273,36 @@ int main(int argc, char** argv)
 		ml_controller.add_model(*i);
 		SPDLOG_INFO("One caffe-based network added...");
 	}
-	
+
 	for (auto i = yolo_models.begin(); i != yolo_models.end(); ++i)
 	{
 		ml_controller.add_model(*i);
 		SPDLOG_INFO("One yolo network added...");
-	}	
+	}
 
 	SPDLOG_INFO("Created MLController and added {} ml models", ml_controller.model_count());
 
-	std::string name_prio_depth = "prio_depth";
-	std::string name_prio_smart = "prio_smart";
-	depth_priority prio_depth{&name_prio_depth};
-	smart_priority prio_smart(name_prio_smart);
-	SPDLOG_INFO("Using prioritiser module: {}", prio_smart.get_name());
 
 	SPDLOG_INFO("Setting up Prioritiser");
 	Prioritiser* prioritiser = new Prioritiser;
 	prioritiser->add_module(prio_smart);
+	prioritiser->add_module(prio_covid);
 	// Todo: load prio model from flag
 	switch (theme)
 	{
-		case 1:
-		case 2:
-		default: prioritiser->set_module(name_prio_smart);
+		//commented out so that it goes to default.
+		//case 1:
+		//case 2:
+	case 3:  prioritiser->set_module(name_prio_covid); break;
+	default: prioritiser->set_module(name_prio_smart); break;
 	}
-	prioritiser->load_module();
+	auto load = prioritiser->load_module();
 
+	if (load == -1)
+	{
+		SPDLOG_INFO("FAiled to load prioritiser");
+		exit(EXIT_FAILURE);
+	}
 	SPDLOG_INFO("Setting up output API and API users");
 	ApiController api;
 	ApiWebSocketImpl websocket_api_user(port, Priority::HIGH);
