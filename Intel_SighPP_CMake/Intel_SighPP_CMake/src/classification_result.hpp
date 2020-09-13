@@ -10,7 +10,10 @@
 #include "./priority_lib/priority.hpp"
 inline std::string append(std::string& s, const std::string key, const std::string value, const bool is_string_value, const bool is_last)
 {
-	s.append(" \"").append(key).append("\": ");
+	s += '"';
+	s.append(key);
+	s += '"';
+	s.append(": ");
 	if (is_string_value) s.append("\"").append(value).append("\"");
 	else s.append(value);
 	if (is_last) return s;
