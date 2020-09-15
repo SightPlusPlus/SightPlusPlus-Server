@@ -83,7 +83,23 @@ Flags for running the system include:
 - "-rec \<filename\>" = record input to a file
 - "-play \<filename\>" = set imput to a file
 - "-port \<port number\>" = sets the websocket port, default is 7979
-## User Manual
+## User Tutorials
+
+Links to tutorials will are linked below. Please follow them for startup guides on using this system.
+
 ## Future work
+
+While we have improved the efficiency of the object detection networks significantly, we can explore more possibilities to further improve the processing time. For example, the openVINO utilises the model optimiser and back engine to facilitate faster inference of deep learning models, which is two times faster than our current approach. Another possible improvement is the GPU utilisation when training and using the object recognition networks. An example of practicable approach to use GPU to speed up the performance is CUDA, which is a parallel computing platform that enables the GPU for model training and inference.
+
+
+One possible method to improve object tracking is to design tracking strategies. For example, the trackers should be assigned based on the size and position of the objects. Also, we can set targets for tracking rather than track all identified objects. These strategies can reduce the tracked objects and put limited resources to accurate calculation of important ones.
+
+
+The prioritiser module has an incredible amount of potential. Understanding the data classified by the object detection module has many opportunities such as processing other use cases for navigation or heuristic inference classification for new MADs. The simplicity of the prioritiser architecture allows for rapid development of priority experiments and allows for setting up new heuristic AIs. Improvements of the current system could include further increase in the sophistication of the rule based system such as priority by object size or implementing a full historical knowledge base for future priority prediction. Finally, improved user to system communication would allow for a tailored experience.
+
+The next step for the interface would be using a more adaptable STT API to satisfy various browsers. Although using speech APIs with buttons clicks can interact with users efficiently, it would be more convenient for users to use an application without buttons. Therefore, the next step could be to a more adaptable speech recognition APIs which could identify what the user speaks continuously and make corresponding interactions.
+
 ## Contrubuting
+All future Contributions should be submitted to the Intel Copy of this repo hosted by the Intel Company. The link to said repo will be posted here when it is up.
 ## Acknowledgement
+Extending thanks to the team at Intel UK, comprising Costas Stylianou, Philippa Chick, Chris Feltham along with Jo Baker from AstraZeneca for assisting and mentoring the team throughout the project. We would also like to thank Prof. Emmanuel Letier for his guidance and contribution as the supervisor of the project. Following, we would like to thank Sheena Visram at UCLIC and Albert Higgins from the UCL International Disability Innovation Hub for their assistance in understanding the user interaction and medical component of this project. Additional thanks go to Fredrick Odhiambo and Shailen Sobhee for their input and feedback in the final phase of the project. Finally, we would like to thank Dr. Dean Mohamedally for leading the IXN initiative and UCL for making these project possible.
