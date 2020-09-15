@@ -16,7 +16,6 @@
 #include "ml_lib/yolo_impl.cpp"
 #include "ml_lib/ml_controller.hpp"
 #include "ml_lib/model_creator.hpp"
-#include "priority_lib/depth_priority.hpp"
 #include "priority_lib/smart_priority.hpp"
 #include "priority_lib/covid_priority.hpp"
 
@@ -33,7 +32,6 @@ int main(int argc, char** argv)
 	std::string name_prio_depth = "prio_depth";
 	std::string name_prio_smart = "prio_smart";
 	std::string name_prio_covid = "prio_covid";
-	depth_priority prio_depth{ &name_prio_depth };
 	smart_priority prio_smart(name_prio_smart);
 	covid_priority prio_covid{ name_prio_covid };
 
