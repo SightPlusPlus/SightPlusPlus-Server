@@ -30,5 +30,5 @@ The Caffe-based Network (MobileNetSSD) is used as the primary network due in the
 - SPDLOG (for logging)
 
 ### Future development
-* Improve the performance of the object detection moule (execuutting with GPU; applying OpenVINOetc.).
+* Improve the performance of the object detection moule (execuutting with GPU; applying OpenVINO etc.).
 * Train more object detection models with higher accuracy.
