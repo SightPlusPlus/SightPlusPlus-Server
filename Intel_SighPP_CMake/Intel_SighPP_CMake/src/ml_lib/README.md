@@ -1,23 +1,22 @@
 # ML modules and Object tracking
 ## Overview
-- What is this thing in these here files?
+- Object Detection Module, responsible for detecting objects in each frame, trakcing objects and sending results to proritiser.
 
 ## Documentation
 ### Components
 - ml_interface.hpp: object detection network interfaces
-- caffe_impl.cpp & yolo_impl.cpp:  Implementation of MobileNetSSD network and YOLOv3 network respectively
+- caffe_impl.cpp & yolo_impl.cpp:  Implementation of Caffe-based network (MobileNetSSD) and darknet-based network (YOLOv3) respectively
 - model_helper.hpp & model_creator.hpp: Header files containing simple functions for MobileNetSSD network and YOLOv3 network implementation
 - object_tracking.hpp & object_tracking.cpp: Object tracking system
 
 ### Design Decisions
-- What are key decisions that were taken with the module and why? Are there other options and why were they not taken?
+The Caffe-based Network (MobileNetSSD) is used as the primary network due in the system to its good performance. The darknet-based network (YOLOv3) is also implemented here as the second option. Harr Cascade Classifiers was considered but not implementedd and used because training-related fucntions are not included in opencv4.
 
 ### Limitations
 - Are there any issues with this Design
-- what could be improved in future?
 
 ### Visuals and diagrams
-- Any design diagrams or screen shot examples.
+![bottle_new](https://user-images.githubusercontent.com/39096904/93452877-db0a6900-f8d0-11ea-909c-4b73c53b1967.png)
 
 ## Development Manual
 -What do future developers need to understand here to develop it further.
