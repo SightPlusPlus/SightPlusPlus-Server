@@ -28,8 +28,7 @@ The increase in resolution results in a lower frame-rate, but the model can dete
 ![bottle_new](https://user-images.githubusercontent.com/39096904/93452877-db0a6900-f8d0-11ea-909c-4b73c53b1967.png)
 
 ## Development Manual
--
--
+* The object detecting process is in a linear fashion. More research can be done to investigate other approaches that may help improve the performance.
 
 ### Requirements
 - OpenCV
