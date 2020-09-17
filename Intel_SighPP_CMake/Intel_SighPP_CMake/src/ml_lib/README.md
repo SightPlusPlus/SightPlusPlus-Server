@@ -13,16 +13,22 @@
 The Caffe-based Network (MobileNetSSD) is used as the primary network due in the system to its good performance. The darknet-based network (YOLOv3) is also implemented here as the second option. Harr Cascade Classifiers was considered but not implementedd and used because training-related fucntions are not included in opencv4.
 
 ### Limitations
-- Are there any issues with this Design
+- Poor performance when the image resolution is very high.
+- High requirements for the training dataset for object detection network (a large set of labelled images should be used to train the networks)
+- Difficulty when defining the classes of the objects when preparing training dataset (e.g. cups vs. mugs vs. glass cups).
 
 ### Visuals and diagrams
 ![bottle_new](https://user-images.githubusercontent.com/39096904/93452877-db0a6900-f8d0-11ea-909c-4b73c53b1967.png)
 
 ## Development Manual
--What do future developers need to understand here to develop it further.
-### Component Developemnt
-- How do I develop this component further? Where do I go?
+-
+-
+
 ### Requirements
-- libs,framworks and apis that are required for this module.
+- OpenCV
+- TBB
+- SPDLOG (for logging)
+
 ### Future development
-- Ideas for what could be done in the future. Can be bullet form.
+* Improve the performance of the object detection moule (execuutting with GPU; applying OpenVINOetc.).
+* Train more object detection models with higher accuracy.
