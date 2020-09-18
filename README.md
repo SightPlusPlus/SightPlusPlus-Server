@@ -104,9 +104,16 @@ Flags for running the system include:
 - "-rec \<filename\>" = record input to a file
 - "-play \<filename\>" = set imput to a file
 - "-port \<port number\>" = sets the websocket port, default is 7979
+
+
 ## User Tutorials
 
 Links to tutorials will are linked below. Please follow them for startup guides on using this system.
+
+There is a link to the youtube playlist of tutorital, videos are to be added by 25/09/2020:
+
+Here is the [playlist](https://www.youtube.com/playlist?list=PLdIlpeMVPz67gisf5Q0S8F_MMb9EodiW9)
+
 
 ## Future work
 
