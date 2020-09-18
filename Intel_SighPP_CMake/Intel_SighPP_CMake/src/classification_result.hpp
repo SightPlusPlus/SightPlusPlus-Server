@@ -50,7 +50,7 @@ struct ClassificationItem
 	double speed = 0;
 	int id = 0;;
 	double confidence = 0;;
-	int track_point = 0;;
+	int track_point = 0;
 	int counter = 0;;
 	point bottom_left;
 	point top_right;

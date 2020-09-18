@@ -26,8 +26,8 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/ml_controller.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ ML_Lib/object_tracking.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/ML_Lib/object_tracking.hpp
-    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/depth_priority.cpp
-    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/depth_priority.hpp
+    
+    
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/smart_priority.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/smart_priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/covid_priority.cpp
@@ -35,7 +35,7 @@ set(SRC_FILES
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/prioritiser.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_module.cpp
-    ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/size_priority.cpp
+    
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority.hpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_clock.cpp
     ${PROJECT_SOURCE_DIR}/Intel_SighPP_CMake/src/priority_lib/priority_clock.hpp

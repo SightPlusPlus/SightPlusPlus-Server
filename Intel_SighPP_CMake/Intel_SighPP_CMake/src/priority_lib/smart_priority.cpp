@@ -206,37 +206,7 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 	Location location_w = Location::CENTRE;
 	Height location_h = Height::CENTRE;
 	std::string result = "";
-	if (x_right < out_left) // Out left side
-	{
-		if (y_bottom > above)
-		{
-			result += "Above, out left";
-			location_w = Location::OUT_LEFT;
-			location_h = Height::ABOVE;
-		}
-		else
-		{
-			result += "Out left";
-			location_w = Location::OUT_LEFT;
-		}
-
-
-	}
-	else if (x_left > out_right) //out right side
-	{
-		if (y_bottom > above)
-		{
-			result += "Above, out right";
-			location_w = Location::OUT_RIGHT;
-			location_h = Height::ABOVE;
-		}
-		else
-		{
-			result += "Out right";
-			location_w = Location::OUT_RIGHT;
-		}
-	}
-	else if (x_left < mid_w && x_right > mid_w) // centre
+	 if (x_left < mid_w && x_right > mid_w) // centre
 	{
 		if (y_bottom > above)
 		{
@@ -282,6 +252,36 @@ void smart_priority::msg_add_location(ClassificationItem& item) {
 			location_w = Location::IN_RIGHT;
 		}
 	}
+	 else if (x_right < out_left) // Out left side
+	 {
+		 if (y_bottom > above)
+		 {
+			 result += "Above, out left";
+			 location_w = Location::OUT_LEFT;
+			 location_h = Height::ABOVE;
+		 }
+		 else
+		 {
+			 result += "Out left";
+			 location_w = Location::OUT_LEFT;
+		 }
+
+
+	 }
+	 else if (x_left > out_right) //out right side
+	 {
+		 if (y_bottom > above)
+		 {
+			 result += "Above, out right";
+			 location_w = Location::OUT_RIGHT;
+			 location_h = Height::ABOVE;
+		 }
+		 else
+		 {
+			 result += "Out right";
+			 location_w = Location::OUT_RIGHT;
+		 }
+	 }
 
 	item.data.push_back(result);
 	item.msg += result;
@@ -316,7 +316,6 @@ void smart_priority::msg_add_distance(ClassificationItem& item) {
 	}
 	item.msg += insert;
 }
-
 double smart_priority::time_until_colision(ClassificationItem& item)
 {
 	if (item.speed > 0.1)

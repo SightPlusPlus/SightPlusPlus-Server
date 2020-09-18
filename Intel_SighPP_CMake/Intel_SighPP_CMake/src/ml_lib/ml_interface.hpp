@@ -10,19 +10,22 @@
 struct ModelInterface {
 
 	size_t inWidth = 640;
-	size_t inHeight = 480;	
+	size_t inHeight = 480;
 	float WHRatio = inWidth / (float)inHeight;
 	float inScaleFactor = 0.007843f;
 	float meanVal = 127.5;
 	float confidence_threshold = 0.8f;
+
   virtual ~ModelInterface() = default;
+
 	/// <summary>
- 	/// Function to identify objects and return the resutls 
+ 	/// Function to identify objects and return the resutls
  	/// (obejct class names, relative location, distance and confidence)
  	/// </summary>
  	/// <param name="color_matrix">color matrix obtained from the camera</param>
  	/// <param name="depth_matrix">depth matrix obtained from the camera</param>
 	virtual ClassificationResult do_work(cv::Mat color_matrix, cv::Mat depth_matrix) = 0;
+
 	/// <summary>
  	/// Function to set frame's resolution in object detection networks
  	/// </summary>
