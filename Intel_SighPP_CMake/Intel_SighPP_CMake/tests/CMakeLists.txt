@@ -7,7 +7,7 @@ enable_testing()
 include(GoogleTest)
 #find_package(GTest CONFIG REQUIRED)
 #include(GoogleTest)
-add_executable(test_demo "test.cpp" "test_classification_result.cpp" "test_ml_controller.cpp" "mock_ml_model_impl.cpp" )
+add_executable(test_demo "test.cpp" "test_classification_result.cpp" "test_ml_controller.cpp" "mock_ml_model_impl.cpp" "test_prio.cpp")
 
 target_link_libraries(test_demo GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 
