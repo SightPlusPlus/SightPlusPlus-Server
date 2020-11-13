@@ -188,6 +188,7 @@ bool smart_priority::move_up_prio()
 			}
 		}
 	}
+	return true;
 }
 void smart_priority::msg_add_location(ClassificationItem& item) {
 
