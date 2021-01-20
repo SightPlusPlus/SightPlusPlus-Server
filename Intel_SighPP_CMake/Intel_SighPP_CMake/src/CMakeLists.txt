@@ -60,6 +60,7 @@ add_executable(intel_sightPP ${SRC_FILES}) #"Intel Sight ++.cpp" "service_contro
 
 target_link_libraries(intel_sightPP ${OpenCV_LIBS})
 target_include_directories(intel_sightPP PRIVATE ${OpenCV_DIR})
+target_include_directories(intel_sightPP PRIVATE ${OpenCV_INCLUDE_DIRS})
 include_directories(include ${realsense_INCLUDE_DIR})
 include_directories(include ${SPDLOG_INCLUDEDIR})
 target_include_directories(intel_sightPP PRIVATE ${realsense_INCLUDE_DIR})
